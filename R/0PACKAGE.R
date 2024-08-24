@@ -1,14 +1,11 @@
 
 
 
-#' @title IATA
+#' @title iata
 #'
 #' @description ..
 #'
 #'
-#'
-#' @examples
-#' # nothing here
 #'
 #' @keywords internal
 '_PACKAGE'

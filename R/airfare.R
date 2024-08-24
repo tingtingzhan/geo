@@ -6,10 +6,17 @@ setClass(Class = 'airfare', slots = c(
   arrive = 'character',
   mileage = 'numeric',
   code = 'character',
+  AA_status = 'character', # traveler's status with AA
+  AS_status = 'character', # traveler's status with AS
+  BA_status = 'character', # traveler's status with BA
   basefare = 'numeric',
   tax = 'numeric',
   carrier_imposed = 'numeric',
   upgrade = 'numeric'
+), prototype = prototype(
+  AA_status = 'member',
+  AS_status = 'member',
+  BA_status = 'blue'
 ))
 
 # normalization
@@ -71,9 +78,9 @@ setClass(Class = 'loyalty', slots = c(
   program = 'character',
   aim = 'numeric',
   aim_id = 'integer',
-  mileageplan = 'numeric', EQM = 'numeric', # alaska
-  aadvantage = 'numeric', loyaltypt = 'numeric', # American Airlines
-  avios = 'numeric', tierpt = 'numeric' # british airlines
+  mileageplan = 'numeric', EQM = 'numeric', # Alaska (AS)
+  aadvantage = 'numeric', loyaltypt = 'numeric', # American (AA)
+  avios = 'numeric', tierpt = 'numeric' # British (BA)
 ))
 
 #' @importFrom methods show

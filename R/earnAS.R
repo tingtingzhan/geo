@@ -3,6 +3,7 @@
 earnAS <- function(airfare) {
   
   switch(airfare@carrier, AA = {
+    
     # https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners/american-airlines?lid=airline-partners:partners-american
     mileageplan <- round(round(airfare@mileage) * switch(
       EXPR = airfare@code, 
@@ -19,10 +20,16 @@ earnAS <- function(airfare) {
       A = 1.5,
       F = 2,
       NA_real_))
+    
   })
   
-  new(Class = 'loyalty', 
-      program = 'AS', mileageplan = mileageplan, EQM = mileageplan,
-      aim = 1e3 * c(MVP = 20, Gold = 40, '75K' = 75, '100K' = 100), aim_id = 2L) 
+  return(new(
+    Class = 'loyalty', 
+    program = 'AS', 
+    mileageplan = mileageplan, 
+    EQM = mileageplan,
+    aim = 1e3 * c(MVP = 20, Gold = 40, '75K' = 75, '100K' = 100), 
+    aim_id = 2L
+  ))
   
 }

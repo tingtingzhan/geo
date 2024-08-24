@@ -1,5 +1,5 @@
 
-devtools::load_all('../packageAdvanced')
+library(adv.tzh) # devtools::install_github('tingtingzhan/adv.tzh')
 
 file.copy(from = file.path('../.', 'tzh', 'R', 
                            c('lower_n_vanilla.R')), 
@@ -10,7 +10,7 @@ file.copy(from = file.path('../.', 'cooking', 'R',
           to = file.path('../.', 'IATA', 'R'), overwrite = TRUE)
 
 
-removeLocalPackage('IATA')
+removeLocalPackage('iata')
 checkDocument('.')
 updateDESCRIPTION('.')
 checkRelease('.')
