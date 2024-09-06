@@ -4,7 +4,13 @@
 \alias{gen_psw}
 \title{Generate Strong Password}
 \usage{
-gen_psw(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = TRUE)
+gen_psw(
+  size = 40L,
+  digit = TRUE,
+  lower = TRUE,
+  upper = TRUE,
+  symbol = character()
+)
 }
 \arguments{
 \item{size}{\link[base]{integer} scalar, number of characters allowed.  Default \code{40L}}
@@ -15,8 +21,16 @@ gen_psw(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = TRUE)
 
 \item{upper}{\link[base]{logical} scalar, whether upper case characters \code{A-Z} are allowed. Default \code{TRUE}}
 
-\item{symbol}{\link[base]{logical} scalar, whether commonly used symbols \verb{~!@#$\%^&*<>?:;} are allowed. Default \code{TRUE}}
+\item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols allowed.
+Use \code{character()} (default), \code{''} or \code{NULL} to indicate no symbol allowed}
+}
+\value{
+Function \link{gen_psw} returns a \link[base]{character} scalar.
 }
 \description{
 Generate Strong Password
+}
+\examples{
+gen_psw(40L, symbol = '!@#$\%^&*')
+
 }
