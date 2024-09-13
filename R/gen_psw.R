@@ -43,6 +43,6 @@ gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol
     break
   }
   
-  return(paste(y, collapse = ''))
+  return(noquote(paste(y, collapse = '')))
   
 }
