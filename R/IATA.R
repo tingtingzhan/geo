@@ -138,51 +138,21 @@ autolayer.IATA <- function(object, ...) {
 }
 
 
-#' @importFrom ggplot2 autoplot ggplot xlim ylim
+#' @importFrom ggplot2 autoplot ggplot geom_map xlim ylim
 #' @export
 autoplot.IATA <- function(object, ...) {
-  ggplot() + geom_worldmap(
-    fill = 'white', 
-    linewidth = .2, # country border thickness
-    colour = 'grey65', # country border colour
-  ) + 
+  ggplot() + 
+    geom_map(
+      mapping = aes(map_id = unique.default(worldmap$region)), 
+      map = worldmap, 
+      fill = 'white', 
+      linewidth = .2, # country border thickness
+      colour = 'grey65', # country border colour
+    ) + 
     autolayer.IATA(object, ...) + 
     xlim(c(-160, 175)) + ylim(c(-75, 80)) # have to leave some space for x- and y-labels to show! 
 }
 
-
-#' @title Layer of World Map
-#' 
-#' @description
-#' ..
-#' 
-#' @param ... parameters of \link[ggplot2]{layer},
-#' to be passed into \link[ggplot2]{geom_map}
-#' 
-#' @references 
-#' \url{https://www.riinu.me/2022/02/world-map-ggplot2/}
-#' 
-#' @examples
-#' # example code
-#' library(ggplot2)
-#' ggplot() + geom_worldmap() + xlim(c(-160, 175)) + ylim(c(-75, 80))
-#' ggplot() + geom_worldmap() # does not work!!
-#' 
-#' @importFrom dplyr distinct
-#' @importFrom ggplot2 aes fortify geom_map
-#' @importFrom maps map
-#' @export
-geom_worldmap <- function(...) {
-  worldmap <- fortify(map('world', regions = '.', exact = FALSE, plot = FALSE, fill = TRUE))
-  # ?ggplot2::map_data; ?ggplot2:::fortify.map
-  
-  geom_map(
-    data = eval(call('distinct', .data = quote(worldmap), quote(region))), # ?dplyr:::distinct.data.frame
-    mapping = eval(call('aes', map_id = quote(region))),
-    map = worldmap, 
-    ...)
-  
-}
 
 
 

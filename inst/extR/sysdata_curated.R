@@ -62,9 +62,13 @@ proj4string(airports) = CRS('+proj=longlat +datum=WGS84')
 
 
 
+# https://www.riinu.me/2022/02/world-map-ggplot2/
+worldmap = ggplot2::fortify(maps::map(database = 'world', regions = '.', exact = FALSE, plot = FALSE, fill = TRUE))
+
+
 
 # SAVE !!!
-save(airports, 
+save(airports, worldmap,
      file = './R/sysdata.rda', compress = 'xz')
 
 rm(list = ls(all.names = TRUE))

@@ -9,7 +9,7 @@ gen_psw(
   digit = TRUE,
   lower = TRUE,
   upper = TRUE,
-  symbol = character()
+  symbol = "~!@#$\%^&*"
 )
 }
 \arguments{
@@ -22,7 +22,7 @@ gen_psw(
 \item{upper}{\link[base]{logical} scalar, whether upper case characters \code{A-Z} are allowed. Default \code{TRUE}}
 
 \item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols allowed.
-Use \code{character()} (default), \code{''} or \code{NULL} to indicate no symbol allowed}
+Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
 }
 \value{
 Function \link{gen_psw} returns a \link[base]{character} scalar.
@@ -31,6 +31,6 @@ Function \link{gen_psw} returns a \link[base]{character} scalar.
 Generate Strong Password
 }
 \examples{
-gen_psw(40L, symbol = '!@#$\%^&*')
+gen_psw(50L)
 
 }

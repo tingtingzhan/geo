@@ -11,16 +11,16 @@
 #' @param upper \link[base]{logical} scalar, whether upper case characters `A-Z` are allowed. Default `TRUE`
 #' 
 #' @param symbol \link[base]{character} scalar or \link[base]{vector}, symbols allowed.  
-#' Use `character()` (default), `''` or `NULL` to indicate no symbol allowed
+#' Use `character()`, `''` or `NULL` to indicate no symbol allowed
 #' 
 #' @returns
 #' Function [gen_psw] returns a \link[base]{character} scalar.
 #' 
 #' @examples
-#' gen_psw(40L, symbol = '!@#$%^&*')
+#' gen_psw(50L)
 #' 
 #' @export
-gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = character()) {
+gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = '~!@#$%^&*') {
   
   if (!is.integer(size) || length(size) != 1L || is.na(size) || size <= 1L) stop('`size` must be >=2L integer')
   
