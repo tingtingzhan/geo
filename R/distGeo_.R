@@ -13,11 +13,11 @@
 #' 
 #' @details 
 #' 
-#' Function [distGeo_()] ...
+#' Function [distGeo_] ...
 #' 
 #' @note
 #' 
-#' Function [distGeo_()] can be passed into argument `distfun` of \link[stats]{heatmap}.
+#' Function [distGeo_] can be passed into argument `distfun` of \link[stats]{heatmap}.
 #' 
 #' @importFrom geosphere distGeo
 #' @export
@@ -40,8 +40,4 @@ distGeo_ <- function(x, Labels = dimnames(x)[[1L]], ...) {
 }
 
 
-distGeo_IATA <- function(spdf) {
-  # `spdf` is 'SpatialPointsDataFrame'
-  
-}
 

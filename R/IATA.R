@@ -11,12 +11,12 @@
 #' @param x \link[base]{character} scalar or \link[base]{vector}
 #' 
 #' @note
-#' \code{getMethod(sp::coordinates, signature('SpatialPoints'))}
+#' `getMethod(sp::coordinates, signature('SpatialPoints'))`
 #' is slow and will be avoided as much as possible
 #' 
 #' @returns 
 #' 
-#' Function [IATA()] returns an `'IATA'` object, which is essentially
+#' Function [IATA] returns an `'IATA'` object, which is essentially
 #' a \link[base]{list} of \link[base]{integer} vectors.
 #' 
 #' @examples 
@@ -101,40 +101,25 @@ print.IATA <- function(x, ...) {
 }
 
 
-# I know very little about ?methods::as
-# I debugged ?methods::as and found ?sf::st_as_sf needs to be imported
-#' @importFrom ggplot2 aes autolayer geom_sf
-#' @importFrom methods as
-#' @importFrom sf st_as_sf
+#' @importFrom ggplot2 autolayer aes geom_sf
+#' @importFrom grid arrow unit
 #' @export
 autolayer.IATA <- function(object, ...) {
   
-  apts <- lapply(object, FUN = function(obj) airports[obj, , drop = FALSE])
+  sf_data <- lapply(object, FUN = function(obj) greatCircle(airports[obj, , drop = FALSE]))
+  
+  # https://stackoverflow.com/questions/67412079/is-there-a-way-to-add-arrows-to-a-simple-features-line-in-ggplot-geom-sf
+  ar <- arrow(angle = 20, ends = 'last', type = 'open', length = unit(.03, units = 'npc'))
 
   # ?ggplot2::geom_sf includes ?ggplot2::layer_sf and ?ggplot2::coord_sf
   # ?ggplot2::coord_sf will print a message when 'Coordinate system already present'
   
-  sf_data <- lapply(apts, FUN = function(iapt) as(greatCircle(iapt), Class = 'sf'))
-  
   n <- length(object)
-  if (n == 1L) return(geom_sf(data = sf_data[[1L]]))
-
-  nseq <- seq_len(n)
-  nm <- as.character.default(nseq)
-  lapply(nseq, FUN = function(i) geom_sf(
-    data = sf_data[[i]],
-    mapping = aes(colour = nm[i]), 
-    
-    # see the use of ?grid::arrow
-    # https://stackoverflow.com/questions/67412079/is-there-a-way-to-add-arrows-to-a-simple-features-line-in-ggplot-geom-sf
-    #arrow = grid::arrow(angle = 25, 
-    #              ends = "last", 
-    #              type = "open", 
-    #              length = unit(0.5, "cm")),
-    # this has no effect for me, yet
-    
-    show.legend = FALSE
-  ))
+  if (n == 1L) return(geom_sf(data = sf_data[[1L]], arrow = ar))
+  .mapply(FUN = function(data, nm) geom_sf(
+      data = data, mapping = aes(colour = nm), arrow = ar, show.legend = FALSE
+  ), dots = list(data = sf_data, nm = as.character.default(seq_len(n))), MoreArgs = NULL)
+  
 }
 
 
@@ -164,21 +149,27 @@ autoplot.IATA <- function(object, ...) {
 #' @param x \link[sp]{SpatialPoints} object
 #' 
 #' @returns 
-#' Function [greatCircle()] returns an \link[sp]{SpatialLines} object.
+#' Function [greatCircle] returns an \link[sf]{sf} object.
 #' 
 #' @importFrom geosphere gcIntermediate
+#' @importFrom methods as
+#' @importFrom sf st_as_sf
 #' @export
 greatCircle <- function(x) {
   
   nr <- dim(x@coords)[1L]
   
-  gcIntermediate(
+  sl <- gcIntermediate(
     p1 = x[1:(nr-1L), , drop = FALSE], 
     p2 = x[2:nr, , drop = FALSE], 
     n = 101L, 
     breakAtDateLine = TRUE, # or 'Meridian-wrap'
     addStartEnd = TRUE, 
-    sp = TRUE) # returns 'SpatialLines' object
+    sp = TRUE) # 'SpatialLines'
+  
+  # I know very little about ?methods::as
+  # I debugged ?methods::as and found ?sf::st_as_sf needs to be imported
+  as(sl, Class = 'sf')
   
 }
 

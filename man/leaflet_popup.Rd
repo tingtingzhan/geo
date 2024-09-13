@@ -15,6 +15,3 @@ leaflet_popup(coords, ...)
 \description{
 ..
 }
-\note{
-next step: support for 'SpatialPolygons'
-}

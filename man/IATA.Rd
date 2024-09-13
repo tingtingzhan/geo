@@ -10,7 +10,7 @@ IATA(x)
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
 }
 \value{
-Function \code{\link[=IATA]{IATA()}} returns an \code{'IATA'} object, which is essentially
+Function \link{IATA} returns an \code{'IATA'} object, which is essentially
 a \link[base]{list} of \link[base]{integer} vectors.
 }
 \description{

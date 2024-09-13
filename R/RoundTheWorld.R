@@ -60,17 +60,17 @@ RoundTheWord_stopover <- function(x, not_stop = 'both') {
 
 
 
-# [longitudeDirection()] finds the direction of travel by longitude.
+# [longitudeDirection] finds the direction of travel by longitude.
 # longitudeDirection(IATA('EWR-HNL-GUM-NRT-ICN-HKG-ARN-BCN-LIS-EWR'))
 # longitudeDirection(IATA(c('EWR-HNL-GUM-NRT', 'ICN-HKG-ARN-BCN-LIS-EWR')))
 longitudeDirection <- function(x) {
   # `x` is 'IATA'
   lapply(x, FUN = function(ix) {
-    longitudeDirection_int(airports[ix, , drop = FALSE]@coords[,1L])
+    longitudeDirection_(airports[ix, , drop = FALSE]@coords[,1L])
   })
 }
 
-longitudeDirection_int <- function(x) { # `x` is a vector of longitude
+longitudeDirection_ <- function(x) { # `x` is a vector of longitude
   nx <- length(x)
   if (nx < 2L) return(invisible())
   if (anyNA(x)) stop('do not allow NA in longitude')

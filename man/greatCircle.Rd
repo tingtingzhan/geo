@@ -10,7 +10,7 @@ greatCircle(x)
 \item{x}{\link[sp]{SpatialPoints} object}
 }
 \value{
-Function \code{\link[=greatCircle]{greatCircle()}} returns an \link[sp]{SpatialLines} object.
+Function \link{greatCircle} returns an \link[sf]{sf} object.
 }
 \description{
 ..

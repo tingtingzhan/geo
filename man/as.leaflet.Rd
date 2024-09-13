@@ -12,7 +12,7 @@ as.leaflet(x, ...)
 \item{...}{potential parameters, currently not in use}
 }
 \value{
-Function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
+Function \link{as.leaflet} returns a \link[leaflet]{leaflet} object.
 }
 \description{
 1 degree approx 69 miles

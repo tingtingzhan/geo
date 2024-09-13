@@ -17,8 +17,8 @@ distGeo_(x, Labels = dimnames(x)[[1L]], ...)
 ..
 }
 \details{
-Function \code{\link[=distGeo_]{distGeo_()}} ...
+Function \link{distGeo_} ...
 }
 \note{
-Function \code{\link[=distGeo_]{distGeo_()}} can be passed into argument \code{distfun} of \link[stats]{heatmap}.
+Function \link{distGeo_} can be passed into argument \code{distfun} of \link[stats]{heatmap}.
 }
