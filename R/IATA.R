@@ -58,7 +58,7 @@ match_airport <- function(x) {
 
 
 
-
+#' @importFrom base.tzh lower_n
 #' @export
 print.IATA <- function(x, ...) {
   cat('\n')
