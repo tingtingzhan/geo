@@ -84,6 +84,7 @@ setClass(Class = 'loyalty', slots = c(
 ))
 
 #' @importFrom methods show
+#' @importFrom cli.tzh styleURL
 setMethod(f = show, signature = signature(object = 'loyalty'), definition = function(object) {
   
   cat(sprintf(fmt = '%s earns\n', switch(
