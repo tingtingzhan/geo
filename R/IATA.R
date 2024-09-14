@@ -22,6 +22,7 @@
 #' @examples 
 #' IATA('NRT-HNL-YVR')
 #' IATA('TFU-LAX-EWR')
+#' IATA('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
 #' IATA('YDF-YVZ')
 #' IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
 #' IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
@@ -96,82 +97,14 @@ print.IATA <- function(x, ...) {
   #RoundTheWorld(x, airline = 'ANA')
   #RoundTheWorld(x, airline = 'SQ')
   
-  print(autoplot.IATA(x))
+  # print(autoplot.IATA(x)) # no longer default!!
+  
+  print(turn_IATA(x)) # this is much prettier!!
   
 }
 
 
-#' @importFrom ggplot2 autolayer aes geom_sf
-#' @importFrom grid arrow unit
-#' @export
-autolayer.IATA <- function(object, ...) {
-  
-  sf_data <- lapply(object, FUN = function(obj) greatCircle(airports[obj, , drop = FALSE]))
-  
-  # https://stackoverflow.com/questions/67412079/is-there-a-way-to-add-arrows-to-a-simple-features-line-in-ggplot-geom-sf
-  ar <- arrow(angle = 20, ends = 'last', type = 'open', length = unit(.03, units = 'npc'))
 
-  # ?ggplot2::geom_sf includes ?ggplot2::layer_sf and ?ggplot2::coord_sf
-  # ?ggplot2::coord_sf will print a message when 'Coordinate system already present'
-  
-  n <- length(object)
-  if (n == 1L) return(geom_sf(data = sf_data[[1L]], arrow = ar))
-  .mapply(FUN = function(data, nm) geom_sf(
-      data = data, mapping = aes(colour = nm), arrow = ar, show.legend = FALSE
-  ), dots = list(data = sf_data, nm = as.character.default(seq_len(n))), MoreArgs = NULL)
-  
-}
-
-
-#' @importFrom ggplot2 autoplot ggplot geom_map xlim ylim
-#' @export
-autoplot.IATA <- function(object, ...) {
-  ggplot() + 
-    geom_map(
-      mapping = aes(map_id = unique.default(worldmap$region)), 
-      map = worldmap, 
-      fill = 'white', 
-      linewidth = .2, # country border thickness
-      colour = 'grey65', # country border colour
-    ) + 
-    autolayer.IATA(object, ...) + 
-    xlim(c(-160, 175)) + ylim(c(-75, 80)) # have to leave some space for x- and y-labels to show! 
-}
-
-
-
-
-
-#' @title Great Circle as \link[sp]{SpatialLines} Object
-#' 
-#' @description ..
-#' 
-#' @param x \link[sp]{SpatialPoints} object
-#' 
-#' @returns 
-#' Function [greatCircle] returns an \link[sf]{sf} object.
-#' 
-#' @importFrom geosphere gcIntermediate
-#' @importFrom methods as
-#' @importFrom sf st_as_sf
-#' @export
-greatCircle <- function(x) {
-  
-  nr <- dim(x@coords)[1L]
-  
-  sl <- gcIntermediate(
-    p1 = x[1:(nr-1L), , drop = FALSE], 
-    p2 = x[2:nr, , drop = FALSE], 
-    n = 101L, 
-    breakAtDateLine = TRUE, # or 'Meridian-wrap'
-    addStartEnd = TRUE, 
-    sp = TRUE) # 'SpatialLines'
-  
-  # I know very little about ?methods::as
-  # I debugged ?methods::as and found ?sf::st_as_sf needs to be imported
-  as(sl, Class = 'sf')
-  
-}
 
 
 

@@ -23,6 +23,7 @@ setClass(Class = 'airfare', slots = c(
 airfare <- function(object) {
   if (!length(object@mileage)) {
     trip <- IATA(paste(object@depart, object@arrive, sep = '-'))
+    print(turn_IATA(trip))
     ap <- airports[trip[[1L]], , drop = FALSE]
     object@mileage <- c(distGeo_(ap@coords))
   }
