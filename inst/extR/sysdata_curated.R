@@ -36,12 +36,13 @@ if (FALSE) {
 }
 
 airports = within(airports_IATA, expr = {
-  tmp <- strsplit(coordinates, split = ', ')
+  tmp = strsplit(coordinates, split = ', '); coordinates = NULL
   stopifnot(lengths(tmp) == 2L)
-  tmp <- do.call(rbind, args = tmp)
-  latitude <- as.numeric(tmp[, 1L])
-  longitude <- as.numeric(tmp[, 2L])
-  coordinates <- tmp <- NULL
+  coord = do.call(rbind, args = tmp) # slighly faster than # vapply(tmp, FUN = `[`, 1L, FUN.VALUE = '')
+  storage.mode(coord) <- 'double'
+  latitude = coord[, 1L]
+  longitude = coord[, 2L]
+  coord = NULL
   
   name = gsub(pattern = ' National Airport| International Airport| Airport', replacement = '', x = name)
   municipality = gsub(pattern = ' National Airport| International Airport| Airport', replacement = '', x = municipality) # GUM
@@ -55,9 +56,13 @@ shortnm = with(airports, paste(name, municipality, iso_region, sep = ', ')) # tw
 stopifnot(!anyDuplicated(shortnm))
 attr(airports, which = 'row.names') = shortnm
 coordinates(airports) = ~ longitude + latitude # colnames
+# coordinates(airports) = ~ `coord[,2L]` + `coord[,1L]` # does not work
 proj4string(airports) = CRS('+proj=longlat +datum=WGS84')
 # airports is 'SpatialPointsDataFrame'
 
+if (FALSE) {
+  getMethod(`coordinates<-`, signature = signature(object = 'data.frame'))
+}
 
 
 
