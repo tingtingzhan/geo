@@ -14,7 +14,7 @@ LazyData: true
 Encoding: UTF-8
 License: GPL-2
 Depends: R (>= 4.4)
-Imports: geosphere, ggplot2, plotly, leaflet, methods, sf, base.tzh, cli.tzh
+Imports: geosphere, ggplot2, plotly, leaflet, scales, methods, sf, base.tzh, cli.tzh
 Suggests: maps
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        c('aut', 'cre', 'cph'), email = 'tingtingzhan@gmail.com',
