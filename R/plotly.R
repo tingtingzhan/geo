@@ -82,7 +82,7 @@ turn_IATA <- function(object, ...) {
       showgrid = TRUE,
       gridcolor = toRGB("gray40"),
       gridwidth = 0.5
-    ),
+    )
     # resolution = 5e3 # default is okay
     # countrycolor = toRGB("grey80") # country border, use default
     # coastlinewidth = 2 # use default
