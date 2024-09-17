@@ -85,15 +85,15 @@ setClass(Class = 'loyalty', slots = c(
 ))
 
 #' @importFrom methods show
-#' @importFrom cli.tzh styleURL
+#' @importFrom cli style_hyperlink
 setMethod(f = show, signature = signature(object = 'loyalty'), definition = function(object) {
   
-  cat(sprintf(fmt = '%s earns\n', switch(
+  cat(sprintf(fmt = '%s earns\n', unclass(switch(
     EXPR = object@program,
-    AS = styleURL(text_ = 'Alaska Airlines\U0001f1fa\U0001f1f8', url_ = 'www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
-    AA = styleURL(text_ = 'American Airlines\U0001f1fa\U0001f1f8', url_ = 'www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-    BA = styleURL(text_ = 'British Airways\U0001f1ec\U0001f1e7', url_ = 'www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
-  )))
+    AS = style_hyperlink(text = 'Alaska Airlines\U0001f1fa\U0001f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
+    AA = style_hyperlink(text = 'American Airlines\U0001f1fa\U0001f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
+    BA = style_hyperlink(text = 'British Airways\U0001f1ec\U0001f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+  ))))
 
   cat(sprintf(fmt = '\033[33m%d\033[0m Mileage Plan\n', object@mileageplan))
   
