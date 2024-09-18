@@ -22,7 +22,7 @@ turn_IATA <- function(object, ...) {
   
   p0 <- plot_geo()
 
-  col <- hue_pal()(n = length(coord))
+  col <- toRGB(hue_pal()(n = length(coord)))
   
   p1 <- p0
   for (i in seq_along(coord)) {
@@ -34,58 +34,45 @@ turn_IATA <- function(object, ...) {
       p = p1,
       x = head(lon, n = -1L), xend = tail(lon, n = -1L),
       y = head(lat, n = -1L), yend = tail(lat, n = -1L),
-      # text = head(nm, n = -1L), # must be same length as `x` and `y` ..
       hoverinfo = 'none',
-      line = list(color = toRGB(col[i])),
+      line = list(color = col[i]),
       size = I(2))
     
     p1 <- add_markers(
       p = p1,
       x = lon, y = lat, text = nm,
-      marker = list(color = toRGB(col[i])),
+      marker = list(color = col[i]),
       hoverinfo = 'text', 
       hoverlabel = list(
         font = list(
           color = 'white'
         ), 
         bordercolor = 'white' # otherwise determined by `marker` color
-      ),
-      alpha = 0.5)
+      )#,
+      #alpha = .1 # not seeing effect of `alpha`
+      )
     # `add_markers` after `add_segments` !!
     # it seems `hoverinfo` overwrites!!
     
   }
   
+  # https://plotly.com/r/reference/layout/geo/
   geo <- list(
-    showland = TRUE,
-    showlakes = TRUE,
-    showcountries = TRUE,
-    showocean = TRUE,
-    countrywidth = 0.5,
-    landcolor = toRGB("grey90"),
-    lakecolor = toRGB("white"),
-    oceancolor = toRGB("white"),
+    showland = TRUE, landcolor = toRGB('grey95'),
+    showlakes = TRUE, lakecolor = toRGB('white'),
+    showcountries = TRUE, countrywidth = 0.5, countrycolor = toRGB('grey40'),
+    showocean = TRUE, oceancolor = toRGB('white'),
+    coastlinewidth = .5,
     projection = list(
       type = 'orthographic',
       rotation = list(
-        lon = -100,
-        lat = 40,
-        roll = 0
+        lon = -100, lat = 40, # let USA face user
+        roll = 0 # not sure what is this
       )
     ),
-    lonaxis = list(
-      showgrid = TRUE,
-      gridcolor = toRGB("gray40"),
-      gridwidth = 0.5
-    ),
-    lataxis = list(
-      showgrid = TRUE,
-      gridcolor = toRGB("gray40"),
-      gridwidth = 0.5
-    )
-    # resolution = 5e3 # default is okay
-    # countrycolor = toRGB("grey80") # country border, use default
-    # coastlinewidth = 2 # use default
+    lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = 0.5),
+    lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = 0.5),
+    resolution = 50 # 50 high resolution, 110 low resolution
   )
   
   return(layout(
