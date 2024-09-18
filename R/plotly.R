@@ -14,7 +14,6 @@
 #' 
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
 #' @importFrom scales hue_pal
-#' @importFrom utils head tail
 #' @export
 turn_IATA <- function(object, ...) {
   
@@ -29,11 +28,13 @@ turn_IATA <- function(object, ...) {
     lon <- coord[[i]][,1L]
     lat <- coord[[i]][,2L]
     nm <- rownames(coord[[i]])
+    n <- dim(coord[[i]])[1L]
+    if (n <= 1L) stop('wont allow')
 
     p1 <- add_segments(
       p = p1,
-      x = head(lon, n = -1L), xend = tail(lon, n = -1L),
-      y = head(lat, n = -1L), yend = tail(lat, n = -1L),
+      x = lon[seq_len(n-1L)], xend = lon[2:n],
+      y = lat[seq_len(n-1L)], yend = lat[2:n],
       hoverinfo = 'none',
       line = list(color = col[i]),
       size = I(2))
