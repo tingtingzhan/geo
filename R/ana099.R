@@ -10,6 +10,8 @@
 #' @param min.,max. \link[base]{integer} scalar, minimum and maximum days 
 #' between two departure dates.
 #' 
+#' @param ... ..
+#' 
 #' @details
 #' Must download latest `.csv` file from \url{https://ana.099.im}.
 #' 
@@ -18,7 +20,9 @@
 #' 
 #' @examples
 #' if (FALSE) {
-#' dim(ana <- read.csv(file = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), full.names = TRUE), header = TRUE))
+#' fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
+#'   full.names = TRUE)
+#' dim(ana <- read.csv(file = fl, header = TRUE))
 #' unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
