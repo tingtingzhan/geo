@@ -10,15 +10,11 @@ IATA(x)
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
 }
 \value{
-Function \link{IATA} returns an \code{'IATA'} object, which is essentially
-a \link[base]{list} of \link[base]{integer} vectors.
+Function \link{IATA} returns an object of S3 class \code{'IATA'}, which is essentially
+a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 }
 \description{
 One or more air travel trips using International Air Transport Association (IATA) airport codes.
-}
-\note{
-\code{getMethod(sp::coordinates, signature('SpatialPoints'))}
-is slow and will be avoided as much as possible
 }
 \examples{
 IATA('NRT-HNL-YVR')
@@ -27,5 +23,4 @@ IATA('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
 IATA('YDF-YVZ')
 IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
 IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
-
 }

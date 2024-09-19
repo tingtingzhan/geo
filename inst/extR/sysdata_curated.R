@@ -62,6 +62,9 @@ proj4string(airports) = CRS('+proj=longlat +datum=WGS84')
 
 if (FALSE) {
   getMethod(`coordinates<-`, signature = signature(object = 'data.frame'))
+  
+  # `getMethod(sp::coordinates, signature('SpatialPoints'))`
+  # is slow and will be avoided as much as possible
 }
 
 

@@ -1,14 +1,9 @@
 
-
+# too difficult to keep on track..
 
 RoundTheWorld <- function(x, airline = c('ANA', 'SQ')) {
   # `x` is 'IATA'
   airline <- match.arg(airline)
-  # https://roundtheworld.staralliance.com/staralliance/en/round-the-world
-  # ANA policy https://www.ana.co.jp/en/us/amc/partner-flight-awards/around-the-world/
-  # SQ policy https://www.singaporeair.com/en_UK/us/ppsclub-krisflyer/use-miles/redeem-miles/star-alliance-round-the-world-award/
-  # LH policy https://www.lufthansa.com/au/en/local-page/star-alliance-au
-  # Air Canada https://thepointsguy.com/guide/aeroplan-routing-stopover-rules/
   
   nx <- length(x)
   not_stop <- if (nx == 1L) 'both' else c('head', rep('none', times = nx - 2L), 'tail')

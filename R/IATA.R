@@ -10,14 +10,10 @@
 #' 
 #' @param x \link[base]{character} scalar or \link[base]{vector}
 #' 
-#' @note
-#' `getMethod(sp::coordinates, signature('SpatialPoints'))`
-#' is slow and will be avoided as much as possible
-#' 
 #' @returns 
 #' 
-#' Function [IATA] returns an `'IATA'` object, which is essentially
-#' a \link[base]{list} of \link[base]{integer} vectors.
+#' Function [IATA] returns an object of S3 class `'IATA'`, which is essentially
+#' a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 #' 
 #' @examples 
 #' IATA('NRT-HNL-YVR')
@@ -26,7 +22,6 @@
 #' IATA('YDF-YVZ')
 #' IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
 #' IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
-#' 
 #' @export
 IATA <- function(x) {
   if (!is.character(x)) stop('only accepts airport names as character')
@@ -98,7 +93,6 @@ print.IATA <- function(x, ...) {
   #RoundTheWorld(x, airline = 'SQ')
   
   # print(autoplot.IATA(x)) # no longer default!!
-  
   print(turn_IATA(x)) # this is much prettier!!
   
 }
