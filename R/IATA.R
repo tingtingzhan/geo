@@ -61,12 +61,11 @@ print.IATA <- function(x, ...) {
   
   x_ <- lapply(x, FUN = function(ix) airports[ix, , drop = FALSE])
   
-  lapply(x_, FUN = function(i) {
-    co_ <- i@coords
-    cat(sprintf('%s (%.3f, %.3f)', dimnames(co_)[[1L]], co_[,1L], co_[,2L]), sep = '\n')
-  })
-  
-  cat('\n')
+  #lapply(x_, FUN = function(i) {
+  #  co_ <- i@coords
+  #  cat(sprintf('%s (%.3f, %.3f)', dimnames(co_)[[1L]], co_[,1L], co_[,2L]), sep = '\n')
+  #})
+  #cat('\n')
   
   tmp <- vapply(x_, FUN = function(i) {
     dist_ <- distGeo_(i@coords, Labels = i@data[['iata_code']])
@@ -75,12 +74,10 @@ print.IATA <- function(x, ...) {
     dnm <- dimnames(dist_m)
     a <- which(id, arr.ind = TRUE)
     ret <- cbind(
-      From = dnm[[1L]][a[,1L]],
-      To = dnm[[2L]][a[,2L]],
       Miles = sprintf(fmt = '%.1f', dist_m[id]),
       Kilometer = sprintf(fmt = '%.1f', dist_m[id] * 1.609)
     )
-    rownames(ret) <- character(length = dim(ret)[1L]) # inspired by ?base::prmatrix
+    rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', dnm[[1L]][a[,1L]], dnm[[2L]][a[,2L]])
     print.noquote(ret, right = TRUE)
     cat('\n')
     return(sum(dist_m[id]))
