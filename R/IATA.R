@@ -22,6 +22,7 @@
 #' IATA('YDF-YVZ')
 #' IATA('TFU-SIN-FRA-JFK')
 #' IATA('IAD-NRT-PVG-TFU')
+#' IATA('PHL-FRA-AAL, AAL-LIS-EWR')
 #' IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
 #' IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
 #' @export
@@ -62,12 +63,6 @@ print.IATA <- function(x, ...) {
   cat('\n')
   
   x_ <- lapply(x, FUN = function(ix) airports_ip2location[ix, , drop = FALSE])
-  
-  #lapply(x_, FUN = function(i) {
-  #  co_ <- i@coords
-  #  cat(sprintf('%s (%.3f, %.3f)', dimnames(co_)[[1L]], co_[,1L], co_[,2L]), sep = '\n')
-  #})
-  #cat('\n')
   
   tmp <- vapply(x_, FUN = function(i) {
     dist_ <- distGeo_(i@coords, Labels = i@data$iata)
