@@ -36,8 +36,8 @@ IATA <- function(x) {
 
 match_airport <- function(x) {
   if (!is.character(x) || !length(x) || anyNA(x) || !all(nzchar(x))) stop('illegal x')
-  ap <- airports@data
-  id <- match(x, table = ap$iata_code)
+  ap <- airports_ip2location@data
+  id <- match(x, table = ap$iata)
   id_na <- is.na(id)
   
   id[id_na] <- vapply(x[id_na], FUN = function(ix) { # NULL compatible
@@ -45,7 +45,7 @@ match_airport <- function(x) {
     if (length(id_name <- grep(ix, x = ap$name)) == 1L) return(id_name)
     id <- unique.default(c(id_city, id_name))
     if (!length(id)) stop('No city/airport match for ', ix)
-    print.data.frame(ap[id, c('iata_code', 'municipality', 'name'), drop = FALSE], row.names = FALSE)
+    print.data.frame(ap[id, , drop = FALSE], row.names = FALSE)
     stop('Multiple city/airport match!')
   }, FUN.VALUE = 0L)
   
@@ -59,7 +59,7 @@ match_airport <- function(x) {
 print.IATA <- function(x, ...) {
   cat('\n')
   
-  x_ <- lapply(x, FUN = function(ix) airports[ix, , drop = FALSE])
+  x_ <- lapply(x, FUN = function(ix) airports_ip2location[ix, , drop = FALSE])
   
   #lapply(x_, FUN = function(i) {
   #  co_ <- i@coords
@@ -68,7 +68,7 @@ print.IATA <- function(x, ...) {
   #cat('\n')
   
   tmp <- vapply(x_, FUN = function(i) {
-    dist_ <- distGeo_(i@coords, Labels = i@data[['iata_code']])
+    dist_ <- distGeo_(i@coords, Labels = i@data$iata)
     dist_m <- as.matrix(dist_) # stats:::as.matrix.dist
     id <- lower_n(dist_m, n = -1L)
     dnm <- dimnames(dist_m)

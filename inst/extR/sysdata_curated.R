@@ -9,33 +9,34 @@ library(sp)
 # Latest commit f230d87 on July 22, 2023
 # https://github.com/datasets/airport-codes/tree/master/data
 url0 = 'https://raw.githubusercontent.com/datasets/airport-codes/master/data/airport-codes.csv'
-airports_github = read.csv(url0, na.strings = '', stringsAsFactors = FALSE) # 'NA' means 'North America'
-dim(airports_github)
-sapply(airports_github, class)
+airpt0 = read.csv(url0, na.strings = '', stringsAsFactors = FALSE) # 'NA' means 'North America'
+dim(airpt0)
+head(airpt0)
+sapply(airpt0, class)
 
 stopifnot(
-  !anyNA(airports_github$continent), 
-  !anyDuplicated(airports_github$ident)
+  !anyNA(airpt0$continent), 
+  !anyDuplicated(airpt0$ident)
 )
 
 if (FALSE) {
-  table(airports_github$type)
-  mean(is.na(airports_github$iata_code))
-  mean(is.na(airports_github$municipality))
+  table(airpt0$type)
+  mean(is.na(airpt0$iata_code))
+  mean(is.na(airpt0$municipality))
 }
-dim(airports_IATA <- subset(airports_github, subset = !is.na(iata_code) & !is.na(municipality) & (type %in% c('large_airport', 'medium_airport')) & !endsWith(name, suffix = 'Air Base')))
+dim(airpt1 <- subset(airpt0, subset = !is.na(iata_code) & !is.na(municipality) & (type %in% c('large_airport', 'medium_airport')) & !endsWith(name, suffix = 'Air Base')))
 
 stopifnot(
-  !anyDuplicated(airports_IATA$iata_code),
-  !anyDuplicated(airports_IATA$ident),
-  !anyNA(airports_IATA$iso_country)
+  !anyDuplicated(airpt1$iata_code),
+  !anyDuplicated(airpt1$ident),
+  !anyNA(airpt1$iso_country)
 )
 
 if (FALSE) {
-  subset(airports_IATA, grepl('Deer Lake', name)) # two true airports
+  subset(airpt1, grepl('Deer Lake', name)) # two true airports_datasets
 }
 
-airports = within(airports_IATA, expr = {
+airports_datasets = within(airpt1, expr = {
   tmp = strsplit(coordinates, split = ', '); coordinates = NULL
   stopifnot(lengths(tmp) == 2L)
   coord = do.call(rbind, args = tmp) # slighly faster than # vapply(tmp, FUN = `[`, 1L, FUN.VALUE = '')
@@ -43,22 +44,20 @@ airports = within(airports_IATA, expr = {
   latitude = coord[, 1L]
   longitude = coord[, 2L]
   coord = NULL
-  
-  name = gsub(pattern = ' National Airport| International Airport| Airport', replacement = '', x = name)
-  municipality = gsub(pattern = ' National Airport| International Airport| Airport', replacement = '', x = municipality) # GUM
+  iata = iata_code; iata_code = NULL
 })
 
-#range.default(airports$longitude) # so that lat & lng are not confused!!
-#range.default(airports$latitude)
+#range.default(airports_datasets$longitude) # so that lat & lng are not confused!!
+#range.default(airports_datasets$latitude)
 
-#shortnm = with(airports, paste(name, municipality, iso_country, sep = ', '))
-shortnm = with(airports, paste(name, municipality, iso_region, sep = ', ')) # two 'Deer Lake'
+#shortnm = with(airports_datasets, paste(name, municipality, iso_country, sep = ', '))
+shortnm = with(airports_datasets, paste(name, municipality, iso_region, sep = ', ')) # two 'Deer Lake'
 stopifnot(!anyDuplicated(shortnm))
-attr(airports, which = 'row.names') = shortnm
-coordinates(airports) = ~ longitude + latitude # colnames
-# coordinates(airports) = ~ `coord[,2L]` + `coord[,1L]` # does not work
-proj4string(airports) = CRS('+proj=longlat +datum=WGS84')
-# airports is 'SpatialPointsDataFrame'
+attr(airports_datasets, which = 'row.names') = shortnm
+coordinates(airports_datasets) = ~ longitude + latitude # colnames
+# coordinates(airports_datasets) = ~ `coord[,2L]` + `coord[,1L]` # does not work
+proj4string(airports_datasets) = CRS('+proj=longlat +datum=WGS84')
+# `airports_datasets` is 'SpatialPointsDataFrame'
 
 if (FALSE) {
   getMethod(`coordinates<-`, signature = signature(object = 'data.frame'))
@@ -68,15 +67,7 @@ if (FALSE) {
 }
 
 
+rm(list = c('url0', 'shortnm'))
+rm(list = ls(pattern = 'airpt[0-9]'))
 
 
-# https://www.riinu.me/2022/02/world-map-ggplot2/
-worldmap = ggplot2::fortify(maps::map(database = 'world', regions = '.', exact = FALSE, plot = FALSE, fill = TRUE))
-
-
-
-# SAVE !!!
-save(airports, worldmap,
-     file = './R/sysdata.rda', compress = 'xz')
-
-rm(list = ls(all.names = TRUE))

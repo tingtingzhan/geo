@@ -5,7 +5,7 @@
 #' @export
 autolayer.IATA <- function(object, ...) {
   
-  sf_data <- lapply(object, FUN = function(obj) gc_(airports[obj, , drop = FALSE]))
+  sf_data <- lapply(object, FUN = function(obj) gc_(airports_ip2location[obj, , drop = FALSE]))
   
   # https://stackoverflow.com/questions/67412079/is-there-a-way-to-add-arrows-to-a-simple-features-line-in-ggplot-geom-sf
   ar <- arrow(angle = 20, ends = 'last', type = 'open', length = unit(.03, units = 'npc'))

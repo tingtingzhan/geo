@@ -17,7 +17,7 @@
 #' @export
 turn_IATA <- function(object, ...) {
   
-  coord <- lapply(object, FUN = function(i) airports[i, , drop = FALSE]@coords)
+  coord <- lapply(object, FUN = function(i) airports_ip2location[i, , drop = FALSE]@coords)
   
   p0 <- plot_geo()
 

@@ -29,7 +29,7 @@
 as.leaflet <- function(x, ...) UseMethod('as.leaflet')
 
 #' @export
-as.leaflet.IATA <- function(x, ...) as.leaflet.SpatialPoints(airports[x[[1L]], , drop = FALSE])
+as.leaflet.IATA <- function(x, ...) as.leaflet.SpatialPoints(airports_ip2location[x[[1L]], , drop = FALSE])
 
 #' @export
 as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ...)
