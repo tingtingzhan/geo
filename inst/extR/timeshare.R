@@ -1,9 +1,0 @@
-# https://www.hiltongrandvacations.com/destinations/
-# https://www.marriottvacationclub.com/vacation-resorts/
-# https://www.marriottvacationclub.com/destinations/marriott-bonvoy/
-# https://www.marriottvacationclub.com/destinations/exchange-partner-resorts/
-# https://www.marriott.com/executive-apartments/travel.mi
-# https://www.hyattresidenceclub.com
-# https://members.holidayinnclub.com/explore-our-resorts
-# https://www.vistana.com
-# https://www.clubwyndham.com/cw/resorts.page

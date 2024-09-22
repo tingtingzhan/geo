@@ -28,7 +28,9 @@
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('SEA'))
+#' ana.099.im(ana, US = c('SEA'), min. = 1L, max. = Inf)
 #' ana.099.im(ana, US = c('YVR'))
+#' ana.099.im(ana, US = c('MEX'))
 #' }
 #' @export
 ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
