@@ -35,12 +35,12 @@ turn_IATA <- function(object, ...) {
       p = p1,
       x = lon[seq_len(n-1L)], xend = lon[2:n],
       y = lat[seq_len(n-1L)], yend = lat[2:n],
-      hoverinfo = 'none',
+      line = list(color = col[i], width = 2),
+      hoverinfo = 'none'
       # text = rep('abc', n-1L), hoverinfo = 'text', 
       # https://github.com/plotly/plotly.R/issues/1832#issuecomment-675721763
       # TL;DR: plotly cannot do this, as of Sep 2024
-      line = list(color = col[i]),
-      size = I(2))
+    )
     
     p1 <- add_markers(
       p = p1,
@@ -51,10 +51,10 @@ turn_IATA <- function(object, ...) {
         font = list(
           color = 'white'
         ), 
-        bordercolor = 'white' # otherwise determined by `marker` color
-      )#,
-      #alpha = .1 # not seeing effect of `alpha`
+        #bordercolor = 'white' # default 'black' 
+        bordercolor = col[i]
       )
+    )
     # `add_markers` after `add_segments` !!
     # it seems `hoverinfo` overwrites!!
     
