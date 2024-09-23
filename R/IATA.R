@@ -23,6 +23,7 @@
 #' IATA('TFU-SIN-FRA-JFK')
 #' IATA('IAD-NRT-PVG-TFU')
 #' IATA('PHL-FRA-AAL, AAL-LIS-EWR')
+#' IATA('PEK-ICN-AKL-PPT')
 #' IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
 #' IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
 #' @export
@@ -57,7 +58,7 @@ match_airport <- function(x) {
 
 
 
-#' @importFrom base.tzh lower_n
+#' @importFrom geosphere distGeo
 #' @export
 print.IATA <- function(x, ...) {
   cat('\n')
@@ -65,19 +66,22 @@ print.IATA <- function(x, ...) {
   x_ <- lapply(x, FUN = function(ix) airports_ip2location[ix, , drop = FALSE])
   
   tmp <- vapply(x_, FUN = function(i) {
-    dist_ <- distGeo_(i@coords, Labels = i@data$iata)
-    dist_m <- as.matrix(dist_) # stats:::as.matrix.dist
-    id <- lower_n(dist_m, n = -1L)
-    dnm <- dimnames(dist_m)
-    a <- which(id, arr.ind = TRUE)
+    # (i = x_[[1L]])
+    
+    n <- dim(i@coords)[1L]
+    dist_m_ <- distGeo(
+      p1 = i@coords[seq_len(n-1L),], 
+      p2 = i@coords[seq_len(n)[-1L],]
+    ) # in meters
+    
     ret <- cbind(
-      Miles = sprintf(fmt = '%.1f', dist_m[id]),
-      Kilometer = sprintf(fmt = '%.1f', dist_m[id] * 1.609)
+      Miles = sprintf(fmt = '%.1f', dist_m_ / 1609.34), # ?grid::convertUnit does not have meter/miles conversion
+      Kilometer = sprintf(fmt = '%.1f', dist_m_ / 1e3)
     )
-    rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', dnm[[1L]][a[,1L]], dnm[[2L]][a[,2L]])
+    rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', i@data$iata[seq_len(n-1L)], i@data$iata[seq_len(n)[-1L]])
     print.noquote(ret, right = TRUE)
     cat('\n')
-    return(sum(dist_m[id]))
+    return(sum(dist_m_ / 1609.34))
   }, FUN.VALUE = NA_real_)
   
   cat(sprintf(fmt = 'Total mileage: %.1f\n\n', sum(tmp)))

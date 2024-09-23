@@ -20,12 +20,13 @@ setClass(Class = 'airfare', slots = c(
 ))
 
 # normalization
+#' @importFrom geosphere distGeo
 airfare <- function(object) {
   if (!length(object@mileage)) {
     trip <- IATA(paste(object@depart, object@arrive, sep = '-'))
     print(turn_IATA(trip))
     ap <- airports_ip2location[trip[[1L]], , drop = FALSE]
-    object@mileage <- c(distGeo_(ap@coords))
+    object@mileage <- distGeo(p1 = ap@coords[1L,], p2 = ap@coords[2L,]) / 1609.34
   }
   return(object)
 }
