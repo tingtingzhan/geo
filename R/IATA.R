@@ -35,7 +35,23 @@ IATA <- function(x) {
 }
 
 
-
+print_IATA_ <- function(x) {
+  # `x` is one-trip 'IATA' (as \link[base]{vector}, not \link[base]{list}!!)
+  ap <- airports_ip2location[x, , drop = FALSE]
+  n <- length(x)
+  sq1 <- seq_len(n-1L)
+  sq2 <- seq_len(n)[-1L]
+  dist_m_ <- distGeo(p1 = ap@coords[sq1,], p2 = ap@coords[sq2,]) # in meters
+  ret = cbind(
+    Miles = dist_m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
+    Kilometer = dist_m_ / 1e3
+  )
+  ret[] <- sprintf(fmt = '%.1f', ret)
+  rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', ap@data$iata[sq1], ap@data$iata[sq2])
+  print(ret, quote = FALSE, right = TRUE)
+  cat('\n')
+  return(invisible(sum(dist_m_ / 1609.34)))
+}
 
 
 
@@ -44,23 +60,7 @@ IATA <- function(x) {
 print.IATA <- function(x, ...) {
   cat('\n')
   
-  tmp <- vapply(x, FUN = function(ix) {
-    # (ix = x[[1L]])
-    ap <- airports_ip2location[ix, , drop = FALSE]
-    n <- length(ix)
-    sq1 <- seq_len(n-1L)
-    sq2 <- seq_len(n)[-1L]
-    dist_m_ <- distGeo(p1 = ap@coords[sq1,], p2 = ap@coords[sq2,]) # in meters
-    ret = cbind(
-      Miles = dist_m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
-      Kilometer = dist_m_ / 1e3
-    )
-    ret[] <- sprintf(fmt = '%.1f', ret)
-    rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', ap@data$iata[sq1], ap@data$iata[sq2])
-    print(ret, quote = FALSE, right = TRUE)
-    cat('\n')
-    return(sum(dist_m_ / 1609.34))
-  }, FUN.VALUE = NA_real_)
+  tmp <- vapply(x, FUN = print_IATA_, FUN.VALUE = NA_real_)
   
   cat(sprintf(fmt = 'Total mileage: %.1f\n\n', sum(tmp)))
   

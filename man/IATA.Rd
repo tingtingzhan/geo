@@ -18,13 +18,5 @@ One or more air travel trips using International Air Transport Association (IATA
 }
 \examples{
 IATA('NRT-HNL-YVR')
-IATA('TFU-LAX-EWR')
 IATA('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
-IATA('YDF-YVZ')
-IATA('TFU-SIN-FRA-JFK')
-IATA('IAD-NRT-PVG-TFU')
-IATA('PHL-FRA-AAL, AAL-LIS-EWR')
-IATA('PEK-ICN-AKL-PPT')
-IATA('NRT-HNL-YVR, SEA-YYZ-IAD-VIE-LCA-HKG')
-IATA(c('NRT-HNL-YVR', 'SEA-YYZ-IAD-VIE-LCA-HKG')) # same
 }
