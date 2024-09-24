@@ -62,21 +62,24 @@ turn_IATA <- function(object, ...) {
   
   # https://plotly.com/r/reference/layout/geo/
   geo <- list(
-    showland = TRUE, landcolor = toRGB('grey95'),
-    showlakes = TRUE, lakecolor = toRGB('white'),
-    showcountries = TRUE, countrywidth = 0.5, countrycolor = toRGB('grey40'),
-    showocean = TRUE, oceancolor = toRGB('white'),
-    coastlinewidth = .5,
+    resolution = 50, # 50 high resolution, 110 low resolution
+    showland = TRUE, landcolor = toRGB('grey97'),
+    showlakes = TRUE, lakecolor = toRGB('lightblue'),
+    showrivers = TRUE, rivercolor = toRGB('lightblue'), riverwidth = .5,
+    showcountries = TRUE, countrycolor = toRGB('grey50'), countrywidth = .5, 
+    # showsubunits = TRUE, subunitcolor = toRGB('blue'), # state borders; not working, not sure why
+    showocean = TRUE, oceancolor = toRGB('white'), coastlinecolor = toRGB('grey50'), coastlinewidth = .5,
+    lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
+    lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
     projection = list(
       type = 'orthographic',
       rotation = list(
-        lon = -100, lat = 40, # let USA face user
-        roll = 0 # not sure what is this
+        # roll = 0 # default 0, roll of rotational axis of Earth
+        lon = -100, lat = 40#, # let USA face user
+        # 'mean' of longitude is *not* easy to define!!
+        # mean of latitude is easy
       )
-    ),
-    lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = 0.5),
-    lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = 0.5),
-    resolution = 50 # 50 high resolution, 110 low resolution
+    )
   )
   
   return(layout(
