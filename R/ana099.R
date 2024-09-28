@@ -20,40 +20,40 @@
 #' 
 #' @examples
 #' if (FALSE) {
-#' fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
-#'   full.names = TRUE)
+#' (fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
+#'   full.names = TRUE))
 #' dim(ana <- read.csv(file = fl, header = TRUE))
 #' unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
 #' ana.099.im(ana, US = c('IAH'))
-#' ana.099.im(ana, US = c('SEA'))
+#' ana.099.im(ana, US = c('SEA', 'YVR'))
 #' ana.099.im(ana, US = c('SEA'), min. = 1L, max. = Inf)
-#' ana.099.im(ana, US = c('YVR'))
 #' ana.099.im(ana, US = c('MEX'))
 #' }
+#' @importFrom plotly plot_ly
 #' @export
 ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   
   data$date <- as.Date(data$date)
   data <- sort_by.data.frame(data, ~ date)
   
-  id0 <- (data$departure %in% US)
-  if (!any(id0)) stop('!any(id0)')
-  id1 <- (data$arrival %in% US)
-  if (!any(id1)) stop('!any(id1)')
+  rid0 <- (data$departure %in% US)
+  if (!any(rid0)) stop('!any(rid0)')
+  rid1 <- (data$arrival %in% US)
+  if (!any(rid1)) stop('!any(rid1)')
   
-  d0 <- data[id0,]
-  d1 <- data[id1,]
+  d0 <- data[rid0,]
+  d1 <- data[rid1,]
   
   # row `0`: departure
   # col `1`: arrival
   len <- outer(X = d0$date, Y = d1$date, FUN = function(dt0, dt1) dt1 - dt0)
-  len_id0 <- which(len >= min. & len <= max., arr.ind = TRUE)
   
-  if (!length(len_id0)) return(invisible())
+  id0 <- which(len >= min. & len <= max., arr.ind = TRUE)
+  if (!length(id0)) return(invisible())
   
-  len_id <- sort_by(as.data.frame.matrix(len_id0), ~ row + col)
+  id <- sort_by(as.data.frame.matrix(id0), ~ row + col)
   
   foo <- function(data, dup_rm = FALSE) {
     out <- with(data, sprintf(fmt = '%s %s %s \u2708\ufe0f %s', format.Date(date), flight_no, departure, arrival))
@@ -61,10 +61,43 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
     return(out)
   }
   
-  ret <- data.frame(
-    departure = foo(d0[len_id[[1L]],], dup_rm = TRUE),
-    arrival = foo(d1[len_id[[2L]],], dup_rm = FALSE)
+  # sankey diagram
+  
+  foo2 <- function(data, dup_rm = FALSE) {
+    with(data, sprintf(fmt = '%s %s \n%s \u2708\ufe0f %s', format.Date(date), flight_no, departure, arrival))
+  }
+  
+  sk1 <- foo2(d0[id$row,])
+  sk2 <- foo2(d1[id$col,])
+  sk_node1 <- sort.int(unique.default(sk1))
+  sk_node2 <- sort.int(unique.default(sk2))
+  
+  sk_label <- d1[id$col,'date'] - d0[id$row,'date']
+
+  n_ <- dim(id0)[1L]
+  sk_id <- match(c(sk1, sk2), table = c(sk_node1, sk_node2)) - 1L
+  
+  sk <- plot_ly(
+    type = 'sankey',
+    orientation = 'h',
+    node = list(label = c(sk_node1, sk_node2)),
+    link = list(
+      source = sk_id[1:n_],
+      target = sk_id[(n_+1):(2*n_)],
+      value = rep(1, times = 2*n_),
+      label = sprintf(fmt = '%d days apart', sk_label)#,
+      # color = {have write hue pallate by days-apart, manually?}
+    )
   )
-  return(ret)
+  print(sk)
+  
+  ret <- data.frame(
+    departure = foo(d0[id$row,], dup_rm = TRUE),
+    arrival = foo(d1[id$col,], dup_rm = FALSE)
+  )
+  return(invisible(ret)) # only for debugging
   
 }
+
+
+

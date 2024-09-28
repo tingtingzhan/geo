@@ -27,16 +27,15 @@ Upper-right corner of table, download symbol.
 }
 \examples{
 if (FALSE) {
-fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
-  full.names = TRUE)
+(fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
+  full.names = TRUE))
 dim(ana <- read.csv(file = fl, header = TRUE))
 unique(c(ana$departure, ana$arrival))
 ana.099.im(ana, US = c('JFK', 'IAD'))
 ana.099.im(ana, US = c('SFO', 'LAX'))
 ana.099.im(ana, US = c('IAH'))
-ana.099.im(ana, US = c('SEA'))
+ana.099.im(ana, US = c('SEA', 'YVR'))
 ana.099.im(ana, US = c('SEA'), min. = 1L, max. = Inf)
-ana.099.im(ana, US = c('YVR'))
 ana.099.im(ana, US = c('MEX'))
 }
 }
