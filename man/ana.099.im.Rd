@@ -35,7 +35,6 @@ ana.099.im(ana, US = c('JFK', 'IAD'))
 ana.099.im(ana, US = c('SFO', 'LAX'))
 ana.099.im(ana, US = c('IAH'))
 ana.099.im(ana, US = c('SEA', 'YVR'))
-ana.099.im(ana, US = c('SEA'), min. = 1L, max. = Inf)
 ana.099.im(ana, US = c('MEX'))
 }
 }

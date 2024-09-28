@@ -28,7 +28,6 @@
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('SEA', 'YVR'))
-#' ana.099.im(ana, US = c('SEA'), min. = 1L, max. = Inf)
 #' ana.099.im(ana, US = c('MEX'))
 #' }
 #' @importFrom plotly plot_ly
@@ -64,28 +63,32 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   # sankey diagram
   
   foo2 <- function(data, dup_rm = FALSE) {
-    with(data, sprintf(fmt = '%s %s \n%s \u2708\ufe0f %s', format.Date(date), flight_no, departure, arrival))
+    with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date), flight_no, departure, arrival))
   }
   
   sk1 <- foo2(d0[id$row,])
   sk2 <- foo2(d1[id$col,])
-  sk_node1 <- sort.int(unique.default(sk1))
-  sk_node2 <- sort.int(unique.default(sk2))
+  if (length(intersect(sk1, sk2))) stop('do not allow!!')
+  sk_node <- c(
+    sort.int(unique.default(sk1)),
+    sort.int(unique.default(sk2))
+  )
   
-  sk_label <- d1[id$col,'date'] - d0[id$row,'date']
-
   n_ <- dim(id0)[1L]
-  sk_id <- match(c(sk1, sk2), table = c(sk_node1, sk_node2)) - 1L
+  sk_id <- match(c(sk1, sk2), table = sk_node)
   
   sk <- plot_ly(
     type = 'sankey',
     orientation = 'h',
-    node = list(label = c(sk_node1, sk_node2)),
+    node = list(
+      label = sk_node#,
+      # label_position = 'outer' # does not work
+    ),
     link = list(
-      source = sk_id[1:n_],
-      target = sk_id[(n_+1):(2*n_)],
+      source = sk_id[1:n_] - 1L,
+      target = sk_id[(n_+1):(2*n_)] - 1L,
       value = rep(1, times = 2*n_),
-      label = sprintf(fmt = '%d days apart', sk_label)#,
+      label = sprintf(fmt = '%d days apart', d1[id$col,'date'] - d0[id$row,'date'])#,
       # color = {have write hue pallate by days-apart, manually?}
     )
   )
