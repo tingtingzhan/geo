@@ -23,10 +23,11 @@ setClass(Class = 'airfare', slots = c(
 #' @importFrom geosphere distGeo
 airfare <- function(object) {
   if (!length(object@mileage)) {
-    trip <- IATA(paste(object@depart, object@arrive, sep = '-'))
-    print(turn_IATA(trip))
-    ap <- airports_ip2location[trip[[1L]], , drop = FALSE]
-    object@mileage <- distGeo(p1 = ap@coords[1L,], p2 = ap@coords[2L,]) / 1609.34
+    id <- match(c(object@depart, object@arrive), table = airports_ip2location@data$iata, nomatch = NA_integer_)
+    if (anyNA(id)) stop('unknown departure and/or arrival airport')
+    coords <- airports_ip2location@coords
+    object@mileage <- distGeo(p1 = coords[id[1L],], p2 = coords[id[2L],]) / 1609.34
+    print(turn_coords(list(coords[id,])))
   }
   return(object)
 }

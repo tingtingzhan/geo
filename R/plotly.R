@@ -16,19 +16,23 @@
 #' @importFrom scales hue_pal
 #' @export
 turn_IATA <- function(object, ...) {
-  
-  coord <- lapply(object, FUN = function(i) airports_ip2location[i, , drop = FALSE]@coords)
+  turn_coords(coords = lapply(object, FUN = function(i) airports_ip2location[i, , drop = FALSE]@coords), ...)
+}
+
+
+# @param coords \link[base]{list} of \link[base]{matrix}
+turn_coords <- function(coords, ...) {
   
   p0 <- plot_geo()
 
-  col <- toRGB(hue_pal()(n = length(coord)))
+  col <- toRGB(hue_pal()(n = length(coords)))
   
   p1 <- p0
-  for (i in seq_along(coord)) {
-    lon <- coord[[i]][,1L]
-    lat <- coord[[i]][,2L]
-    nm <- rownames(coord[[i]])
-    n <- dim(coord[[i]])[1L]
+  for (i in seq_along(coords)) {
+    lon <- coords[[i]][,1L]
+    lat <- coords[[i]][,2L]
+    nm <- rownames(coords[[i]])
+    n <- dim(coords[[i]])[1L]
     if (n <= 1L) stop('wont allow')
 
     p1 <- add_segments(

@@ -23,7 +23,7 @@
 #' (fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
 #'   full.names = TRUE))
 #' dim(ana <- read.csv(file = fl, header = TRUE))
-#' unique(c(ana$departure, ana$arrival))
+#' # unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
 #' ana.099.im(ana, US = c('IAH'))

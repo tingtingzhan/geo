@@ -35,6 +35,7 @@ IATA <- function(x) {
 }
 
 
+#' @importFrom geosphere distGeo
 print_IATA_ <- function(x) {
   # `x` is one-trip 'IATA' (as \link[base]{vector}, not \link[base]{list}!!)
   ap <- airports_ip2location[x, , drop = FALSE]
@@ -55,14 +56,13 @@ print_IATA_ <- function(x) {
 
 
 
-#' @importFrom geosphere distGeo
 #' @export
 print.IATA <- function(x, ...) {
   cat('\n')
   
   tmp <- vapply(x, FUN = print_IATA_, FUN.VALUE = NA_real_)
   
-  cat(sprintf(fmt = 'Total mileage: %.1f\n\n', sum(tmp)))
+  cat(sprintf(fmt = 'Total Mileage: %.1f\n\n', sum(tmp)))
   
   # I need to refine these functions some time
   #RoundTheWorld(x, airline = 'ANA')
