@@ -17,15 +17,15 @@ setClass(Class = 'airfare', slots = c(
 #' @importFrom methods setMethod callNextMethod initialize
 #' @importFrom geosphere distGeo
 setMethod(f = initialize, signature = 'airfare', definition = function(.Object, ...) {
-  .Object <- callNextMethod(.Object, ...)
+  x <- callNextMethod(.Object, ...)
   
-  id <- match(c(.Object@depart, .Object@arrive), table = airports_ip2location@data$iata, nomatch = NA_integer_)
+  id <- match(c(x@depart, x@arrive), table = airports_ip2location@data$iata, nomatch = NA_integer_)
   if (anyNA(id)) stop('unknown departure and/or arrival airport')
   coords <- airports_ip2location@coords[id,]
   print(turn_coords(list(coords)))
-  if (length(.Object@mileage)) warning('Do not manully put in @mileage !!')
-  .Object@mileage <- distGeo(p1 = coords[1L,], p2 = coords[2L,]) / 1609.34
-  return(.Object)
+  if (length(x@mileage)) warning('Do not manully put in @mileage !!')
+  x@mileage <- distGeo(p1 = coords[1L,], p2 = coords[2L,]) / 1609.34
+  return(x)
 })
 
 
@@ -82,15 +82,15 @@ setClass(Class = 'loyalty', slots = c(
 #' @importFrom methods setMethod callNextMethod initialize
 #' @importFrom geosphere distGeo
 setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, ...) {
-  .Object <- callNextMethod(.Object, ...)
-  .Object@aim <- switch(EXPR = .Object@program, AA = {
+  x <- callNextMethod(.Object, ...)
+  x@aim <- switch(EXPR = x@program, AA = {
     1e3 * c(Gold = 40, Platinum = 75, Pro = 125, Executive = 200)
   }, AS = {
     1e3 * c(MVP = 20, Gold = 40, '75K' = 75, '100K' = 100)
   }, BA = {
     c(Bronze = 300, Silver = 600, Gold = 1500)
   })
-  return(.Object)
+  return(x)
 })
 
 
