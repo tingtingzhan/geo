@@ -90,6 +90,7 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
       value = rep(1, times = 2*n_),
       label = sprintf(fmt = '%d days apart', d1[id$col,'date'] - d0[id$row,'date'])#,
       # color = {have write hue pallate by days-apart, manually?}
+      # color = 'red' # does not work?
     )
   )
   print(sk)

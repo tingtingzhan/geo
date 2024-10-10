@@ -13,7 +13,7 @@ earnBA <- function(airfare) {
   
   # https://www.britishairways.com/travel/flight-calculator/execclub/_gf/en_gb
   # only use 'Tier Points'
-  tierpt <- switch(airfare@carrier, AA = {
+  status <- switch(airfare@carrier, AA = {
     m <- array(c(
       5, 10, 20, 0, 0, 40, 40, 60, 60, # <2k miles
       20, 35, 70, 90, 90, 140, 140, 210, 210, # <6k miles
@@ -45,7 +45,7 @@ earnBA <- function(airfare) {
   })
 
   # this is when fare money is not available to BA
-  #avios <- round(round(airfare@mileage) * switch(
+  #reward <- round(round(airfare@mileage) * switch(
   #  EXPR = airfare@code, 
   #  # https://www.britishairways.com/travel/flight-calculator/execclub/_gf/en_gb
   #  B =, G =, N =, O =, Q = .25,
@@ -57,20 +57,13 @@ earnBA <- function(airfare) {
   
   # .79 is exchange rate between GBP and USD
   # https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights
-  avios <- round(round(airfare@basefare * .79) * switch(
-    EXPR = match.arg(airfare@BA_status, choices = c('blue', 'bronze', 'silver', 'gold')),
-    blue = 6, 
-    bronze = 7, 
-    silver = 8, 
-    gold = 9))
-  
-  return(new(
-    Class = 'loyalty', 
-    program = 'BA', 
-    avios = avios, 
-    tierpt = tierpt,
-    aim = c(Bronze = 300, Silver = 600, Gold = 1500), 
-    aim_id = 2L
+  reward <- round(round(airfare@basefare * .79) * c(
+    Blue = 6, 
+    Bronze = 7, 
+    Silver = 8, 
+    Gold = 9
   ))
+  
+  return(new(Class = 'loyalty', program = 'BA', reward = reward, status = status))
   
 }
