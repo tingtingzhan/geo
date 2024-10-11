@@ -4,13 +4,19 @@
 \alias{leaflet_popup}
 \title{\link[leaflet]{leaflet} with Popup}
 \usage{
-leaflet_popup(coords, ...)
+leaflet_popup(coords, popup = rownames(coords), ...)
 }
 \arguments{
 \item{coords}{2-column \link[base]{matrix} of popup
 \emph{longitude} (1st column) and \emph{latitude} (2nd column)}
 
+\item{popup}{\link[base]{character} \link[base]{vector},
+popup text.  Default is the \link[base]{rownames} of \code{coords}}
+
 \item{...}{additional parameters, currently not in use}
+}
+\value{
+Function \link{leaflet_popup} returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 }
 \description{
 ..

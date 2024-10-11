@@ -28,5 +28,5 @@ as.leaflet(IATA('EWR-PHL-JFK-IAD'))
 \references{
 \url{http://rstudio.github.io/leaflet/}
 \url{https://developers.google.com/maps/documentation/geocoding/}
-\url{http://shiny.rstudio.com/gallery/tags/leaflet/}
+\url{http://shiny.rstudio.com/gallery}
 }
