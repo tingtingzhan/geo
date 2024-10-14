@@ -48,7 +48,7 @@ print_IATA_ <- function(x) {
     Kilometer = m_ / 1e3
   )
   ret[] <- sprintf(fmt = '%.1f', ret)
-  rownames(ret) <- sprintf(fmt = '%s \u2708\ufe0f %s', ap@data$iata[sq1], ap@data$iata[sq2])
+  rownames(ret) <- sprintf(fmt = '%s \u2708 %s', ap@data$iata[sq1], ap@data$iata[sq2])
   print(ret, quote = FALSE, right = TRUE)
   cat('\n')
   return(invisible(sum(m_ / 1609.34)))

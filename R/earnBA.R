@@ -57,12 +57,7 @@ earnBA <- function(airfare) {
   
   # .79 is exchange rate between GBP and USD
   # https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights
-  reward <- round(round(airfare@basefare * .79) * c(
-    Blue = 6, 
-    Bronze = 7, 
-    Silver = 8, 
-    Gold = 9
-  ))
+  reward <- round(round(airfare@basefare * .79) * c(Blue = 6, Bronze = 7, Silver = 8, Gold = 9))
   
   return(new(Class = 'loyalty', program = 'BA', reward = reward, status = status))
   

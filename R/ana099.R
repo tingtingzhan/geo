@@ -13,16 +13,17 @@
 #' @param ... ..
 #' 
 #' @details
-#' Must download latest `.csv` file from \url{https://ana.099.im}.
-#' 
-#' Upper-right corner of table, download symbol.
+#' Must download latest `.csv` file from \url{https://ana.099.im},
+#' upper-right corner of table, download symbol.
 #' 
 #' 
 #' @examples
-#' if (FALSE) {
-#' (fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
+#' \dontrun{
+#' # Must download latest `.csv` file from https://ana.099.im
+#' tm = Sys.time(); attr(tm, 'tzone') = 'GMT'
+#' (fl = list.files(path = '~/Downloads', pattern = paste0('^', as.Date(tm), '.*_export.csv'), 
 #'   full.names = TRUE))
-#' dim(ana <- read.csv(file = fl, header = TRUE))
+#' dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
 #' # unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
@@ -37,45 +38,34 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   data$date <- as.Date(data$date)
   data <- sort_by.data.frame(data, ~ date)
   
-  rid0 <- (data$departure %in% US)
+  rid0 <- (data$departure %in% US) # `$departure` airport in user's choice
   if (!any(rid0)) stop('!any(rid0)')
-  rid1 <- (data$arrival %in% US)
+  rid1 <- (data$arrival %in% US) # `$arrival` airport in user's choice
   if (!any(rid1)) stop('!any(rid1)')
   
-  d0 <- data[rid0,]
-  d1 <- data[rid1,]
+  d0 <- data[rid0,] # eligible departure airport
+  d1 <- data[rid1,] # eligible arrival airport
   
-  # row `0`: departure
-  # col `1`: arrival
   len <- outer(X = d0$date, Y = d1$date, FUN = function(dt0, dt1) dt1 - dt0)
+  # row: departure
+  # col: arrival
   
-  id0 <- which(len >= min. & len <= max., arr.ind = TRUE)
-  if (!length(id0)) return(invisible())
-  
-  id <- sort_by(as.data.frame.matrix(id0), ~ row + col)
-  
-  foo <- function(data, dup_rm = FALSE) {
-    out <- with(data, sprintf(fmt = '%s %s %s \u2708\ufe0f %s', format.Date(date), flight_no, departure, arrival))
-    if (dup_rm) out[duplicated(out)] <- ''
-    return(out)
-  }
+  id_ <- which(len >= min. & len <= max., arr.ind = TRUE) # arrival minus departure (local date) satisfies user's choice
+  if (!length(id_)) return(invisible())
+  id <- sort_by(as.data.frame.matrix(id_), ~ row + col)
+  d0_ <- d0[id$row,] # eligible departure flight
+  d1_ <- d1[id$col,] # eligible arrival flight
   
   # sankey diagram
   
-  foo2 <- function(data, dup_rm = FALSE) {
-    with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date), flight_no, departure, arrival))
-  }
+  node_flight <- function(data) with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date), flight_no, departure, arrival))
+  sk1 <- node_flight(d0_)
+  sk2 <- node_flight(d1_)
   
-  sk1 <- foo2(d0[id$row,])
-  sk2 <- foo2(d1[id$col,])
-  if (length(intersect(sk1, sk2))) stop('do not allow!!')
   sk_node <- c(
     sort.int(unique.default(sk1)),
     sort.int(unique.default(sk2))
-  )
-  
-  n_ <- dim(id0)[1L]
-  sk_id <- match(c(sk1, sk2), table = sk_node)
+  ) # sort eligible departure/arrival flight by date
   
   sk <- plot_ly(
     type = 'sankey',
@@ -85,19 +75,24 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
       # label_position = 'outer' # does not work
     ),
     link = list(
-      source = sk_id[1:n_] - 1L,
-      target = sk_id[(n_+1):(2*n_)] - 1L,
-      value = rep(1, times = 2*n_),
-      label = sprintf(fmt = '%d days apart', d1[id$col,'date'] - d0[id$row,'date'])#,
+      source = match(sk1, table = sk_node) - 1L,
+      target = match(sk2, table = sk_node) - 1L,
+      value = rep(1, times = length(sk1)),
+      label = sprintf(fmt = '%d days apart', d1_$date - d0_$date)#,
       # color = {have write hue pallate by days-apart, manually?}
       # color = 'red' # does not work?
     )
   )
-  print(sk)
+  print(sk) # htmlwidgets:::print.htmlwidget
   
+  prt_flight <- function(data, dup_rm = FALSE) {
+    out <- with(data, sprintf(fmt = '%s %s %s \u2708 %s', format.Date(date), flight_no, departure, arrival))
+    if (dup_rm) out[duplicated(out)] <- ''
+    return(out)
+  }
   ret <- data.frame(
-    departure = foo(d0[id$row,], dup_rm = TRUE),
-    arrival = foo(d1[id$col,], dup_rm = FALSE)
+    departure = prt_flight(d0_, dup_rm = TRUE),
+    arrival = prt_flight(d1_, dup_rm = FALSE)
   )
   return(invisible(ret)) # only for debugging
   

@@ -21,15 +21,16 @@ between two departure dates.}
 ANA Round Trip from US
 }
 \details{
-Must download latest \code{.csv} file from \url{https://ana.099.im}.
-
-Upper-right corner of table, download symbol.
+Must download latest \code{.csv} file from \url{https://ana.099.im},
+upper-right corner of table, download symbol.
 }
 \examples{
-if (FALSE) {
-(fl = list.files(path = '~/Downloads', pattern = paste0('^', Sys.Date(), '.*_export.csv'), 
+\dontrun{
+# Must download latest `.csv` file from https://ana.099.im
+tm = Sys.time(); attr(tm, 'tzone') = 'GMT'
+(fl = list.files(path = '~/Downloads', pattern = paste0('^', as.Date(tm), '.*_export.csv'), 
   full.names = TRUE))
-dim(ana <- read.csv(file = fl, header = TRUE))
+dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
 # unique(c(ana$departure, ana$arrival))
 ana.099.im(ana, US = c('JFK', 'IAD'))
 ana.099.im(ana, US = c('SFO', 'LAX'))
