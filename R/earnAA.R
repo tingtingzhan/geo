@@ -1,4 +1,12 @@
 
+
+
+#' @title Credit a Flight to American Airlines
+#' 
+#' @param airfare ..
+#' 
+#' @importFrom methods new
+#' @export
 earnAA <- function(airfare) {
   
   switch(EXPR = airfare@carrier, AA = {

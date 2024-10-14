@@ -1,6 +1,11 @@
 
 
+#' @title Credit a Flight to British Airways
+#' 
+#' @param airfare ..
+#' 
 #' @importFrom methods new
+#' @export
 earnBA <- function(airfare) {
   
   # https://www.headforpoints.com/2024/02/01/how-many-british-airways-tier-points-do-i-earn-per-flight-3
