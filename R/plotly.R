@@ -13,10 +13,16 @@
 #' \url{https://plotly.com/r/lines-on-maps/}
 #' 
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
-#' @importFrom scales hue_pal
+#' @importFrom scales pal_hue
 #' @export
 turn_IATA <- function(object, ...) {
   turn_coords(coords = lapply(object, FUN = function(i) airports_ip2location[i, , drop = FALSE]@coords), ...)
+}
+
+if (FALSE) {
+  stopifnot(identical(scales::hue_pal, scales::pal_hue))
+  # all examples inside are using [pal_hue].
+  # [hue_pal] might be only for back-compatibility
 }
 
 
@@ -25,7 +31,7 @@ turn_coords <- function(coords, ...) {
   
   p0 <- plot_geo()
 
-  col <- toRGB(hue_pal()(n = length(coords)))
+  col <- toRGB(pal_hue()(n = length(coords)))
   
   p1 <- p0
   for (i in seq_along(coords)) {
