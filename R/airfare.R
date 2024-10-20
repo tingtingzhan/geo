@@ -52,9 +52,11 @@ setMethod(f = show, signature = 'airfare', definition = function(object) {
 
   cat(sprintf(fmt = '%s\n', switch(
     EXPR = object@carrier, 
-    AS = 'Alaska Airlines\U0001f1fa\U0001f1f8',
-    AA = 'American Airlines\U0001f1fa\U0001f1f8', 
-    BA = 'British Airways\U0001f1ec\U0001f1e7')))
+    AS = 'Alaska Airlines\U1f1fa\U1f1f8',
+    AA = 'American Airlines\U1f1fa\U1f1f8', 
+    BA = 'British Airways\U1f1ec\U1f1e7',
+    CX = 'Cathay Pacific\U1f1ed\U1f1f0',
+    JAL = 'Japan Airlines')))
   
   cat(sprintf(fmt = '%s \u2708 %s\n', object@depart, object@arrive))
   cat(sprintf(fmt = '%.1f Miles\n', object@mileage))
@@ -67,13 +69,4 @@ setMethod(f = show, signature = 'airfare', definition = function(object) {
   cat(sprintf(fmt = 'Upgrade Fee: $%.2f\n', object@upgrade))
 
 })
-
-
-
-
-
-
-
-
-
 
