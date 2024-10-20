@@ -4,20 +4,25 @@
 \name{loyalty}
 \alias{loyalty}
 \alias{loyalty-class}
-\title{\linkS4class{loyalty}}
+\title{\linkS4class{loyalty} Progress}
 \description{
-\linkS4class{loyalty}
+\linkS4class{loyalty} Progress
 }
 \section{Slots}{
 
 \describe{
-\item{\code{program}}{\link[base]{character} scalar, airline program to which the flight is credited (\strong{not} carrier of the flight)}
+\item{\code{program}}{\link[base]{character} scalar,
+airline program to which the flight is credited
+(\strong{not} carrier of the flight)}
 
-\item{\code{goal}}{\link[base]{numeric} \link[base]{vector}}
+\item{\code{goal}}{\link[base]{numeric} \link[base]{vector},
+milestone of each membership tier}
 
-\item{\code{reward}}{\link[base]{numeric} \link[base]{vector}}
+\item{\code{reward}}{\link[base]{numeric} \link[base]{vector},
+reward miles earned for each membership tier}
 
-\item{\code{status}}{\link[base]{numeric} \link[base]{vector}}
+\item{\code{status}}{\link[base]{numeric} \link[base]{vector}
+loyalty points earned for each membership tier}
 }}
 
 \examples{

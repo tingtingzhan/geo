@@ -2,8 +2,9 @@
 
 #' @title Credit a Flight to British Airways
 #' 
-#' @param airfare ..
+#' @param airfare an \linkS4class{airfare}
 #' 
+#' @keywords internal
 #' @importFrom methods new
 #' @export
 earnBA <- function(airfare) {

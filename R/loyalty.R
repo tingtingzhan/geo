@@ -1,14 +1,19 @@
 
 
-#' @title \linkS4class{loyalty}
+#' @title \linkS4class{loyalty} Progress
 #' 
-#' @slot program \link[base]{character} scalar, airline program to which the flight is credited (**not** carrier of the flight)
+#' @slot program \link[base]{character} scalar, 
+#' airline program to which the flight is credited 
+#' (**not** carrier of the flight)
 #' 
-#' @slot goal \link[base]{numeric} \link[base]{vector}
+#' @slot goal \link[base]{numeric} \link[base]{vector},
+#' milestone of each membership tier 
 #' 
-#' @slot reward \link[base]{numeric} \link[base]{vector}
+#' @slot reward \link[base]{numeric} \link[base]{vector},
+#' reward miles earned for each membership tier
 #' 
 #' @slot status \link[base]{numeric} \link[base]{vector}
+#' loyalty points earned for each membership tier
 #' 
 #' @examples
 #' (JSM24 = new(Class = 'airfare', carrier = 'AA', depart = 'PHL', arrive = 'PDX',
@@ -64,9 +69,9 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
   if (FALSE) {
     cat(unclass(switch(
       EXPR = object@program,
-      AS = style_hyperlink(text = 'Alaska Airlines\U0001f1fa\U0001f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
-      AA = style_hyperlink(text = 'American Airlines\U0001f1fa\U0001f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-      BA = style_hyperlink(text = 'British Airways\U0001f1ec\U0001f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+      AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
+      AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
+      BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
     )), '\n')
   }
   

@@ -1,5 +1,23 @@
 
+
+#' @title \linkS4class{airfare}
+#' 
+#' @slot carrier \link[base]{character} scalar
+#' 
+#' @slot depart \link[base]{character} scalar
+#' 
+#' @slot arrive \link[base]{character} scalar
+#' 
+#' @slot mileage \link[base]{double} scalar
+#' 
+#' @slot code \link[base]{character} scalar
+#' 
+#' @slot basefare,tax,carrier_imposed,upgrade \link[base]{double} scalar
+#' 
+#' @name airfare
+#' @aliases airfare-class
 #' @importFrom methods setClass
+#' @export
 setClass(Class = 'airfare', slots = c(
   carrier = 'character',
   depart = 'character',

@@ -7,8 +7,9 @@
 earnAS(airfare)
 }
 \arguments{
-\item{airfare}{..}
+\item{airfare}{an \linkS4class{airfare}}
 }
 \description{
 Credit a Flight to Alaska Airlines
 }
+\keyword{internal}

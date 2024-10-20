@@ -2,8 +2,9 @@
 
 #' @title Credit a Flight to Alaska Airlines
 #' 
-#' @param airfare ..
+#' @param airfare an \linkS4class{airfare}
 #' 
+#' @keywords internal
 #' @importFrom methods new
 #' @export
 earnAS <- function(airfare) {
