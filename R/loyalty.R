@@ -61,12 +61,14 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
 #' @importFrom cli style_hyperlink
 setMethod(f = show, signature = 'loyalty', definition = function(object) {
   
-  cat(unclass(switch(
-    EXPR = object@program,
-    AS = style_hyperlink(text = 'Alaska Airlines\U0001f1fa\U0001f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
-    AA = style_hyperlink(text = 'American Airlines\U0001f1fa\U0001f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-    BA = style_hyperlink(text = 'British Airways\U0001f1ec\U0001f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
-  )), '\n')
+  if (FALSE) {
+    cat(unclass(switch(
+      EXPR = object@program,
+      AS = style_hyperlink(text = 'Alaska Airlines\U0001f1fa\U0001f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
+      AA = style_hyperlink(text = 'American Airlines\U0001f1fa\U0001f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
+      BA = style_hyperlink(text = 'British Airways\U0001f1ec\U0001f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+    )), '\n')
+  }
   
   n <- length(object@goal)
   prog_zero <- object@status[-n] / object@goal[-1L]
@@ -85,7 +87,7 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
     #)), 
     '',
     'Current Tier')
-  print(ret, quote = FALSE, right = TRUE)
+  # print(ret, quote = FALSE, right = TRUE) # really my figure is why much prettier!!!
   
   print(autoplot.loyalty(object))
   
@@ -149,7 +151,7 @@ autolayer.loyalty <- function(object, ...) {
     #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_, color = tier_)), # no bug
     #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_)), # error!! why??
     scale_fill_manual(values = col_, name = alliance),
-    scale_color_manual(values = col_, name = alliance),
+    scale_color_manual(values = col_, name = alliance, guide = 'none'),
     coord_polar(theta = 'x')
   )
   
