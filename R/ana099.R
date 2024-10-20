@@ -27,11 +27,13 @@
 #' # unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
 #' ana.099.im(ana, US = c('SFO', 'LAX'))
-#' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('SEA', 'YVR'))
-#' ana.099.im(ana, US = c('MEX'))
+#' ana.099.im(ana, US = c('IAH'))
+#' ana.099.im(ana, US = c('MEX'), min. = 35L, max. = 40L)
 #' }
-#' @importFrom plotly plot_ly
+#' @importFrom plotly plot_ly toRGB
+#' @importFrom scales pal_hue
+#' @importFrom stats quantile
 #' @export
 ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   
@@ -58,7 +60,7 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   
   # sankey diagram
   
-  node_flight <- function(data) with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date), flight_no, departure, arrival))
+  node_flight <- function(data) with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date, format = '\'%y-%m-%d'), flight_no, departure, arrival))
   sk1 <- node_flight(d0_)
   sk2 <- node_flight(d1_)
   
@@ -67,10 +69,19 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
     sort.int(unique.default(sk2))
   ) # sort eligible departure/arrival flight by date
   
+  apart <- d1_$date - d0_$date
+  apart_ <- unclass(apart)
+  n_apart <- length(unique(apart_))
+  apart_c <- cut.default(apart_, breaks = quantile(apart_, probs = seq.int(0, 1, by = if (n_apart < 4) {
+    .5
+  } else .25)), include.lowest = TRUE)
+    
   sk <- plot_ly(
     type = 'sankey',
     orientation = 'h',
     node = list(
+      color = toRGB('gray90'),
+      # border = toRGB('gray90'), # does not work :)
       label = sk_node#,
       # label_position = 'outer' # does not work
     ),
@@ -78,11 +89,11 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
       source = match(sk1, table = sk_node) - 1L,
       target = match(sk2, table = sk_node) - 1L,
       value = rep(1, times = length(sk1)),
-      label = sprintf(fmt = '%d days apart', d1_$date - d0_$date)#,
-      # color = {have write hue pallate by days-apart, manually?}
-      # color = 'red' # does not work?
+      label = sprintf(fmt = '%d days apart', apart),
+      color = pal_hue()(n = length(levels(apart_c)))[unclass(apart_c)]
     )
   )
+  # if (Sys.getenv('RSTUDIO')) rstudioapi::executeCommand('viewerClearAll')
   print(sk) # htmlwidgets:::print.htmlwidget
   
   prt_flight <- function(data, dup_rm = FALSE) {

@@ -34,8 +34,8 @@ dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
 # unique(c(ana$departure, ana$arrival))
 ana.099.im(ana, US = c('JFK', 'IAD'))
 ana.099.im(ana, US = c('SFO', 'LAX'))
-ana.099.im(ana, US = c('IAH'))
 ana.099.im(ana, US = c('SEA', 'YVR'))
-ana.099.im(ana, US = c('MEX'))
+ana.099.im(ana, US = c('IAH'))
+ana.099.im(ana, US = c('MEX'), min. = 35L, max. = 40L)
 }
 }
