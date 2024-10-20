@@ -13,7 +13,7 @@ RoxygenNote: 7.3.2
 Encoding: UTF-8
 License: GPL-2
 Depends: R (>= 4.4)
-Imports: cli, geosphere, ggplot2, plotly, leaflet, scales, methods
+Imports: cli, geomtextpath, geosphere, ggplot2, plotly, leaflet, scales, methods
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        c('aut', 'cre', 'cph'), email = 'tingtingzhan@gmail.com',
        comment = c(ORCID = '0000-0001-9971-4844')))

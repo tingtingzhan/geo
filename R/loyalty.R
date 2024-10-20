@@ -101,13 +101,19 @@ autoplot.loyalty <- function(object, ...) {
 }
 
 
+# https://allancameron.github.io/geomtextpath/
+# this is absolutely gorgeous!!!!!
 
-#' @importFrom ggplot2 autolayer aes geom_rect scale_fill_manual coord_polar labs
+#' @importFrom ggplot2 autolayer aes geom_rect scale_fill_manual scale_color_manual coord_polar labs
+#' @importFrom geomtextpath geom_textpath
 #' @export
 autolayer.loyalty <- function(object, ...) {
+  
   n <- length(object@goal)
-  ymax <- object@goal[-1L]
-  ymin <- object@goal[-n]
+  
+  max_ <- object@goal[-1L]
+  min_ <- object@goal[-n]
+  
   switch(object@program, AA =, AS =, BA = {
     # https://www.oneworld.com/travel-benefits
     # https://www.oneworld.com/members/alaska-airlines#tiers
@@ -115,25 +121,38 @@ autolayer.loyalty <- function(object, ...) {
     # https://www.oneworld.com/members/british-airways#tiers
     alliance <- 'One World'
     tier <- structure(1:4, levels = c('Member', 'Ruby', 'Sapphire', 'Emerald'), class = 'factor')
-    col <- c('grey90', '#ae001a', '#262896', '#004721')
+    col <- c('grey60', '#ae001a', '#262896', '#004721')
+    airline_ <- switch(
+      EXPR = object@program,
+      AS = 'Alaska Airlines',
+      AA = 'American Airlines',
+      BA = 'British Airways',
+    )
   }, stop('next alliance'))
   
   if (length(tier) < n-1L) stop('should not happen')
+  tier_ <- tier[seq_len(n-1L)]
+  col_ <- col[seq_len(n-1L)]
   sq <- seq_len(n-1L)
   
-  list(
-    geom_rect(mapping = aes(ymax = ymax, ymin = ymin, xmax = 1, xmin = 0, fill = tier[sq]), alpha = .3, stat = 'identity', colour = 'white'),
-    geom_rect(mapping = aes(ymax = ymin + object@status[-n], ymin = ymin, xmax = 1, xmin = 0, fill = tier[sq]), stat = 'identity', colour = 'white'),
-    scale_fill_manual(values = col[sq], name = alliance),
+  if (FALSE) list( # old version, still works
+    geom_rect(mapping = aes(ymax = max_, ymin = min_, xmax = 1, xmin = 0, fill = tier_), alpha = .3, stat = 'identity', colour = 'white'),
+    geom_rect(mapping = aes(ymax = min_ + object@status[-n], ymin = min_, xmax = 1, xmin = 0, fill = tier_), stat = 'identity', colour = 'white'),
+    scale_fill_manual(values = col_, name = alliance),
     coord_polar(theta = 'y'),
-    labs(
-      title = switch(
-        EXPR = object@program,
-        AS = 'Alaska Airlines',
-        AA = 'American Airlines',
-        BA = 'British Airways',
-      ))
+    labs(title = airline_)
+  ) else list(
+    geom_rect(mapping = aes(xmin = min_, xmax = max_, ymin = 0, ymax = 1, fill = tier_), alpha = .2, color = 'white'),
+    geom_rect(mapping = aes(xmin = min_, xmax = min_ + object@status[-n], ymin = 0, ymax = 1, fill = tier_), alpha = .5, color = 'white'),
+    geom_textpath(mapping = aes(x = (min_+max_)/2, y = .9, label = names(min_), color = tier_)),
+    geom_textpath(mapping = aes(x = (min_+max_)/2, y = 1.1, label = airline_, color = tier_)),
+    #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_, color = tier_)), # no bug
+    #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_)), # error!! why??
+    scale_fill_manual(values = col_, name = alliance),
+    scale_color_manual(values = col_, name = alliance),
+    coord_polar(theta = 'x')
   )
+  
 }
 
 
