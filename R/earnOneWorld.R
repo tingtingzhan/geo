@@ -11,7 +11,6 @@
 earnAA <- function(x) {
   
   switch(EXPR = x@carrier, AA = {
-    # AA to AA
     # https://www.aa.com/web/i18n/aadvantage-program/earn-miles/american-airlines-flights.html
     fare <- round(sum(x@basefare, x@carrier_imposed))
     reward <- fare * 5 * (1 + c(Member = 0, Gold = .4, Platinum = .6, Pro = .8, Executive = 1.2))
@@ -23,12 +22,10 @@ earnAA <- function(x) {
 
 
 #' @rdname earnOneWorld
-#' @importFrom methods new
 #' @export
 earnAS <- function(x) {
   
   switch(x@carrier, AA = {
-    # AA to AS
     # https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners/american-airlines?lid=airline-partners:partners-american
     reward <- round(round(x@mileage) * switch(
       EXPR = x@code, 
@@ -53,7 +50,6 @@ earnAS <- function(x) {
 
 
 #' @rdname earnOneWorld
-#' @importFrom methods new
 #' @export
 earnBA <- function(x) {
   
@@ -111,6 +107,7 @@ earnBA <- function(x) {
   
   # .79 is exchange rate between GBP and USD
   # https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights
+  # 'If you pay in another currency, the amount you’ve spent is converted to GBP using the IATA 5-day exchange rate that applied on the day of your purchase. We’ll use this converted amount to calculate your Avios.'
   reward <- round(round(x@basefare * .79) * c(Blue = 6, Bronze = 7, Silver = 8, Gold = 9))
   
   return(new(Class = 'loyalty', program = 'BA', reward = reward, status = status))
@@ -120,7 +117,6 @@ earnBA <- function(x) {
 
 
 #' @rdname earnOneWorld
-#' @importFrom methods new
 #' @export
 earnCX <- function(x) {
   
@@ -152,7 +148,6 @@ earnCX <- function(x) {
 
 
 #' @rdname earnOneWorld
-#' @importFrom methods new
 #' @export
 earnJAL <- function(x) {
   

@@ -41,9 +41,15 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   data <- sort_by.data.frame(data, ~ date)
   
   rid0 <- (data$departure %in% US) # `$departure` airport in user's choice
-  if (!any(rid0)) stop('!any(rid0)')
+  if (!any(rid0)) {
+    message('No departure at ', paste(US, collapse = '/'))
+    return(invisible())
+  }
   rid1 <- (data$arrival %in% US) # `$arrival` airport in user's choice
-  if (!any(rid1)) stop('!any(rid1)')
+  if (!any(rid1)) {
+    message('No arrival at ', paste(US, collapse = '/'))
+    return(invisible())
+  }
   
   d0 <- data[rid0,] # eligible departure airport
   d1 <- data[rid1,] # eligible arrival airport

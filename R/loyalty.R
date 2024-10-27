@@ -145,7 +145,8 @@ autolayer.loyalty <- function(object, ...) {
       AA = 'American Airlines',
       BA = 'British Airways',
       CX = 'Cathay Pacific',
-      JAL = 'Japan Airlines'
+      JAL = 'Japan Airlines',
+      stop('next airline')
     )
   }, stop('next alliance'))
   
@@ -156,8 +157,8 @@ autolayer.loyalty <- function(object, ...) {
   if (anyNA(object@status)) return(invisible())
   
   if (FALSE) list( # old version, still works
-    geom_rect(mapping = aes(ymax = max_, ymin = min_, xmax = 1, xmin = .7, fill = tier_), alpha = .3, stat = 'identity', colour = 'white'),
-    geom_rect(mapping = aes(ymax = min_ + object@status[-n], ymin = min_, xmax = 1, xmin = .7, fill = tier_), stat = 'identity', colour = 'white'),
+    geom_rect(mapping = aes(ymax = max_, ymin = min_, xmax = 1, xmin = .7, fill = tier_), alpha = .2, stat = 'identity', colour = 'white'),
+    geom_rect(mapping = aes(ymax = min_ + object@status[-n], ymin = min_, xmax = 1, xmin = .7, fill = tier_), alpha = .5, stat = 'identity', colour = 'white'),
     scale_fill_manual(values = col_, name = alliance),
     xlim(c(0,1)),
     coord_polar(theta = 'y'),
