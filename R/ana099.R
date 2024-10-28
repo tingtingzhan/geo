@@ -26,7 +26,7 @@
 #' dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
 #' # unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
-#' ana.099.im(ana, US = c('SFO', 'LAX'))
+#' ana.099.im(ana, US = c('SFO', 'LAX'), min. = 2, max. = Inf)
 #' ana.099.im(ana, US = c('SEA', 'YVR'))
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('MEX'), min. = 35L, max. = 40L)
@@ -59,8 +59,11 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   # col: arrival
   
   id_ <- which(len >= min. & len <= max., arr.ind = TRUE) # arrival minus departure (local date) satisfies user's choice
-  if (!length(id_)) return(invisible())
-  id <- sort_by(as.data.frame.matrix(id_), ~ row + col)
+  if (!length(id_)) {
+    message('No round trip between ', min., ' to ', max., ' days.')
+    return(invisible())
+  }
+  id <- sort_by.data.frame(as.data.frame.matrix(id_), ~ row + col)
   d0_ <- d0[id$row,] # eligible departure flight
   d1_ <- d1[id$col,] # eligible arrival flight
   
@@ -77,10 +80,10 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   
   apart <- d1_$date - d0_$date
   apart_ <- unclass(apart)
-  n_apart <- length(unique(apart_))
-  apart_c <- cut.default(apart_, breaks = quantile(apart_, probs = seq.int(0, 1, by = if (n_apart < 4) {
+  n_apart <- length(unique.default(apart_))
+  apart_c <- cut.default(apart_, breaks = unique.default(quantile(apart_, probs = seq.int(0, 1, by = if (n_apart < 4) {
     .5
-  } else .25)), include.lowest = TRUE)
+  } else .25))), include.lowest = TRUE)
     
   sk <- plot_ly(
     type = 'sankey',
