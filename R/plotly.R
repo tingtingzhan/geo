@@ -46,8 +46,9 @@ turn_coords <- function(coords, ...) {
       x = lon[seq_len(n-1L)], xend = lon[2:n],
       y = lat[seq_len(n-1L)], yend = lat[2:n],
       line = list(color = col[i], width = 2),
-      hoverinfo = 'none'
-      # text = rep('abc', n-1L), hoverinfo = 'text', 
+      #hoverinfo = 'none'
+      text = rep('abc', n-1L), hoverinfo = 'text'
+      # https://stackoverflow.com/questions/63458372/plotly-add-segment-with-tooltip-along-entire-segment
       # https://github.com/plotly/plotly.R/issues/1832#issuecomment-675721763
       # TL;DR: plotly cannot do this, as of Sep 2024
     )

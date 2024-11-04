@@ -45,7 +45,8 @@ print_IATA_ <- function(x) {
   m_ <- distGeo(p1 = ap@coords[sq1,], p2 = ap@coords[sq2,]) # in meters
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
-    Kilometer = m_ / 1e3
+    Kilometer = m_ / 1e3#,
+    #Hour = (m_ / 1609.34) / 550 # average cruising speed, mile per hour
   )
   ret[] <- sprintf(fmt = '%.1f', ret)
   rownames(ret) <- sprintf(fmt = '%s \u2708 %s', ap@data$iata[sq1], ap@data$iata[sq2])

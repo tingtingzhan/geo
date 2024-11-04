@@ -15,6 +15,9 @@
 #' @slot status \link[base]{numeric} \link[base]{vector}
 #' loyalty points earned for each membership tier
 #' 
+#' @slot creditcard \link[base]{character} scalar or \link[base]{vector},
+#' co-branded credit card(s)
+#' 
 #' @examples
 #' (JSM24 = new(Class = 'airfare', carrier = 'AA', depart = 'PHL', arrive = 'PDX',
 #'   code = 'J', basefare = 276.28, tax = 35.82, upgrade = 241.88))
@@ -27,7 +30,8 @@
 setClass(Class = 'loyalty', slots = c(
   program = 'character',
   goal = 'numeric',
-  reward = 'numeric', status = 'numeric'
+  reward = 'numeric', status = 'numeric',
+  creditcard = 'character'
 ))
 
 
@@ -40,7 +44,10 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
   
   x@goal <- c(Member = 0, switch(EXPR = x@program, AA = {
     # https://www.aa.com/web/i18n/aadvantage-program/discover/member-statuses.html
-    c(Gold = 40e3, Platinum = 75e3, Pro = 125e3, Executive = 200e3)
+    # https://www.citi.com/credit-cards/citi-aadvantage-executive-credit-card
+    if ('citi' %in% x@creditcard) {
+      c(Gold = 40e3, Platinum = (75-10)*1e3, Pro = (125-20)*1e3, Executive = (200-20)*1e3)
+    } else c(Gold = 40e3, Platinum = 75e3, Pro = 125e3, Executive = 200e3)
   }, AS = {
     # https://www.alaskaair.com/content/mileage-plan/membership-benefits
     c(MVP = 20e3, Gold = 40e3, '75K' = 75e3, '100K' = 100e3)
@@ -136,7 +143,7 @@ autolayer.loyalty <- function(object, ...) {
     # https://www.oneworld.com/members/american-airlines#tiers
     # https://www.oneworld.com/members/british-airways#tiers
     # https://www.oneworld.com/members/cathay-pacific#tiers
-    alliance <- 'One World'
+    alliance <- 'oneworld'
     tier <- structure(1:4, levels = c('Member', 'Ruby', 'Sapphire', 'Emerald'), class = 'factor')
     col <- c('grey60', '#ae001a', '#262896', '#004721')
     airline_ <- switch(

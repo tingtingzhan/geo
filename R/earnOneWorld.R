@@ -4,11 +4,13 @@
 #' 
 #' @param x an \linkS4class{airfare}
 #' 
+#' @param creditcard slot of class \linkS4class{loyalty}
+#' 
 #' @keywords internal
 #' @name earnOneWorld
 #' @importFrom methods new
 #' @export
-earnAA <- function(x) {
+earnAA <- function(x, creditcard = 'citi') {
   
   switch(EXPR = x@carrier, AA = {
     # https://www.aa.com/web/i18n/aadvantage-program/earn-miles/american-airlines-flights.html
@@ -16,7 +18,7 @@ earnAA <- function(x) {
     reward <- fare * 5 * (1 + c(Member = 0, Gold = .4, Platinum = .6, Pro = .8, Executive = 1.2))
   })
   
-  return(new(Class = 'loyalty', program = 'AA', reward = reward, status = reward))
+  return(new(Class = 'loyalty', program = 'AA', reward = reward, status = reward, creditcard = creditcard))
   
 }
 

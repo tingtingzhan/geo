@@ -9,7 +9,7 @@
 \alias{earnJAL}
 \title{Credit a Flight to an Airline in oneworld Alliance}
 \usage{
-earnAA(x)
+earnAA(x, creditcard = "citi")
 
 earnAS(x)
 
@@ -21,6 +21,8 @@ earnJAL(x)
 }
 \arguments{
 \item{x}{an \linkS4class{airfare}}
+
+\item{creditcard}{slot of class \linkS4class{loyalty}}
 }
 \description{
 Credit a Flight to an Airline in oneworld Alliance

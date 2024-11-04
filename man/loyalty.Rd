@@ -23,6 +23,9 @@ reward miles earned for each membership tier}
 
 \item{\code{status}}{\link[base]{numeric} \link[base]{vector}
 loyalty points earned for each membership tier}
+
+\item{\code{creditcard}}{\link[base]{character} scalar or \link[base]{vector},
+co-branded credit card(s)}
 }}
 
 \examples{

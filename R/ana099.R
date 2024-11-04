@@ -26,7 +26,7 @@
 #' dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
 #' # unique(c(ana$departure, ana$arrival))
 #' ana.099.im(ana, US = c('JFK', 'IAD'))
-#' ana.099.im(ana, US = c('SFO', 'LAX'), min. = 2, max. = Inf)
+#' ana.099.im(ana, US = c('SFO', 'LAX'), min. = 20, max. = Inf)
 #' ana.099.im(ana, US = c('SEA', 'YVR'))
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('MEX'), min. = 35L, max. = 40L)
@@ -105,14 +105,12 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   # if (Sys.getenv('RSTUDIO')) rstudioapi::executeCommand('viewerClearAll')
   print(sk) # htmlwidgets:::print.htmlwidget
   
-  prt_flight <- function(data, dup_rm = FALSE) {
-    out <- with(data, sprintf(fmt = '%s %s %s \u2708 %s', format.Date(date), flight_no, departure, arrival))
-    if (dup_rm) out[duplicated(out)] <- ''
-    return(out)
+  prt_ <- function(data) {
+    with(data, sprintf(fmt = '%s %s %s \u2708 %s', format.Date(date), flight_no, departure, arrival))
   }
   ret <- data.frame(
-    departure = prt_flight(d0_, dup_rm = TRUE),
-    arrival = prt_flight(d1_, dup_rm = FALSE)
+    departure = prt_(d0_),
+    arrival = prt_(d1_)
   )
   return(invisible(ret)) # only for debugging
   
