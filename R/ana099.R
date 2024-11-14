@@ -24,10 +24,10 @@
 #' (fl = list.files(path = '~/Downloads', pattern = paste0('^', as.Date(tm), '.*_export.csv'), 
 #'   full.names = TRUE))
 #' dim(ana <- read.csv(file = sort(fl, decreasing = TRUE)[1L], header = TRUE))
-#' # unique(c(ana$departure, ana$arrival))
-#' ana.099.im(ana, US = c('JFK', 'IAD'))
+#' as.leaflet(IATA(paste(setdiff(c(ana$departure, ana$arrival), 'TYO'), collapse = '-')))
+#' ana.099.im(ana, US = c('JFK', 'IAD'), min. = 20, max. = Inf)
 #' ana.099.im(ana, US = c('SFO', 'LAX'), min. = 20, max. = Inf)
-#' ana.099.im(ana, US = c('SEA', 'YVR'))
+#' ana.099.im(ana, US = c('SEA', 'YVR'), min. = 20, max. = Inf)
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('MEX'), min. = 35L, max. = 40L)
 #' }
