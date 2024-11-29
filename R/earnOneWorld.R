@@ -8,7 +8,6 @@
 #' 
 #' @keywords internal
 #' @name earnOneWorld
-#' @importFrom methods new
 #' @export
 earnAA <- function(x, creditcard = 'citi') {
   

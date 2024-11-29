@@ -16,7 +16,6 @@
 #' 
 #' @name airfare
 #' @aliases airfare-class
-#' @importFrom methods setClass
 #' @export
 setClass(Class = 'airfare', slots = c(
   carrier = 'character',
@@ -32,7 +31,6 @@ setClass(Class = 'airfare', slots = c(
 
 
 
-#' @importFrom methods setMethod callNextMethod initialize
 #' @importFrom geosphere distGeo
 setMethod(f = initialize, signature = 'airfare', definition = function(.Object, ...) {
   x <- callNextMethod(.Object, ...)
@@ -47,7 +45,6 @@ setMethod(f = initialize, signature = 'airfare', definition = function(.Object, 
 
 
 
-#' @importFrom methods setMethod show
 setMethod(f = show, signature = 'airfare', definition = function(object) {
 
   cat(sprintf(fmt = '%s\n', switch(
@@ -61,7 +58,7 @@ setMethod(f = show, signature = 'airfare', definition = function(object) {
   cat(sprintf(fmt = '%s \u2708 %s\n', object@depart, object@arrive))
   cat(sprintf(fmt = '%.1f Miles\n', object@mileage))
   
-  cat(sprintf(fmt = 'Booking Code: \033[0;103m%s\033[0m\n', object@code))
+  cat(sprintf(fmt = 'Booking Code: %s\n', bg_br_yellow(object@code)))
   
   cat(sprintf(fmt = 'Base Fare: $%.2f\n', object@basefare))
   cat(sprintf(fmt = 'Carrier Imposed Fees: $%.2f\n', object@carrier_imposed))

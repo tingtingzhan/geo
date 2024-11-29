@@ -1,6 +1,8 @@
 
 
-
+if (FALSE) {
+  IATA('DTW-IAD-LHR-NCE-MAD-FCO-CPH-BRU-OTP-CAI-JED-BKK-CGK-DPS-SIN-HKT-BKK-CAN-HGH-TAO-ICN-HND-FUK-TPE-SGN-HAN-HKG-PVG-DTW')
+}
 
 #' @title One or More Air Travel Trips using IATA codes
 #' 

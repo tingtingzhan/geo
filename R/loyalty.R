@@ -36,7 +36,6 @@ setClass(Class = 'loyalty', slots = c(
 
 
 
-#' @importFrom methods setMethod callNextMethod initialize
 #' @importFrom geosphere distGeo
 setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, ...) {
   
@@ -76,8 +75,6 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
 
 
 
-#' @importFrom methods setMethod show
-#' @importFrom cli style_hyperlink
 setMethod(f = show, signature = 'loyalty', definition = function(object) {
   
   if (FALSE) {
