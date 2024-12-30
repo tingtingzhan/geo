@@ -17,10 +17,12 @@
 
 \item{\code{arrive}}{\link[base]{character} scalar}
 
+\item{\code{currency}}{\link[base]{character} scalar}
+
 \item{\code{mileage}}{\link[base]{double} scalar}
 
 \item{\code{code}}{\link[base]{character} scalar}
 
-\item{\code{basefare,tax,carrier_imposed,upgrade}}{\link[base]{double} scalar}
+\item{\code{basefare,tax,YQ,YR,upgrade}}{\link[base]{double} scalar}
 }}
 

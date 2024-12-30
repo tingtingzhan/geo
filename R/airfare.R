@@ -8,11 +8,13 @@
 #' 
 #' @slot arrive \link[base]{character} scalar
 #' 
+#' @slot currency \link[base]{character} scalar
+#' 
 #' @slot mileage \link[base]{double} scalar
 #' 
 #' @slot code \link[base]{character} scalar
 #' 
-#' @slot basefare,tax,carrier_imposed,upgrade \link[base]{double} scalar
+#' @slot basefare,tax,YQ,YR,upgrade \link[base]{double} scalar
 #' 
 #' @name airfare
 #' @aliases airfare-class
@@ -21,11 +23,12 @@ setClass(Class = 'airfare', slots = c(
   carrier = 'character',
   depart = 'character',
   arrive = 'character',
+  currency = 'character',
   mileage = 'numeric',
   code = 'character',
   basefare = 'numeric',
   tax = 'numeric',
-  carrier_imposed = 'numeric',
+  YQ = 'numeric', YR = 'numeric',
   upgrade = 'numeric'
 ))
 
@@ -40,6 +43,7 @@ setMethod(f = initialize, signature = 'airfare', definition = function(.Object, 
   print(turn_coords(list(coords)))
   if (length(x@mileage)) warning('Do not manully put in @mileage !!')
   x@mileage <- distGeo(p1 = coords[1L,], p2 = coords[2L,]) / 1609.34
+  x@currency <- match.arg(tolower(x@currency), choices = c('usd', 'gbp'))
   return(x)
 })
 
@@ -51,7 +55,7 @@ setMethod(f = show, signature = 'airfare', definition = function(object) {
     EXPR = object@carrier, 
     AS = 'Alaska Airlines\U1f1fa\U1f1f8',
     AA = 'American Airlines\U1f1fa\U1f1f8', 
-    BA = 'British Airways\U1f1ec\U1f1e7',
+    BA_old =, BA = 'British Airways\U1f1ec\U1f1e7',
     CX = 'Cathay Pacific\U1f1ed\U1f1f0',
     JAL = 'Japan Airlines')))
   
@@ -60,10 +64,12 @@ setMethod(f = show, signature = 'airfare', definition = function(object) {
   
   cat(sprintf(fmt = 'Booking Code: %s\n', bg_br_yellow(object@code)))
   
-  cat(sprintf(fmt = 'Base Fare: $%.2f\n', object@basefare))
-  cat(sprintf(fmt = 'Carrier Imposed Fees: $%.2f\n', object@carrier_imposed))
-  cat(sprintf(fmt = 'Tax: $%.2f\n', object@tax))
-  cat(sprintf(fmt = 'Upgrade Fee: $%.2f\n', object@upgrade))
+  money <- switch(object@currency, usd = '\U1f4b5$', gbp = '\U1f4b7\u00a3')
+  cat(sprintf(fmt = 'Base Fare: %s%.2f\n', money, object@basefare))
+  cat(sprintf(fmt = 'Carrier Imposed (YQ): %s%.2f\n', money, object@YQ))
+  cat(sprintf(fmt = 'Carrier Imposed (YR): %s%.2f\n', money, object@YR))
+  cat(sprintf(fmt = 'Tax: %s%.2f\n', money, object@tax))
+  cat(sprintf(fmt = 'Upgrade Fee: %s%.2f\n', money, object@upgrade))
 
 })
 

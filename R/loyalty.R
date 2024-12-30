@@ -20,10 +20,11 @@
 #' 
 #' @examples
 #' (JSM24 = new(Class = 'airfare', carrier = 'AA', depart = 'PHL', arrive = 'PDX',
-#'   code = 'J', basefare = 276.28, tax = 35.82, upgrade = 241.88))
+#'   code = 'J', currency = 'usd', basefare = 276.28, tax = 35.82, upgrade = 241.88))
 #' earnAA(JSM24)
 #' earnAS(JSM24)
 #' earnBA(JSM24)
+#' # earnBAold(JSM24)
 #' @name loyalty
 #' @aliases loyalty-class
 #' @export
@@ -50,9 +51,12 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
   }, AS = {
     # https://www.alaskaair.com/content/mileage-plan/membership-benefits
     c(MVP = 20e3, Gold = 40e3, '75K' = 75e3, '100K' = 100e3)
-  }, BA = {
+  }, BAold = {
     # https://www.britishairways.com/content/executive-club/about-the-club/tiers-and-benefits
     c(Bronze = 300, Silver = 600, Gold = 1500)
+  }, BA = {
+    # https://www.britishairways.com/content/executive-club/faqs/introducing-the-british-airways-club
+    c(Bronze = 3.5e3, Silver = 7.5e3, Gold = 20e3)
   }, CX = {
     # https://www.cathaypacific.com/cx/en_US/membership/status-points.html
     c(Silver = 300, Gold = 600, Diamond = 1200)
@@ -82,7 +86,7 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
       EXPR = object@program,
       AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
       AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-      BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+      BA_old =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
     )), '\n')
   }
   
@@ -95,14 +99,7 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
     'To Next Tier; from current' = c('-', sprintf(fmt = '%.1f%%', 1e2 * prog_current[-1L]), '-')
   )
   colnames(ret) <- names(object@goal)
-  names(dimnames(ret)) <- c(#unclass(switch(
-    #  EXPR = object@program,
-    #  AS = 'Alaska Airlines (AS)',
-    #  AA = 'American Airlines (AA)',
-    #  BA = 'British Airways (BA)',
-    #)), 
-    '',
-    'Current Tier')
+  names(dimnames(ret)) <- c('', 'Current Tier')
   # print(ret, quote = FALSE, right = TRUE) # really my figure is why much prettier!!!
   
   print(autoplot.loyalty(object))
@@ -134,7 +131,7 @@ autolayer.loyalty <- function(object, ...) {
   max_ <- object@goal[-1L]
   min_ <- object@goal[-n]
   
-  switch(object@program, AA =, AS =, BA =, CX =, JAL = {
+  switch(object@program, AA =, AS =, BAold =, BA =, CX =, JAL = {
     # https://www.oneworld.com/travel-benefits
     # https://www.oneworld.com/members/alaska-airlines#tiers
     # https://www.oneworld.com/members/american-airlines#tiers
@@ -147,7 +144,7 @@ autolayer.loyalty <- function(object, ...) {
       EXPR = object@program,
       AS = 'Alaska Airlines',
       AA = 'American Airlines',
-      BA = 'British Airways',
+      BAold =, BA = 'British Airways',
       CX = 'Cathay Pacific',
       JAL = 'Japan Airlines',
       stop('next airline')

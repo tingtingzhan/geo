@@ -13,7 +13,7 @@ earnAA <- function(x, creditcard = 'citi') {
   
   switch(EXPR = x@carrier, AA = {
     # https://www.aa.com/web/i18n/aadvantage-program/earn-miles/american-airlines-flights.html
-    fare <- round(sum(x@basefare, x@carrier_imposed))
+    fare <- round(sum(x@basefare, x@YQ, x@YR))
     reward <- fare * 5 * (1 + c(Member = 0, Gold = .4, Platinum = .6, Pro = .8, Executive = 1.2))
   })
   
@@ -53,6 +53,42 @@ earnAS <- function(x) {
 #' @rdname earnOneWorld
 #' @export
 earnBA <- function(x) {
+  
+  # https://www.britishairways.com/content/executive-club/faqs/introducing-the-british-airways-club
+  # We'll award 1 Tier Point for 1 pound (£) spent on:
+  # The base fare on any commercial British Airways, American Airlines and Iberia marketed flights
+  # The Carrier Imposed Charges (YQ and YR) on any commercial British Airways, American Airlines and Iberia marketed flights
+  # Cabin upgrades made online or at the airport on any British Airways marketed and operated flights
+  # Additional baggage pre-purchased online, through our Contact Centres or at the airport on any British Airways or Iberia marketed and operated flights
+  # Pre-paid seating charges on any British Airways or Iberia marketed and operated flights  
+  
+  # .79 is exchange rate between GBP and USD
+  status <- switch(x@carrier, AA = {
+    if (x@currency != 'usd') stop('really?')
+    round(sum(x@basefare, sum(x@YQ), sum(x@YR)) * .79)
+    
+  }, BA = {
+    NA_real_
+    #switch(
+    #      EXPR = x@code, 
+    #      Q =, O =, G = 20,
+    #      K =, L =, M =, N =, S =, V = 35, 
+    #      Y =, B =, H = 70, 
+    #      R =, I = , J =, C =, D = 140,
+    #      NA_real_)
+    
+  })
+  
+  # how is this changed after 2025?
+  reward <- round(round(x@basefare * .79) * c(Blue = 6, Bronze = 7, Silver = 8, Gold = 9))
+  
+  return(new(Class = 'loyalty', program = 'BA', reward = reward, status = status))
+  
+}
+
+
+
+earnBAold <- function(x) {
   
   # https://www.headforpoints.com/2024/02/01/how-many-british-airways-tier-points-do-i-earn-per-flight-3
   haul <- .bincode(x@mileage, breaks = c(0, 2e3, 6e3, Inf))
@@ -111,7 +147,7 @@ earnBA <- function(x) {
   # 'If you pay in another currency, the amount you’ve spent is converted to GBP using the IATA 5-day exchange rate that applied on the day of your purchase. We’ll use this converted amount to calculate your Avios.'
   reward <- round(round(x@basefare * .79) * c(Blue = 6, Bronze = 7, Silver = 8, Gold = 9))
   
-  return(new(Class = 'loyalty', program = 'BA', reward = reward, status = status))
+  return(new(Class = 'loyalty', program = 'BAold', reward = reward, status = status))
   
 }
 
