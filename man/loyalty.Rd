@@ -31,8 +31,8 @@ co-branded credit card(s)}
 \examples{
 (JSM24 = new(Class = 'airfare', carrier = 'AA', depart = 'PHL', arrive = 'PDX',
   code = 'J', currency = 'usd', basefare = 276.28, tax = 35.82, upgrade = 241.88))
-earnAA(JSM24)
-earnAS(JSM24)
-earnBA(JSM24)
+JSM24 |> earnAA()
+JSM24 |> earnAS()
+JSM24 |> earnBA()
 # earnBAold(JSM24)
 }
