@@ -54,7 +54,7 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   d0 <- data[rid0,] # eligible departure airport
   d1 <- data[rid1,] # eligible arrival airport
   
-  len <- outer(X = d0$date, Y = d1$date, FUN = function(dt0, dt1) dt1 - dt0)
+  len <- outer(X = d0$date, Y = d1$date, FUN = \(dt0, dt1) dt1 - dt0)
   # row: departure
   # col: arrival
   

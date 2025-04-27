@@ -26,7 +26,7 @@ IATA <- function(x) {
   x <- unlist(strsplit(x, split = ', ', fixed = TRUE), use.names = FALSE)
   x_airpt <- strsplit(x, split = '-', fixed = TRUE) # always 'list'
   if (any(lengths(x_airpt, use.names = FALSE) < 2L)) stop('a trip must have >=2 airports')
-  ret <- lapply(x_airpt, FUN = function(x) {
+  ret <- lapply(x_airpt, FUN = \(x) {
     if (!is.character(x) || !length(x) || anyNA(x) || !all(nzchar(x))) stop('illegal x')
     id <- match(x, table = airports_ip2location@data$iata, nomatch = NA_integer_)
     if (anyNA(id)) stop('must use IATA code')

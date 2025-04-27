@@ -82,12 +82,14 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
 setMethod(f = show, signature = 'loyalty', definition = function(object) {
   
   if (FALSE) {
-    cat(unclass(switch(
+    switch(
       EXPR = object@program,
       AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
       AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
       BA_old =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
-    )), '\n')
+    ) |> 
+      unclass() |>
+      cat('\n')
   }
   
   n <- length(object@goal)
@@ -113,15 +115,14 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
 #' @export
 autoplot.loyalty <- function(object, ...) {
   ggplot() + autolayer.loyalty(object, ...) + 
-    theme_void() +
-    theme(legend.position = 'inside')
+    theme_void()
 }
 
 
 # https://allancameron.github.io/geomtextpath/
 # this is absolutely gorgeous!!!!!
 
-#' @importFrom ggplot2 autolayer aes geom_rect scale_fill_manual scale_color_manual xlim ylim coord_polar labs theme
+#' @importFrom ggplot2 autolayer aes geom_rect ylim coord_polar
 #' @importFrom geomtextpath geom_textpath
 #' @export
 autolayer.loyalty <- function(object, ...) {
@@ -130,6 +131,7 @@ autolayer.loyalty <- function(object, ...) {
   
   max_ <- object@goal[-1L]
   min_ <- object@goal[-n]
+  ctr_ <- (min_+max_)/2
   
   switch(object@program, AA =, AS =, BAold =, BA =, CX =, JAL = {
     # https://www.oneworld.com/travel-benefits
@@ -138,7 +140,7 @@ autolayer.loyalty <- function(object, ...) {
     # https://www.oneworld.com/members/british-airways#tiers
     # https://www.oneworld.com/members/cathay-pacific#tiers
     alliance <- 'oneworld'
-    tier <- structure(1:4, levels = c('Member', 'Ruby', 'Sapphire', 'Emerald'), class = 'factor')
+    tier <- c('Member', 'Ruby', 'Sapphire', 'Emerald')
     col <- c('grey60', '#ae001a', '#262896', '#004721')
     airline_ <- switch(
       EXPR = object@program,
@@ -157,24 +159,24 @@ autolayer.loyalty <- function(object, ...) {
   
   if (anyNA(object@status)) return(invisible())
   
-  if (FALSE) list( # old version, still works
-    geom_rect(mapping = aes(ymax = max_, ymin = min_, xmax = 1, xmin = .7, fill = tier_), alpha = .2, stat = 'identity', colour = 'white'),
-    geom_rect(mapping = aes(ymax = min_ + object@status[-n], ymin = min_, xmax = 1, xmin = .7, fill = tier_), alpha = .5, stat = 'identity', colour = 'white'),
-    scale_fill_manual(values = col_, name = alliance),
-    xlim(c(0,1)),
-    coord_polar(theta = 'y'),
-    labs(title = airline_)
-  ) else list(
-    geom_rect(mapping = aes(xmin = min_, xmax = max_, ymin = .7, ymax = 1, fill = tier_), alpha = .2, color = 'white'),
-    geom_rect(mapping = aes(xmin = min_, xmax = min_ + object@status[-n], ymin = .7, ymax = 1, fill = tier_), alpha = .5, color = 'white'),
-    geom_textpath(mapping = aes(x = (min_+max_)/2, y = .9, label = names(min_), color = tier_)),
-    geom_textpath(mapping = aes(x = (min_+max_)/2, y = 1.1, label = airline_, color = tier_)),
-    #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_, color = tier_)), # no bug
-    #geom_textpath(mapping = aes(x = max(max_)/2, y = 1.1, label = airline_)), # error!! why??
-    ylim(c(0,1.2)),
-    scale_fill_manual(values = col_, name = alliance),
-    scale_color_manual(values = col_, name = alliance, guide = 'none'),
+  list(
+    
+    geom_rect(mapping = aes(xmin = min_, xmax = max_, ymin = .5, ymax = 1), fill = col_, alpha = .2, color = 'white'),
+    
+    geom_rect(mapping = aes(xmin = min_, xmax = min_ + object@status[-n], ymin = .5, ymax = 1), fill = col_, alpha = .5, color = 'white'),
+    
+    geom_textpath(mapping = aes(x = ctr_, y = 1.1, label = airline_), color = col_),
+    
+    geom_textpath(mapping = aes(x = ctr_, y = .9, label = names(min_)), color = col_),
+    
+    geom_textpath(mapping = aes(x = ctr_, y = .6, label = tier_), color = col_, fontface = 3),
+    
+    geom_textpath(mapping = aes(x = ctr_, y = .4, label = alliance), color = col_, fontface = 3),
+    
+    ylim(0, 1.2),
+    
     coord_polar(theta = 'x')
+      
   )
   
 }

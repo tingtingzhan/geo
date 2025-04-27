@@ -16,14 +16,9 @@
 #' @importFrom scales pal_hue
 #' @export
 turn_IATA <- function(object, ...) {
-  turn_coords(coords = lapply(object, FUN = function(i) airports_ip2location[i, , drop = FALSE]@coords), ...)
+  turn_coords(coords = lapply(object, FUN = \(i) airports_ip2location[i, , drop = FALSE]@coords), ...)
 }
 
-if (FALSE) {
-  stopifnot(identical(scales::hue_pal, scales::pal_hue))
-  # all examples inside are using [pal_hue].
-  # [hue_pal] might be only for back-compatibility
-}
 
 
 # @param coords \link[base]{list} of \link[base]{matrix}
