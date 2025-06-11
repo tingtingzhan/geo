@@ -68,12 +68,13 @@ leaflet_popup <- function(coords, popup = rownames(coords), ...) {
   lng <- coords[,1L]
   lat <- coords[,2L]
   
-  map_empty <- fitBounds(map = addTiles(leaflet()), lat1 = min(lat), lat2 = max(lat), lng1 = min(lng), lng2 = max(lng))
-  map_popup <- addPopups(
-    map = map_empty, lng = lng, lat = lat, popup = popup#,
-    #options = popupOptions(closeButton = FALSE, closeOnClick = FALSE)
-  )
-  return(map_popup)
+  leaflet() |>
+    addTiles() |>
+    fitBounds(lat1 = min(lat), lat2 = max(lat), lng1 = min(lng), lng2 = max(lng)) |>
+    addPopups(
+      lng = lng, lat = lat, popup = popup#,
+      #options = popupOptions(closeButton = FALSE, closeOnClick = FALSE)
+    )
   
 }
 
