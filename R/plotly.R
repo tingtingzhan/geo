@@ -26,7 +26,10 @@ turn_coords <- function(coords, ...) {
   
   p0 <- plot_geo()
 
-  col <- toRGB(pal_hue()(n = length(coords)))
+  col <- coords |>
+    length() |> 
+    pal_hue()() |>
+    toRGB()
   
   p1 <- p0
   for (i in seq_along(coords)) {

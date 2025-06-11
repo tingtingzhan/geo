@@ -36,3 +36,4 @@ JSM24 |> earnAS()
 JSM24 |> earnBA()
 # earnBAold(JSM24)
 }
+\keyword{internal}

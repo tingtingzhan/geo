@@ -26,6 +26,7 @@
 #' JSM24 |> earnBA()
 #' # earnBAold(JSM24)
 #' @name loyalty
+#' @keywords internal
 #' @aliases loyalty-class
 #' @export
 setClass(Class = 'loyalty', slots = c(
