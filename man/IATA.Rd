@@ -10,7 +10,7 @@ IATA(x)
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
 }
 \value{
-Function \link{IATA} returns an object of S3 class \code{'IATA'}, which is essentially
+Function \code{\link[=IATA]{IATA()}} returns an object of S3 class \code{'IATA'}, which is essentially
 a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 }
 \description{

@@ -14,7 +14,7 @@ if (FALSE) {
 #' 
 #' @returns 
 #' 
-#' Function [IATA] returns an object of S3 class `'IATA'`, which is essentially
+#' Function [IATA()] returns an object of S3 class `'IATA'`, which is essentially
 #' a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 #' 
 #' @examples 
@@ -23,15 +23,16 @@ if (FALSE) {
 #' @export
 IATA <- function(x) {
   if (!is.character(x)) stop('only accepts airport names as character')
-  x <- unlist(strsplit(x, split = ', ', fixed = TRUE), use.names = FALSE)
-  x_airpt <- strsplit(x, split = '-', fixed = TRUE) # always 'list'
-  if (any(lengths(x_airpt, use.names = FALSE) < 2L)) stop('a trip must have >=2 airports')
-  ret <- lapply(x_airpt, FUN = \(x) {
-    if (!is.character(x) || !length(x) || anyNA(x) || !all(nzchar(x))) stop('illegal x')
-    id <- match(x, table = airports_ip2location@data$iata, nomatch = NA_integer_)
-    if (anyNA(id)) stop('must use IATA code')
-    return(id)
-  })
+  ret <- x |>
+    strsplit(split = ', ', fixed = TRUE) |>
+    unlist(use.names = FALSE) |> 
+    strsplit(split = '-', fixed = TRUE) |>
+    lapply(FUN = \(x) {
+      if (!is.character(x) || length(x) < 2L || anyNA(x) || !all(nzchar(x))) stop('a trip must have >=2 airports')
+      id <- match(x, table = airports_ip2location@data$iata, nomatch = NA_integer_)
+      if (anyNA(id)) stop('must use IATA code')
+      return(id)
+    })
   class(ret) <- 'IATA'
   return(ret)
 }
@@ -63,9 +64,11 @@ print_IATA_ <- function(x) {
 print.IATA <- function(x, ...) {
   cat('\n')
   
-  tmp <- vapply(x, FUN = print_IATA_, FUN.VALUE = NA_real_)
-  
-  cat(sprintf(fmt = 'Total Mileage: %.1f\n\n', sum(tmp)))
+  x |>
+    vapply(FUN = print_IATA_, FUN.VALUE = NA_real_) |> 
+    sum() |> 
+    sprintf(fmt = 'Total Mileage: %.1f\n\n') |> 
+    cat()
   
   # I need to refine these functions some time
   #RoundTheWorld(x, airline = 'ANA')

@@ -16,7 +16,7 @@ popup text.  Default is the \link[base]{rownames} of \code{coords}}
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-Function \link{leaflet_popup} returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
+Function \code{\link[=leaflet_popup]{leaflet_popup()}} returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 }
 \description{
 ..

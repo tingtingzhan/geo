@@ -12,7 +12,7 @@ as.leaflet(x, ...)
 \item{...}{potential parameters, currently not in use}
 }
 \value{
-Function \link{as.leaflet} returns a \link[leaflet]{leaflet} object.
+Function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
 1 degree approx 69 miles
@@ -22,11 +22,11 @@ Google geocode API has a query limit, thus 'character' location name such as 'wh
 is not allowed.
 }
 \examples{
-as.leaflet(IATA('EWR-PHL-JFK-IAD'))
-
+'EWR-PHL-JFK-IAD' |> IATA() |> as.leaflet()
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}
 \url{https://developers.google.com/maps/documentation/geocoding/}
 \url{http://shiny.rstudio.com/gallery}
 }
+\keyword{internal}
