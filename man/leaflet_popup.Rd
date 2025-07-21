@@ -21,3 +21,4 @@ Function \code{\link[=leaflet_popup]{leaflet_popup()}} returns an \link[leaflet]
 \description{
 ..
 }
+\keyword{internal}

@@ -9,7 +9,7 @@ RoxygenNote: 7.3.2
 Encoding: UTF-8
 License: GPL-2
 Depends: R (>= 4.5)
-Imports: cli, geomtextpath (== 0.1.5), geosphere (== 1.5.20), ggplot2 (== 3.5.2), plotly (== 4.11.0), leaflet (== 2.2.2), scales, methods
+Imports: cli, geomtextpath (== 0.2.0), geosphere (== 1.5.20), ggplot2 (== 3.5.2), plotly (== 4.11.0), leaflet (== 2.2.2), scales, methods
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        c('aut', 'cre'), email = 'tingtingzhan@gmail.com',
        comment = c(ORCID = '0000-0001-9971-4844')))

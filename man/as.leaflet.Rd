@@ -2,9 +2,15 @@
 % Please edit documentation in R/leaflet.R
 \name{as.leaflet}
 \alias{as.leaflet}
+\alias{as.leaflet.IATA}
+\alias{as.leaflet.SpatialPoints}
 \title{Print using \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
+
+\method{as.leaflet}{IATA}(x, ...)
+
+\method{as.leaflet}{SpatialPoints}(x, ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}

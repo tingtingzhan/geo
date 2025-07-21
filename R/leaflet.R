@@ -25,9 +25,12 @@
 #' @examples
 #' 'EWR-PHL-JFK-IAD' |> IATA() |> as.leaflet()
 #' @keywords internal
+#' @name as.leaflet
 #' @export
 as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
+#' @rdname as.leaflet
+#' @export as.leaflet.IATA
 #' @export
 as.leaflet.IATA <- function(x, ...) {
   ap <- airports_ip2location[x[[1L]], , drop = FALSE] # 'SpatialPoints'
@@ -35,6 +38,8 @@ as.leaflet.IATA <- function(x, ...) {
 }
 
 
+#' @rdname as.leaflet
+#' @export as.leaflet.SpatialPoints
 #' @export
 as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ...)
 
@@ -58,6 +63,7 @@ as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ..
 #' @returns
 #' Function [leaflet_popup()] returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 #' 
+#' @keywords internal
 #' @importFrom leaflet leaflet addPopups popupOptions addTiles fitBounds
 #' @export
 leaflet_popup <- function(coords, popup = rownames(coords), ...) {
