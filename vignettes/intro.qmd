@@ -45,11 +45,11 @@ R terminology might be different from that of mathematics and statistics. Please
 Package **`iata`** `Imports` packages
 
 -   **`cli`** [@cli, v`r packageVersion('cli')`], for attractive command line interfaces
--   `r '\U1f5dd'` **`ggplot2`** [@ggplot2, v`r packageVersion('ggplot2')`], **`scales`** [@scales, v`r packageVersion('scales')`] and **`geomtextpath`** [@geomtextpath, v`r packageVersion('geomtextpath')`], key dependency, for educational visualization
+-   `r '\U1f5dd'` **`ggplot2`** [@ggplot2, v`r packageVersion('ggplot2')`], **`scales`** [@scales, v`r packageVersion('scales')`] and **`geomtextpath`** [@geomtextpath, v`r packageVersion('geomtextpath')`], key dependency, for visualization
 -   `r '\U1f5dd'` **`geosphere`** [@geosphere, v`r packageVersion('geosphere')`], key dependency, for function `geosphere::distGeo()`
--   **`leaflet`** [@leaflet, v`r packageVersion('leaflet')`]
+-   `r '\U1f5dd'` **`leaflet`** [@leaflet, v`r packageVersion('leaflet')`], for interactive web maps via JavaScript [`leaflet`](https://leafletjs.com) library
 -   **`methods`** shipped with `r R.version$version.string`, for `S4` object oriented system
--   `r '\U1f5dd'` **`plotly`** [@plotly, v`r packageVersion('plotly')`], key dependency, for ..
+-   `r '\U1f5dd'` **`plotly`** [@plotly, v`r packageVersion('plotly')`], key dependency, for interactive web graphics via JavaScript [`plotly.js`](https://plotly.com/javascript/) library
 
 
 ## Prerequisite
