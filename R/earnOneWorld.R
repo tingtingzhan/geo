@@ -70,7 +70,7 @@ earnASold <- function(x) {
       NA_real_))
   })
   
-  return(new(Class = 'loyalty', program = 'AS', reward = reward, status = reward))
+  return(new(Class = 'loyalty', program = 'ASold', reward = reward, status = reward))
   
 }
 

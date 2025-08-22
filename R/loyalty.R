@@ -128,7 +128,7 @@ autoplot.loyalty <- function(object, ...) {
 # https://allancameron.github.io/geomtextpath/
 # this is absolutely gorgeous!!!!!
 
-#' @importFrom ggplot2 autolayer aes geom_rect ylim coord_polar
+#' @importFrom ggplot2 autolayer aes geom_rect xlim ylim coord_polar
 #' @importFrom geomtextpath geom_textpath
 #' @export
 autolayer.loyalty <- function(object, ...) {
@@ -171,15 +171,19 @@ autolayer.loyalty <- function(object, ...) {
     
     geom_rect(mapping = aes(xmin = min_, xmax = min_ + object@status[-n], ymin = .5, ymax = 1), fill = col_, alpha = .5, color = 'white'),
     
-    geom_textpath(mapping = aes(x = ctr_, y = 1.1, label = airline_), color = col_),
+    geom_textpath(mapping = aes(x = ctr_, y = 1.1, label = airline_), color = 'grey60'),
     
     geom_textpath(mapping = aes(x = ctr_, y = .9, label = names(min_)), color = col_),
     
     geom_textpath(mapping = aes(x = ctr_, y = .6, label = tier_), color = col_, fontface = 3),
     
-    geom_textpath(mapping = aes(x = ctr_, y = .4, label = alliance), color = col_, fontface = 3),
+    geom_textpath(mapping = aes(x = ctr_, y = .4, label = alliance), color = 'grey60', fontface = 3),
     
     ylim(0, 1.2),
+    
+    xlim(0, max(max_) * 1.03),
+    
+    geom_textpath(mapping = aes(x = rep(max(max_), times = 2L), y = c(.4, 1.1)), label = names(object@goal)[n], color = 'grey50', fontface = 2, text_only = TRUE),
     
     coord_polar(theta = 'x')
       
