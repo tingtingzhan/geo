@@ -4,6 +4,7 @@
 \alias{earnOneWorld}
 \alias{earnAA}
 \alias{earnAS}
+\alias{earnASold}
 \alias{earnBA}
 \alias{earnCX}
 \alias{earnJAL}
@@ -12,6 +13,8 @@
 earnAA(x, creditcard = "citi")
 
 earnAS(x)
+
+earnASold(x)
 
 earnBA(x)
 

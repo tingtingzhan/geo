@@ -24,7 +24,8 @@
 #' JSM24 |> earnAA()
 #' JSM24 |> earnAS()
 #' JSM24 |> earnBA()
-#' # earnBAold(JSM24)
+#' # JSM24 |> earnBAold()
+#' # JSM24 |> earnASold()
 #' @name loyalty
 #' @keywords internal
 #' @aliases loyalty-class
@@ -39,7 +40,7 @@ setClass(Class = 'loyalty', slots = c(
 
 
 #' @importFrom geosphere distGeo
-setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, ...) {
+setMethod(f = initialize, signature = 'loyalty', definition = \(.Object, ...) {
   
   x <- callNextMethod(.Object, ...)
   
@@ -50,14 +51,17 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
       c(Gold = 40e3, Platinum = (75-10)*1e3, 'Platinum Pro' = (125-20)*1e3, Executive = (200-20)*1e3)
     } else c(Gold = 40e3, Platinum = 75e3, 'Platinum Pro' = 125e3, Executive = 200e3)
   }, AS = {
+    # https://www.alaskaair.com/atmosrewards
+    c(Silver = 20e3, Gold = 40e3, Platinum = 80e3, Titanium = 135e3)
+  }, ASold = {
     # https://www.alaskaair.com/content/mileage-plan/membership-benefits
     c(MVP = 20e3, Gold = 40e3, '75K' = 75e3, '100K' = 100e3)
-  }, BAold = {
-    # https://www.britishairways.com/content/executive-club/about-the-club/tiers-and-benefits
-    c(Bronze = 300, Silver = 600, Gold = 1500)
   }, BA = {
     # https://www.britishairways.com/content/executive-club/faqs/introducing-the-british-airways-club
     c(Bronze = 3.5e3, Silver = 7.5e3, Gold = 20e3)
+  }, BAold = {
+    # https://www.britishairways.com/content/executive-club/about-the-club/tiers-and-benefits
+    c(Bronze = 300, Silver = 600, Gold = 1500)
   }, CX = {
     # https://www.cathaypacific.com/cx/en_US/membership/status-points.html
     c(Silver = 300, Gold = 600, Diamond = 1200)
@@ -80,14 +84,14 @@ setMethod(f = initialize, signature = 'loyalty', definition = function(.Object, 
 
 
 
-setMethod(f = show, signature = 'loyalty', definition = function(object) {
+setMethod(f = show, signature = 'loyalty', definition = \(object) {
   
   if (FALSE) {
     switch(
       EXPR = object@program,
-      AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners'),
+      ASold =, AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/atmosrewards/content/partners/airlines'),
       AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-      BA_old =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+      BAold =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
     ) |> 
       unclass() |>
       cat('\n')
@@ -115,7 +119,8 @@ setMethod(f = show, signature = 'loyalty', definition = function(object) {
 #' @importFrom grid unit
 #' @export
 autoplot.loyalty <- function(object, ...) {
-  ggplot() + autolayer.loyalty(object, ...) + 
+  ggplot() + 
+    autolayer.loyalty(object, ...) + 
     theme_void()
 }
 
@@ -134,7 +139,7 @@ autolayer.loyalty <- function(object, ...) {
   min_ <- object@goal[-n]
   ctr_ <- (min_+max_)/2
   
-  switch(object@program, AA =, AS =, BAold =, BA =, CX =, JAL = {
+  switch(object@program, AA =, AS =, ASold =, BA =, BAold =, CX =, JAL = {
     # https://www.oneworld.com/travel-benefits
     # https://www.oneworld.com/members/alaska-airlines#tiers
     # https://www.oneworld.com/members/american-airlines#tiers
@@ -145,7 +150,7 @@ autolayer.loyalty <- function(object, ...) {
     col <- c('grey60', '#ae001a', '#262896', '#004721')
     airline_ <- switch(
       EXPR = object@program,
-      AS = 'Alaska Airlines',
+      ASold =, AS = 'Alaska Airlines',
       AA = 'American Airlines',
       BAold =, BA = 'British Airways',
       CX = 'Cathay Pacific',

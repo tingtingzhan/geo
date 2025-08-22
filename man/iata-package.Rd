@@ -4,9 +4,9 @@
 \name{iata-package}
 \alias{iata}
 \alias{iata-package}
-\title{iata}
+\title{iata: IATA}
 \description{
-..
+Need to think more..
 }
 \author{
 \strong{Maintainer}: Tingting Zhan \email{tingtingzhan@gmail.com} (\href{https://orcid.org/0000-0001-9971-4844}{ORCID})

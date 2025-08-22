@@ -26,6 +26,31 @@ earnAA <- function(x, creditcard = 'citi') {
 #' @export
 earnAS <- function(x) {
   
+  #switch(x@carrier, AA = { # does carrier matter?
+    # https://www.alaskaair.com/atmosrewards
+    # https://www.uscreditcardguide.com/alaska-announces-atmos-rewards-program/
+    reward <- max(
+      round(x@mileage),
+      round(sum(x@basefare, x@YQ, x@YR)) * 5,
+      500
+    )
+
+  #})
+  
+  return(new(Class = 'loyalty', program = 'AS', reward = reward, status = reward))
+  
+}
+
+
+
+
+
+
+
+#' @rdname earnOneWorld
+#' @export
+earnASold <- function(x) {
+  
   switch(x@carrier, AA = {
     # https://www.alaskaair.com/content/mileage-plan/how-to-earn-miles/airline-partners/american-airlines?lid=airline-partners:partners-american
     reward <- round(round(x@mileage) * switch(
@@ -48,6 +73,13 @@ earnAS <- function(x) {
   return(new(Class = 'loyalty', program = 'AS', reward = reward, status = reward))
   
 }
+
+
+
+
+
+
+
 
 
 #' @rdname earnOneWorld

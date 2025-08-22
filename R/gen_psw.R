@@ -14,11 +14,12 @@
 #' Use `character()`, `''` or `NULL` to indicate no symbol allowed
 #' 
 #' @returns
-#' Function [gen_psw] returns a \link[base]{character} scalar.
+#' Function [gen_psw()] returns a \link[base]{character} scalar.
 #' 
 #' @examples
 #' gen_psw(50L)
 #' 
+#' @keywords internal
 #' @export
 gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = '~!@#$%^&*') {
   

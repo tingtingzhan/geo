@@ -34,6 +34,7 @@ co-branded credit card(s)}
 JSM24 |> earnAA()
 JSM24 |> earnAS()
 JSM24 |> earnBA()
-# earnBAold(JSM24)
+# JSM24 |> earnBAold()
+# JSM24 |> earnASold()
 }
 \keyword{internal}
