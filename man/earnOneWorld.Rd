@@ -6,6 +6,7 @@
 \alias{earnAS}
 \alias{earnASold}
 \alias{earnBA}
+\alias{earnBAold}
 \alias{earnCX}
 \alias{earnJAL}
 \title{Credit a Flight to an Airline in oneworld Alliance}
@@ -17,6 +18,8 @@ earnAS(x)
 earnASold(x)
 
 earnBA(x)
+
+earnBAold(x)
 
 earnCX(x)
 

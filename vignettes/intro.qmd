@@ -1,0 +1,217 @@
+---
+title: "Travel Plans"
+author: Tingting Zhan
+date: "`r Sys.Date()`"
+format: 
+  html:
+    page-layout: full
+    html-math-method: katex
+number-sections: true
+toc: true
+toc-location: left
+toc-depth: 4
+toc-title: ''
+editor: source
+bibliography: iata.bib
+knitr:
+  opts_chunk: 
+    collapse: true
+    comment: "#" 
+vignette: >
+  %\VignetteIndexEntry{intro}
+  %\VignetteEngine{quarto::html}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{=html}
+<!--
+`r knitr::asis_output('\U1f5dd')`
+seems not needed
+-->
+```
+
+# Introduction
+
+This vignette of R package **`iata`** ([Github](https://github.com/tingtingzhan/iata), [RPubs](https://rpubs.com/tingtingzhan/iata)) documents ...
+
+<!--
+-   the creation of `groupedHyperframe` object,
+-   the batch processes for a `hyperframe` and/or `groupedHyperframe`, and
+-   the aggregation of various statistics over (nested) grouping structure.
+-->
+
+R terminology might be different from that of mathematics and statistics. Please refer to @sec-terms for explanation and reference of the terms and abbreviations used in this vignette.
+
+Package **`iata`** `Imports` packages
+
+-   **`cli`** [@cli, v`r packageVersion('cli')`], for attractive command line interfaces
+-   `r '\U1f5dd'` **`ggplot2`** [@ggplot2, v`r packageVersion('ggplot2')`], **`scales`** [@scales, v`r packageVersion('scales')`] and **`geomtextpath`** [@geomtextpath, v`r packageVersion('geomtextpath')`], key dependency, for educational visualization
+-   `r '\U1f5dd'` **`geosphere`** [@geosphere, v`r packageVersion('geosphere')`], key dependency, for function `geosphere::distGeo()`
+-   **`leaflet`** [@leaflet, v`r packageVersion('leaflet')`]
+-   **`methods`** shipped with `r R.version$version.string`, for `S4` object oriented system
+-   `r '\U1f5dd'` **`plotly`** [@plotly, v`r packageVersion('plotly')`], key dependency, for ..
+
+
+## Prerequisite
+
+Package **`iata`** requires R version 4.5.0 (released 2025-04-11) or higher ([macOS](https://cran.r-project.org/bin/macosx/), [Windows](https://cran.r-project.org/bin/windows/base/)). An Integrated Development Environment (IDE), e.g., [RStudio](https://posit.co/download/rstudio-desktop/) [@RStudio] or [Positron](https://positron.posit.co/download.html), is not required, but highly recommended. This vignette is created under `r R.version$version.string` using packages **`knitr`** [@knitr, v`r packageVersion('knitr')`], **`quarto`** [@quarto, v`r packageVersion('quarto')` with [Quarto](https://quarto.org/docs/get-started/) v`r quarto::quarto_version()`] and **`rmarkdown`** [@rmarkdown, v`r packageVersion('rmarkdown')`].
+
+```{r}
+#| code-fold: true
+#| code-summary: "Environment on author's computer"
+Sys.info()[c('sysname', 'release', 'machine')]
+R.version
+```
+
+
+Experimental (and maybe unstable) features are released *extremely frequently* to [Github](https://github.com/tingtingzhan/iata). [Active developers should use the Github version; suggestions and bug reports are welcome!]{style="background-color: #FFFF00"}
+
+```{r}
+#| eval: false
+remotes::install_github('tingtingzhan/iata')
+```
+
+
+## Getting Started
+
+Examples in this vignette require that the `search` path has
+
+```{r}
+#| message: false
+library(iata)
+```
+
+```{r}
+#| echo: false
+op = par(no.readonly = TRUE)
+#options(mc.cores = 1L) # for CRAN submission
+```
+
+
+{{< pagebreak >}}
+
+# Flight Path
+
+A mileage run.
+
+```{r}
+tripA = 'YYZ-YOW-YFB-YAB-YRB-YGZ, YGZ-YRB-YAB-YFB-YVP-YUL-YYZ' |>
+  IATA()
+```
+
+```{r}
+tripA
+```
+
+```{r}
+#| fig-height: 4
+tripA |> 
+  plot()
+```
+
+
+Another mileage run.
+
+```{r}
+tripB = 'SFO-HNL-MAJ-KWA-KSA-PNI-TKK-GUM-ROR-MNL-NRT-KIX-HND-SFO' |>
+  IATA()
+```
+
+```{r}
+tripB
+```
+
+```{r}
+#| fig-height: 4
+tripB |> 
+  plot()
+```
+
+
+{{< pagebreak >}}
+
+# Airline Status 
+
+```{r}
+JSM24 = new(
+  Class = 'airfare', 
+  carrier = 'AA', 
+  depart = 'PHL', arrive = 'PDX', 
+  code = 'J', currency = 'usd', 
+  basefare = 276.28, tax = 35.82, upgrade = 241.88
+)
+```
+
+```{r}
+JSM24
+```
+
+
+
+```{r}
+#| fig-height: 4
+JSM24 |> 
+  earnAA()
+```
+
+
+```{r}
+#| fig-height: 4
+JSM24 |> 
+  earnAS()
+```
+
+<details><summary>Before Alaska Airlines devaluation 2025</summary>
+```{r}
+#| fig-height: 4
+JSM24 |> 
+  earnASold()
+```
+</details>
+
+
+
+```{r}
+#| fig-height: 4
+JSM24 |> 
+  earnBA()
+```
+
+<details><summary>Before British Airlines devaluation 2024</summary>
+```{r}
+#| fig-height: 4
+JSM24 |> 
+  earnBAold()
+```
+</details>
+
+# Small Map
+
+```{r}
+#| fig-width: 5
+'EWR-PHL-JFK-IAD' |> 
+  IATA() |> 
+  as.leaflet()
+```
+
+
+
+
+# Terms & Abbreviations {#sec-terms}
+
+| Term / Abbreviation | Description |
+|------------------------------------|------------------------------------|
+| CRAN, R | The Comprehensive R Archive Network, <https://cran.r-project.org> |
+| `Depends`, `Imports`, `Suggests`, `Enhances` | [*Writing R Extensions*, Section 1.1.3 *Package Dependencies*](https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#Package-Dependencies) |
+| [`|>`](https://search.r-project.org/R/refmans/base/html/pipeOp.html) | Forward pipe operator introduced since R version 4.1.0 |
+| [`attr`](https://search.r-project.org/R/refmans/base/html/attr.html), [`attributes`](https://search.r-project.org/R/refmans/base/html/attributes.html) | Attributes |
+| [`data.frame`](https://search.r-project.org/R/refmans/base/html/data.frame.html) | Data frame |
+| `S3`, `generic`, [`methods`](https://search.r-project.org/R/refmans/utils/html/methods.html) | `S3` object oriented system, [`UseMethod`](https://search.r-project.org/R/refmans/base/html/UseMethod.html); [`getS3method`](https://search.r-project.org/R/refmans/utils/html/getS3method.html); <https://adv-r.hadley.nz/s3.html> |
+| `S4`, `generic`, `methods` | `S4` object oriented system, [`isS4`](https://search.r-project.org/R/refmans/base/html/isS4.html); [`setClass`](https://search.r-project.org/R/refmans/methods/html/setClass.html); [`setMethod`](https://search.r-project.org/R/refmans/methods/html/setMethod.html); [`getMethod`](https://search.r-project.org/R/refmans/methods/html/getMethod.html); <https://adv-r.hadley.nz/s4.html> |
+
+{{< pagebreak >}}
+
+# References
+
+::: {#refs}
+:::

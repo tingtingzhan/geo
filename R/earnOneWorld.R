@@ -119,7 +119,8 @@ earnBA <- function(x) {
 }
 
 
-
+#' @rdname earnOneWorld
+#' @export
 earnBAold <- function(x) {
   
   # https://www.headforpoints.com/2024/02/01/how-many-british-airways-tier-points-do-i-earn-per-flight-3
