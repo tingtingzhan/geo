@@ -1,9 +1,11 @@
 
 
 
-#' @importFrom cli bg_br_yellow
-#' @importFrom cli style_hyperlink
-#' @importFrom methods setClass setMethod callNextMethod show new initialize
+#' @import cli
+#' @import methods
 #' @keywords internal
 '_PACKAGE'
 
+# function name clash
+# ggplot2::last_plot vs. plotly::last_plot
+# plotly::filter vs. stats::filter

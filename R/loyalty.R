@@ -116,7 +116,6 @@ setMethod(f = show, signature = 'loyalty', definition = \(object) {
 
 
 #' @importFrom ggplot2 autoplot ggplot theme_void
-#' @importFrom grid unit
 #' @export
 autoplot.loyalty <- function(object, ...) {
   ggplot() + 
