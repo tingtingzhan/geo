@@ -35,6 +35,7 @@
 #' ana.099.im(ana, US = c('IAH'))
 #' ana.099.im(ana, US = c('MEX'), min. = 20L, max. = Inf)
 #' }
+#' @keywords internal
 #' @importFrom plotly plot_ly toRGB
 #' @importFrom scales pal_hue
 #' @importFrom stats quantile
@@ -73,7 +74,7 @@ ana.099.im <- function(data, US, min. = 21L, max. = 45L, ...) {
   
   # sankey diagram
   
-  node_flight <- function(data) with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date, format = '\'%y-%m-%d'), flight_no, departure, arrival))
+  node_flight <- \(data) with(data, sprintf(fmt = '%s %s \n%s - %s', format.Date(date, format = '\'%y-%m-%d'), flight_no, departure, arrival))
   sk1 <- node_flight(d0_)
   sk2 <- node_flight(d1_)
   
