@@ -96,7 +96,7 @@ A mileage run.
 
 ```{r}
 tripA = 'YYZ-YOW-YFB-YAB-YRB-YGZ, YGZ-YRB-YAB-YFB-YVP-YUL-YYZ' |>
-  IATA()
+  as.iata()
 ```
 
 ```{r}
@@ -114,7 +114,7 @@ Another mileage run.
 
 ```{r}
 tripB = 'SFO-HNL-MAJ-KWA-KSA-PNI-TKK-GUM-ROR-MNL-NRT-KIX-HND-SFO' |>
-  IATA()
+  as.iata()
 ```
 
 ```{r}
@@ -190,7 +190,7 @@ JSM24 |>
 ```{r}
 #| fig-width: 5
 'EWR-PHL-JFK-IAD' |> 
-  IATA() |> 
+  as.iata() |> 
   as.leaflet()
 ```
 

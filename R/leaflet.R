@@ -23,16 +23,16 @@
 #' \url{http://shiny.rstudio.com/gallery}
 #'
 #' @examples
-#' 'EWR-PHL-JFK-IAD' |> IATA() |> as.leaflet()
+#' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
 #' @keywords internal
 #' @name as.leaflet
 #' @export
 as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 #' @rdname as.leaflet
-#' @export as.leaflet.IATA
+#' @export as.leaflet.iatalist
 #' @export
-as.leaflet.IATA <- function(x, ...) {
+as.leaflet.iatalist <- function(x, ...) {
   ap <- airports_ip2location[x[[1L]], , drop = FALSE] # 'SpatialPoints'
   leaflet_popup(coords = ap@coords, popup = ap$iata, ...)
 }

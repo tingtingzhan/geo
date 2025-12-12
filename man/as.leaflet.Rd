@@ -2,13 +2,13 @@
 % Please edit documentation in R/leaflet.R
 \name{as.leaflet}
 \alias{as.leaflet}
-\alias{as.leaflet.IATA}
+\alias{as.leaflet.iatalist}
 \alias{as.leaflet.SpatialPoints}
 \title{Print using \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
 
-\method{as.leaflet}{IATA}(x, ...)
+\method{as.leaflet}{iatalist}(x, ...)
 
 \method{as.leaflet}{SpatialPoints}(x, ...)
 }
@@ -28,7 +28,7 @@ Google geocode API has a query limit, thus 'character' location name such as 'wh
 is not allowed.
 }
 \examples{
-'EWR-PHL-JFK-IAD' |> IATA() |> as.leaflet()
+'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}

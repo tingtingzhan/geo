@@ -27,7 +27,7 @@
 #' c(ana$departure, ana$arrival) |> 
 #'  setdiff('TYO') |>
 #'  paste(collapse = '-') |>
-#'  IATA() |>
+#'  as.iata() |>
 #'  as.leaflet()
 #' ana.099.im(ana, US = c('JFK', 'IAD'), min. = 20, max. = Inf)
 #' ana.099.im(ana, US = c('SFO', 'LAX'), min. = 20, max. = Inf)

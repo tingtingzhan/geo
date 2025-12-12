@@ -12,6 +12,6 @@ Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        c('aut', 'cre'), email = 'tingtingzhan@gmail.com',
        comment = c(ORCID = '0000-0001-9971-4844')))
 Depends: R (>= 4.5)
-Imports: cli, geomtextpath (== 0.2.0), geosphere (== 1.5.20), ggplot2 (== 4.0.1), plotly (== 4.11.0), leaflet (== 2.2.3), scales, methods
+Imports: cli, methods, geomtextpath (== 0.2.0), geosphere (== 1.5.20), ggplot2 (== 4.0.1), plotly (== 4.11.0), leaflet (== 2.2.3), scales
 Suggests: knitr, quarto, rmarkdown
 VignetteBuilder: quarto

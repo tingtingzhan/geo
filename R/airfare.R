@@ -36,15 +36,20 @@ setClass(Class = 'airfare', slots = c(
 
 #' @importFrom geosphere distGeo
 setMethod(f = initialize, signature = 'airfare', definition = \(.Object, ...) {
+  
   x <- callNextMethod(.Object, ...)
-  id <- match(c(x@depart, x@arrive), table = airports_ip2location@data$iata, nomatch = NA_integer_)
-  if (anyNA(id)) stop('unknown departure and/or arrival airport')
-  coords <- airports_ip2location@coords[id,]
-  print(turn_coords(list(coords)))
+  
+  x. <- c(x@depart, x@arrive) |>
+    paste(collapse = '-') |>
+    as.iata()
+  x.[[1L]] |> plot.iata() |> print()
+  
+  coords <- airports_ip2location@coords[x.[[1L]],]
   if (length(x@mileage)) warning('Do not manully put in @mileage !!')
   x@mileage <- distGeo(p1 = coords[1L,], p2 = coords[2L,]) / 1609.34
   x@currency <- match.arg(tolower(x@currency), choices = c('usd', 'gbp'))
   return(x)
+  
 })
 
 
