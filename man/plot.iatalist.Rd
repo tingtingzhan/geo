@@ -7,11 +7,12 @@
 \method{plot}{iatalist}(x, ..., map = plot_geo())
 }
 \arguments{
-\item{x}{\code{'iatalist'}}
+\item{x}{an \code{'iatalist'}}
 
 \item{...}{..}
 
-\item{map}{..}
+\item{map}{an htmlwidget of world map, default is the return of function
+\link[plotly]{plot_geo}}
 }
 \description{
 ..

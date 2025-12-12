@@ -2,7 +2,7 @@
 % Please edit documentation in R/as.iata.R
 \name{plot.iata}
 \alias{plot.iata}
-\title{plot.iata}
+\title{Draw \code{'iata'} using \CRANpkg{plotly}}
 \usage{
 \method{plot}{iata}(
   x,
@@ -21,17 +21,18 @@
 )
 }
 \arguments{
-\item{x}{\code{'iata'}}
+\item{x}{an \code{'iata'}}
 
 \item{...}{..}
 
-\item{map}{..}
+\item{map}{an htmlwidget of world map, default is the return of function
+\link[plotly]{plot_geo}}
 
-\item{col}{..}
+\item{col}{\link[base]{character} scalar}
 
-\item{geo}{\url{https://plotly.com/r/reference/layout/geo/}}
+\item{geo}{a \link[base]{list}, see \url{https://plotly.com/r/reference/layout/geo/} for detail}
 }
 \description{
-plot.iata
+Draw \code{'iata'} using \CRANpkg{plotly}
 }
 \keyword{internal}
