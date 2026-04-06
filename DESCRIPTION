@@ -15,7 +15,7 @@ Depends: R (>= 4.5)
 Imports: methods, 
     cli (== 3.6.5), 
     geomtextpath (== 0.2.0), 
-    geosphere (== 1.6.5), 
+    geosphere (== 1.6.8), 
     ggplot2 (== 4.0.2), 
     leaflet (== 2.2.3), 
     plotly (== 4.12.0), 
