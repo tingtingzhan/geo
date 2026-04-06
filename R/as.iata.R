@@ -37,15 +37,13 @@ as.iata <- function(x) {
   return(ret)
 }
 
-#' @title print.iata
-#' 
-#' @param x `'iata'`
-#' 
-#' @param ... ..
-#' 
-#' @keywords internal
+
+
+
+
+
+
 #' @importFrom geosphere distGeo
-#' @export print.iata
 #' @export
 print.iata <- function(x, ...) {
   ap <- airports_ip2location[x, , drop = FALSE]
@@ -66,14 +64,7 @@ print.iata <- function(x, ...) {
 }
 
 
-#' @title print.iatalist
-#' 
-#' @param x `'iatalist'`
-#' 
-#' @param ... ..
-#' 
-#' @keywords internal
-#' @export print.iatalist
+
 #' @export
 print.iatalist <- function(x, ...) {
   
@@ -116,7 +107,7 @@ print.iatalist <- function(x, ...) {
 #' \url{https://plotly.com/r/lines-on-maps/}
 #' 
 #' @keywords internal
-#' @export plot.iatalist
+#' @method plot iatalist
 #' @export
 plot.iatalist <- function(x, ..., map = plot_geo()) {
   
@@ -152,7 +143,7 @@ plot.iatalist <- function(x, ..., map = plot_geo()) {
 #' @keywords internal
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
 #' @importFrom scales pal_hue
-#' @export plot.iata
+#' @method plot iata
 #' @export
 plot.iata <- function(
     x,

@@ -3,6 +3,7 @@
 
 #' @import cli
 #' @import methods
+#' @import sp
 #' @keywords internal
 '_PACKAGE'
 
