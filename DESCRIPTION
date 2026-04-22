@@ -13,10 +13,10 @@ Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        comment = c(ORCID = '0000-0001-9971-4844')))
 Depends: R (>= 4.5)
 Imports: methods, 
-    cli (== 3.6.5), 
+    cli (== 3.6.6), 
     geomtextpath (== 0.2.0), 
     geosphere (== 1.6.8), 
-    ggplot2 (== 4.0.2), 
+    ggplot2 (== 4.0.3), 
     leaflet (== 2.2.3), 
     plotly (== 4.12.0), 
     scales (== 1.4.0),
