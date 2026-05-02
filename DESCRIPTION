@@ -4,8 +4,6 @@ Title: IATA
 Version: 0.1.0
 Description: Need to think more..
 Language: en-US
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Encoding: UTF-8
 License: GPL-2
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
@@ -21,3 +19,5 @@ Imports: methods,
     plotly (== 4.12.0), 
     scales (== 1.4.0),
     sp (== 2.2.1)
+Config/roxygen2/version: 8.0.0
+Config/roxygen2/markdown: TRUE
