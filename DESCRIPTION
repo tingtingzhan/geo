@@ -9,7 +9,7 @@ License: GPL-2
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        c('aut', 'cre'), email = 'tingtingzhan@gmail.com',
        comment = c(ORCID = '0000-0001-9971-4844')))
-Depends: R (>= 4.5)
+Depends: R (>= 4.6)
 Imports: methods, 
     cli (== 3.6.6), 
     geomtextpath (== 0.2.0), 
