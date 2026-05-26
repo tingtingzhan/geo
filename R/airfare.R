@@ -74,7 +74,6 @@ setMethod(f = show, signature = 'airfare', definition = \(object) {
     cat()
   
   object@code |> 
-    bg_br_yellow() |> 
     sprintf(fmt = 'Booking Code: %s\n') |> 
     cat()
   

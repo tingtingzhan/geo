@@ -2,6 +2,7 @@ Package: iata
 Type: Package
 Title: IATA
 Version: 0.1.0
+Date: 2026-05-25
 Description: Need to think more..
 Language: en-US
 Encoding: UTF-8
@@ -11,7 +12,6 @@ Authors@R: c(person(given = 'Tingting', family = 'Zhan', role =
        comment = c(ORCID = '0000-0001-9971-4844')))
 Depends: R (>= 4.6)
 Imports: methods, 
-    cli (== 3.6.6), 
     geomtextpath (== 0.2.0), 
     geosphere (== 1.6.8), 
     ggplot2 (== 4.0.3), 

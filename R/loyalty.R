@@ -86,16 +86,16 @@ setMethod(f = initialize, signature = 'loyalty', definition = \(.Object, ...) {
 
 setMethod(f = show, signature = 'loyalty', definition = \(object) {
   
-  if (FALSE) {
-    switch(
-      EXPR = object@program,
-      ASold =, AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/atmosrewards/content/partners/airlines'),
-      AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
-      BAold =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
-    ) |> 
-      unclass() |>
-      cat('\n')
-  }
+  #if (FALSE) {
+  #  switch(
+  #    EXPR = object@program,
+  #    ASold =, AS = style_hyperlink(text = 'Alaska Airlines\U1f1fa\U1f1f8', url = 'https://www.alaskaair.com/atmosrewards/content/partners/airlines'),
+  #    AA = style_hyperlink(text = 'American Airlines\U1f1fa\U1f1f8', url = 'https://www.aa.com/i18n/travel-info/partner-airlines/american-airlines.jsp'),
+  #    BAold =, BA = style_hyperlink(text = 'British Airways\U1f1ec\U1f1e7', url = 'https://www.britishairways.com/content/executive-club/avios/collecting-avios/flights')
+  #  ) |> 
+  #    unclass() |>
+  #    cat('\n')
+  #}
   
   n <- length(object@goal)
   prog_zero <- object@status[-n] / object@goal[-1L]
