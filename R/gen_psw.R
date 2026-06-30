@@ -14,7 +14,7 @@
 #' Use `character()`, `''` or `NULL` to indicate no symbol allowed
 #' 
 #' @returns
-#' Function [gen_psw()] returns a \link[base]{character} scalar.
+#' The function [gen_psw()] returns a \link[base]{character} scalar.
 #' 
 #' @examples
 #' gen_psw(50L)

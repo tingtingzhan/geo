@@ -10,13 +10,12 @@
 #' 
 #' @returns 
 #' 
-#' Function [as.iata()] returns an object of S3 class `'iata'`, which is essentially
+#' The function [as.iata()] returns an object of S3 class `'iata'`, which is essentially
 #' a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 #' 
 #' @examples 
 #' as.iata('NRT-HNL-YVR')
 #' as.iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
-#' @keywords internal
 #' @export
 as.iata <- function(x) {
   if (!is.character(x)) stop('only accepts airport names as character')
@@ -91,23 +90,9 @@ print.iatalist <- function(x, ...) {
 
 
 
-#' @title Draw `'iatalist'` using \CRANpkg{plotly}
-#' 
-#' @description
-#' ..
-#' 
-#' @param x an `'iatalist'`
-#' 
-#' @param ... ..
-#' 
-#' @param map an htmlwidget of world map, default is the return of function
-#' \link[plotly]{plot_geo}
-#' 
-#' @references 
-#' \url{https://plotly.com/r/lines-on-maps/}
-#' 
-#' @keywords internal
-#' @method plot iatalist
+# @param map an htmlwidget of world map, default is the return of the function \link[plotly]{plot_geo}
+# @references 
+# \url{https://plotly.com/r/lines-on-maps/}
 #' @export
 plot.iatalist <- function(x, ..., map = plot_geo()) {
   
@@ -127,23 +112,10 @@ plot.iatalist <- function(x, ..., map = plot_geo()) {
 
 
 
-#' @title Draw `'iata'` using \CRANpkg{plotly}
-#' 
-#' @param x an `'iata'`
-#' 
-#' @param ... ..
-#' 
-#' @param map an htmlwidget of world map, default is the return of function
-#' \link[plotly]{plot_geo}
-#' 
-#' @param col \link[base]{character} scalar
-#' 
-#' @param geo a \link[base]{list}, see \url{https://plotly.com/r/reference/layout/geo/} for detail
-#' 
-#' @keywords internal
+# @param col \link[base]{character} scalar
+# @param geo a \link[base]{list}, see \url{https://plotly.com/r/reference/layout/geo/} for detail
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
 #' @importFrom scales pal_hue
-#' @method plot iata
 #' @export
 plot.iata <- function(
     x,

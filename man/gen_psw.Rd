@@ -25,7 +25,7 @@ gen_psw(
 Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
 }
 \value{
-Function \code{\link[=gen_psw]{gen_psw()}} returns a \link[base]{character} scalar.
+The function \code{\link[=gen_psw]{gen_psw()}} returns a \link[base]{character} scalar.
 }
 \description{
 Generate Strong Password

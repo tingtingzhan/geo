@@ -18,7 +18,7 @@ as.leaflet(x, ...)
 \item{...}{potential parameters, currently not in use}
 }
 \value{
-Function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
+The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
 1 degree approx 69 miles
@@ -35,4 +35,3 @@ is not allowed.
 \url{https://developers.google.com/maps/documentation/geocoding/}
 \url{http://shiny.rstudio.com/gallery}
 }
-\keyword{internal}

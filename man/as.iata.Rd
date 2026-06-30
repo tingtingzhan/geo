@@ -10,7 +10,7 @@ as.iata(x)
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
 }
 \value{
-Function \code{\link[=as.iata]{as.iata()}} returns an object of S3 class \code{'iata'}, which is essentially
+The function \code{\link[=as.iata]{as.iata()}} returns an object of S3 class \code{'iata'}, which is essentially
 a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 }
 \description{
@@ -20,4 +20,3 @@ One or more air travel trips using International Air Transport Association (IATA
 as.iata('NRT-HNL-YVR')
 as.iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
 }
-\keyword{internal}

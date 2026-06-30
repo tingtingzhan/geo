@@ -15,7 +15,7 @@
 #' 
 #' @returns 
 #' 
-#' Function [as.leaflet()] returns a \link[leaflet]{leaflet} object.
+#' The function [as.leaflet()] returns a \link[leaflet]{leaflet} object.
 #' 
 #' @references
 #' \url{http://rstudio.github.io/leaflet/}
@@ -24,13 +24,11 @@
 #'
 #' @examples
 #' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
-#' @keywords internal
 #' @name as.leaflet
 #' @export
 as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 #' @rdname as.leaflet
-#' @export as.leaflet.iatalist
 #' @export
 as.leaflet.iatalist <- function(x, ...) {
   ap <- airports_ip2location[x[[1L]], , drop = FALSE] # 'SpatialPoints'
@@ -39,7 +37,6 @@ as.leaflet.iatalist <- function(x, ...) {
 
 
 #' @rdname as.leaflet
-#' @export as.leaflet.SpatialPoints
 #' @export
 as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ...)
 
@@ -61,7 +58,7 @@ as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ..
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns
-#' Function [leaflet_popup()] returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
+#' The function [leaflet_popup()] returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 #' 
 #' @keywords internal
 #' @importFrom leaflet leaflet addPopups popupOptions addTiles fitBounds
