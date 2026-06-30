@@ -6,10 +6,10 @@
 \alias{geo-package}
 \title{geo: Fun Projects with Earth}
 \description{
-Fun projects with earth based on the function 'plotly::plot_geo()'.
+Fun projects with earth based on the functions 'leaflet::leaflet()' and 'plotly::plot_geo()'.
 }
-\note{
-Source of internal datasets,
+\references{
+Source of internal datasets are,
 \describe{
 \item{\code{airports_ip2location}}{\url{https://github.com/ip2location/ip2location-iata-icao}}
 \item{\code{airports_datahub}}{\url{https://github.com/datasets/airport-codes}}
