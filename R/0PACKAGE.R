@@ -1,4 +1,12 @@
 
+
+#' @note
+#' Source of internal datasets, 
+#' \describe{
+#' \item{`airports_ip2location`}{\url{https://github.com/ip2location/ip2location-iata-icao}}
+#' \item{`airports_datahub`}{\url{https://github.com/datasets/airport-codes}}
+#' }
+#' 
 #' @importFrom methods new setClass setMethod callNextMethod
 #' @importClassesFrom sp SpatialPointsDataFrame
 '_PACKAGE'

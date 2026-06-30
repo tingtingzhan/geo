@@ -1,9 +1,9 @@
-Package: iata
+Package: geo
 Type: Package
-Title: IATA
+Title: Fun Projects with Earth
 Version: 0.1.0
 Date: 2026-06-30
-Description: Need to think more..
+Description: Fun projects with earth based on the function 'plotly::plot_geo()'.
 Language: en-US
 Encoding: UTF-8
 License: GPL-2
