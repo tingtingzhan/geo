@@ -19,7 +19,6 @@
 #' @examples
 #' gen_psw(50L)
 #' 
-#' @keywords internal
 #' @export
 gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = '~!@#$%^&*') {
   

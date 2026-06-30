@@ -33,4 +33,3 @@ earnJAL(x)
 \description{
 Credit a Flight to an Airline in oneworld Alliance
 }
-\keyword{internal}

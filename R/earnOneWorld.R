@@ -6,7 +6,6 @@
 #' 
 #' @param creditcard slot of class \linkS4class{loyalty}
 #' 
-#' @keywords internal
 #' @name earnOneWorld
 #' @export
 earnAA <- function(x, creditcard = 'citi') {

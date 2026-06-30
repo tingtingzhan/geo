@@ -37,4 +37,3 @@ JSM24 |> earnBA()
 # JSM24 |> earnBAold()
 # JSM24 |> earnASold()
 }
-\keyword{internal}

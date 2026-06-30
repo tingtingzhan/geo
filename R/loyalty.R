@@ -27,7 +27,6 @@
 #' # JSM24 |> earnBAold()
 #' # JSM24 |> earnASold()
 #' @name loyalty
-#' @keywords internal
 #' @aliases loyalty-class
 #' @export
 setClass(Class = 'loyalty', slots = c(

@@ -1,7 +1,6 @@
 
 #' @importFrom methods new setClass setMethod callNextMethod
 #' @importClassesFrom sp SpatialPointsDataFrame
-#' @keywords internal
 '_PACKAGE'
 
 # function name clash

@@ -60,7 +60,6 @@ as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ..
 #' @returns
 #' The function [leaflet_popup()] returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 #' 
-#' @keywords internal
 #' @importFrom leaflet leaflet addPopups popupOptions addTiles fitBounds
 #' @export
 leaflet_popup <- function(coords, popup = rownames(coords), ...) {
