@@ -6,7 +6,7 @@
 \alias{geo-package}
 \title{geo: Fun Projects with Earth}
 \description{
-Fun projects with earth based on the functions 'leaflet::leaflet()' and 'plotly::plot_geo()'.
+Fun projects with earth based on 'leaflet::leaflet()' and 'plotly::plot_geo()'.
 }
 \references{
 Source of internal datasets are,
