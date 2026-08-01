@@ -21,8 +21,7 @@ gen_psw(
 
 \item{upper}{\link[base]{logical} scalar, whether upper case characters \code{A-Z} are allowed. Default \code{TRUE}}
 
-\item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols allowed.
-Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
+\item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols allowed. Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
 }
 \value{
 The function \code{\link[=gen_psw]{gen_psw()}} returns a \link[base]{character} scalar.
