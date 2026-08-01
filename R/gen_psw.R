@@ -10,8 +10,7 @@
 #' 
 #' @param upper \link[base]{logical} scalar, whether upper case characters `A-Z` are allowed. Default `TRUE`
 #' 
-#' @param symbol \link[base]{character} scalar or \link[base]{vector}, symbols allowed.  
-#' Use `character()`, `''` or `NULL` to indicate no symbol allowed
+#' @param symbol \link[base]{character} scalar or \link[base]{vector}, symbols allowed. Use `character()`, `''` or `NULL` to indicate no symbol allowed
 #' 
 #' @returns
 #' The function [gen_psw()] returns a \link[base]{character} scalar.
