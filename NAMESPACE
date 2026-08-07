@@ -24,28 +24,36 @@ exportClasses(loyalty)
 importClassesFrom(sp,SpatialPointsDataFrame)
 importFrom(geomtextpath,geom_textpath)
 importFrom(geosphere,distGeo)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,autolayer)
-importFrom(ggplot2,autoplot)
-importFrom(ggplot2,coord_polar)
-importFrom(ggplot2,geom_rect)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,theme_void)
-importFrom(ggplot2,xlim)
-importFrom(ggplot2,ylim)
-importFrom(leaflet,addPopups)
-importFrom(leaflet,addTiles)
-importFrom(leaflet,fitBounds)
-importFrom(leaflet,leaflet)
-importFrom(leaflet,popupOptions)
-importFrom(methods,callNextMethod)
-importFrom(methods,new)
-importFrom(methods,setClass)
-importFrom(methods,setMethod)
-importFrom(plotly,add_lines)
-importFrom(plotly,add_markers)
-importFrom(plotly,add_segments)
-importFrom(plotly,layout)
-importFrom(plotly,plot_geo)
-importFrom(plotly,toRGB)
+importFrom(ggplot2,
+  aes,
+  autolayer,
+  autoplot,
+  coord_polar,
+  geom_rect,
+  ggplot,
+  theme_void,
+  xlim,
+  ylim
+)
+importFrom(leaflet,
+  addPopups,
+  addTiles,
+  fitBounds,
+  leaflet,
+  popupOptions
+)
+importFrom(methods,
+  callNextMethod,
+  new,
+  setClass,
+  setMethod
+)
+importFrom(plotly,
+  add_lines,
+  add_markers,
+  add_segments,
+  layout,
+  plot_geo,
+  toRGB
+)
 importFrom(scales,pal_hue)
