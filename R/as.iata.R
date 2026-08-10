@@ -10,8 +10,7 @@
 #' 
 #' @returns 
 #' 
-#' The function [as.iata()] returns an object of S3 class `'iata'`, which is essentially
-#' a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
+#' The function [as.iata()] returns an object of S3 class `'iata'`, which is essentially a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 #' 
 #' @examples 
 #' as.iata('NRT-HNL-YVR')
