@@ -89,9 +89,6 @@ print.iatalist <- function(x, ...) {
 
 
 
-# @param map an htmlwidget of world map, default is the return of the function \link[plotly]{plot_geo}
-# @references 
-# \url{https://plotly.com/r/lines-on-maps/}
 #' @export
 plot.iatalist <- function(x, ..., map = plot_geo()) {
   
@@ -111,8 +108,11 @@ plot.iatalist <- function(x, ..., map = plot_geo()) {
 
 
 
+# @param map an htmlwidget of world map, default is the return of the function \link[plotly]{plot_geo}
 # @param col \link[base]{character} scalar
 # @param geo a \link[base]{list}, see \url{https://plotly.com/r/reference/layout/geo/} for detail
+# @references 
+# \url{https://plotly.com/r/lines-on-maps/}
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
 #' @importFrom scales pal_hue
 #' @export
@@ -169,11 +169,8 @@ plot.iata <- function(
       marker = list(color = col),
       hoverinfo = 'text', 
       hoverlabel = list(
-        font = list(
-          color = 'white'
-        ), 
-        #bordercolor = 'white' # default 'black' 
-        bordercolor = col
+        font = list(color = 'white'),
+        bordercolor = col # default 'black' 
       )
     ) |> 
     layout(

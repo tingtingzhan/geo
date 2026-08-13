@@ -4,7 +4,7 @@
 \alias{as.leaflet}
 \alias{as.leaflet.iatalist}
 \alias{as.leaflet.SpatialPoints}
-\title{Print using \CRANpkg{leaflet}}
+\title{Convert to \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
 
@@ -21,11 +21,14 @@ as.leaflet(x, ...)
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
-1 degree approx 69 miles
+Convert to \CRANpkg{leaflet}
 }
 \details{
 Google geocode API has a query limit, thus 'character' location name such as 'white house'
 is not allowed.
+}
+\note{
+1 degree approx 69 miles
 }
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()

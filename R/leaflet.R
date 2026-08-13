@@ -1,8 +1,6 @@
 
 
-#' @title Print using \CRANpkg{leaflet}
-#' 
-#' @description 1 degree approx 69 miles
+#' @title Convert to \CRANpkg{leaflet}
 #' 
 #' @param x see **Usage**
 #' 
@@ -16,6 +14,9 @@
 #' @returns 
 #' 
 #' The function [as.leaflet()] returns a \link[leaflet]{leaflet} object.
+#' 
+#' @note 
+#' 1 degree approx 69 miles
 #' 
 #' @references
 #' \url{http://rstudio.github.io/leaflet/}
@@ -66,13 +67,18 @@ leaflet_popup <- function(coords, popup = rownames(coords), ...) {
   
   if (!is.matrix(coords) || !is.numeric(coords) || anyNA(coords) || dim(coords)[2L] != 2L) stop('coords must be coords')
   
-  if (!length(popup) || anyNA(popup) || !all(nzchar(popup))) stop('popup must be of same length as coords') # lazy evaluation!
+  if (!length(popup) || anyNA(popup) || !all(nzchar(popup)))
+    stop('popup must be of same length as coords') # lazy evaluation!
+  
   lng <- coords[,1L]
   lat <- coords[,2L]
   
   leaflet() |>
     addTiles() |>
-    fitBounds(lat1 = min(lat), lat2 = max(lat), lng1 = min(lng), lng2 = max(lng)) |>
+    fitBounds(
+      lat1 = min(lat), lat2 = max(lat), 
+      lng1 = min(lng), lng2 = max(lng)
+    ) |>
     addPopups(
       lng = lng, lat = lat, popup = popup#,
       #options = popupOptions(closeButton = FALSE, closeOnClick = FALSE)
