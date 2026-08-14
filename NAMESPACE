@@ -2,51 +2,22 @@
 
 S3method(as.leaflet,SpatialPoints)
 S3method(as.leaflet,iatalist)
-S3method(autolayer,loyalty)
-S3method(autoplot,loyalty)
 S3method(plot,iata)
 S3method(plot,iatalist)
 S3method(print,iata)
 S3method(print,iatalist)
 export(as.iata)
 export(as.leaflet)
-export(earnAA)
-export(earnAS)
-export(earnASold)
-export(earnBA)
-export(earnBAold)
-export(earnCX)
-export(earnJAL)
 export(gen_psw)
 export(leaflet_popup)
-exportClasses(airfare)
-exportClasses(loyalty)
 importClassesFrom(sp,SpatialPointsDataFrame)
-importFrom(geomtextpath,geom_textpath)
 importFrom(geosphere,distGeo)
-importFrom(ggplot2,
-  aes,
-  autolayer,
-  autoplot,
-  coord_polar,
-  geom_rect,
-  ggplot,
-  theme_void,
-  xlim,
-  ylim
-)
 importFrom(leaflet,
   addPopups,
   addTiles,
   fitBounds,
   leaflet,
   popupOptions
-)
-importFrom(methods,
-  callNextMethod,
-  new,
-  setClass,
-  setMethod
 )
 importFrom(plotly,
   add_lines,

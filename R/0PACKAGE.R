@@ -7,7 +7,6 @@
 #' \item{`airports_datahub`}{\url{https://github.com/datasets/airport-codes}}
 #' }
 #' 
-#' @importFrom methods new setClass setMethod callNextMethod
 #' @importClassesFrom sp SpatialPointsDataFrame
 '_PACKAGE'
 
