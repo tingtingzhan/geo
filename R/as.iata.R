@@ -23,7 +23,9 @@ as.iata <- function(x) {
     unlist(use.names = FALSE) |> 
     strsplit(split = '-', fixed = TRUE) |>
     lapply(FUN = \(x) {
-      if (!is.character(x) || length(x) < 2L || anyNA(x) || !all(nzchar(x))) stop('a trip must have >=2 airports')
+      if (!is.character(x) || length(x) < 2L || anyNA(x) || !all(nzchar(x))) {
+        stop('a trip must have >=2 airports')
+      } 
       id <- x |>
         toupper() |>
         match(table = airports_ip2location@data$iata, nomatch = NA_integer_)
@@ -71,10 +73,6 @@ print.iatalist <- function(x, ...) {
     sum() |> 
     sprintf(fmt = 'Total Mileage: %.1f') |> 
     cat()
-  
-  # I need to refine these functions some time
-  #RoundTheWorld(x, airline = 'ANA')
-  #RoundTheWorld(x, airline = 'SQ')
   
   x |> 
     plot.iatalist() |> 
