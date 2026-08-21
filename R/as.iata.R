@@ -121,6 +121,7 @@ plot.iata <- function(
     col = pal_hue()(n = 1L),
     geo = list( # https://plotly.com/r/reference/layout/geo/
       resolution = 50, # 50 high resolution, 110 low resolution
+      framewidth = .7, framecolor = toRGB('grey50'), # outer frame of the earth
       showland = TRUE, landcolor = toRGB('grey97'),
       showlakes = TRUE, lakecolor = toRGB('lightblue'),
       showrivers = TRUE, rivercolor = toRGB('lightblue'), riverwidth = .5,
