@@ -7,15 +7,15 @@
 leaflet_mrk(coords, popup = rownames(coords), ...)
 }
 \arguments{
-\item{coords}{2-column \link[base]{matrix} of popup \emph{longitude} (1st column) and \emph{latitude} (2nd column)}
+\item{coords}{2-column \link[base]{matrix} of markers, \emph{longitude} on the 1st column and \emph{latitude} on the 2nd column}
 
-\item{popup}{\link[base]{character} \link[base]{vector}, the popup text.  Default is the \link[base]{rownames} of \code{coords}}
+\item{popup}{\link[base]{character} \link[base]{vector}, the popup text.  Default value is the \link[base]{rownames} of \code{coords}}
 
 \item{...}{additional parameters, currently not in use}
 }
 \value{
-The function \code{\link[=leaflet_mrk]{leaflet_mrk()}} returns a \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
+The function \code{\link[=leaflet_mrk]{leaflet_mrk()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
-..
+To create a \link[leaflet]{leaflet} with markers from coordinates.
 }

@@ -58,16 +58,16 @@ as.leaflet.iatalist <- function(x, ...) {
 #' @title \link[leaflet]{leaflet} with Markers
 #' 
 #' @description
-#' ..
+#' To create a \link[leaflet]{leaflet} with markers from coordinates.
 #' 
-#' @param coords 2-column \link[base]{matrix} of popup *longitude* (1st column) and *latitude* (2nd column)
+#' @param coords 2-column \link[base]{matrix} of markers, *longitude* on the 1st column and *latitude* on the 2nd column
 #' 
-#' @param popup \link[base]{character} \link[base]{vector}, the popup text.  Default is the \link[base]{rownames} of `coords`
+#' @param popup \link[base]{character} \link[base]{vector}, the popup text.  Default value is the \link[base]{rownames} of `coords`
 #' 
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns
-#' The function [leaflet_mrk()] returns a \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
+#' The function [leaflet_mrk()] returns a \link[leaflet]{leaflet} object.
 #' 
 #' @importFrom leaflet leaflet addMarkers addTiles fitBounds markerClusterOptions
 #' @export
