@@ -40,7 +40,17 @@ as.leaflet.SpatialPoints <- function(x, ...) {
 #' @rdname as.leaflet
 #' @export
 as.leaflet.sf <- function(x, ...) {
-  leaflet_mrk(coords = st_coordinates(x), ...)
+  coords <- st_coordinates(x)
+  switch(
+    EXPR = class(x$geometry)[[1L]], 
+    sfc_POINT = {
+      if (ncol(coords) != 2L) stop('learn sf-package')
+      leaflet_mrk(coords = coords, ...)
+    }, sfc_MULTIPOLYGON = {
+      leaflet_plg(x, ...)
+    }, stop('unsupported')
+  )
+  
 }
 
 #' @rdname as.leaflet
@@ -79,12 +89,16 @@ leaflet_mrk <- function(
     coords, 
     popup = rownames(coords), 
     clusterOptions = markerClusterOptions(),
-    ...) {
+    ...
+) {
   
   if (!is.matrix(coords) || !is.numeric(coords) || anyNA(coords) || dim(coords)[2L] != 2L) stop('coords must be coords')
   
-  if (!length(popup) || anyNA(popup) || !all(nzchar(popup)))
-    stop('popup must be of same length as coords') # lazy evaluation!
+  if (length(popup)) {
+    if (length(popup) != nrow(coords) || anyNA(popup) || !all(nzchar(popup))){
+      stop('popup must be of same length as coords') # lazy evaluation!
+    }
+  }
   
   leaflet() |>
     addTiles() |>
@@ -96,4 +110,37 @@ leaflet_mrk <- function(
     )
   
 }
+
+
+
+#' @title \link[leaflet]{leaflet} with Polygons
+#' 
+#' @description
+#' To create a \link[leaflet]{leaflet} with polygons.
+#' 
+#' @param sf an `sf` object
+#' 
+#' @param fillColor,fillOpacity,weight,color,opacity,... additional parameters of the function \link[leaflet]{addPolygons}
+#' 
+#' @importFrom sf st_transform
+#' @importFrom leaflet leaflet addTiles addPolygons
+#' @export
+leaflet_plg <- function(
+    sf,
+    fillColor = 'royalblue', fillOpacity = .1,
+    weight = 2, color = 'white', opacity = 1,
+    ...
+) {
+  sf |>
+    st_transform(x = _, crs = 4326) |>
+    leaflet(data = _) |>
+    addTiles() |>
+    addPolygons(
+      fillColor = fillColor, fillOpacity = fillOpacity,
+      weight = weight, color = color, opacity = opacity,
+      ...
+    )
+}
+
+
 

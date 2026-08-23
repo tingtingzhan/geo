@@ -11,9 +11,11 @@ export(as.iata)
 export(as.leaflet)
 export(gen_psw)
 export(leaflet_mrk)
+export(leaflet_plg)
 importFrom(geosphere,distGeo)
 importFrom(leaflet,
   addMarkers,
+  addPolygons,
   addTiles,
   leaflet,
   markerClusterOptions
@@ -27,4 +29,7 @@ importFrom(plotly,
   toRGB
 )
 importFrom(scales,pal_hue)
-importFrom(sf,st_coordinates)
+importFrom(sf,
+  st_coordinates,
+  st_transform
+)
