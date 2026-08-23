@@ -34,7 +34,7 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 #' @export
 as.leaflet.SpatialPoints <- function(x, ...) {
   leaflet_mrk(coords = x@coords, ...)
-} # for legacy \pkg{sp}
+} # for legacy \CRANpkg{sp}
 
 
 #' @rdname as.leaflet
