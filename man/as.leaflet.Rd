@@ -13,12 +13,12 @@ as.leaflet(x, ...)
 
 \method{as.leaflet}{sf}(x, ...)
 
-\method{as.leaflet}{iatalist}(x, ...)
+\method{as.leaflet}{iatalist}(x, popup = rownames(ap), ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}
 
-\item{...}{potential parameters, currently not in use}
+\item{popup, ...}{additional parameters of the function \code{\link[=leaflet_mrk]{leaflet_mrk()}}}
 }
 \value{
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.

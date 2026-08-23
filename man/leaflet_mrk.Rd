@@ -4,18 +4,26 @@
 \alias{leaflet_mrk}
 \title{\link[leaflet]{leaflet} with Markers}
 \usage{
-leaflet_mrk(coords, popup = rownames(coords), ...)
+leaflet_mrk(
+  coords,
+  popup = rownames(coords),
+  clusterOptions = markerClusterOptions(),
+  ...
+)
 }
 \arguments{
 \item{coords}{2-column \link[base]{matrix} of markers, \emph{longitude} on the 1st column and \emph{latitude} on the 2nd column}
 
-\item{popup}{\link[base]{character} \link[base]{vector}, the popup text.  Default value is the \link[base]{rownames} of \code{coords}}
+\item{popup}{\link[base]{character} \link[base]{vector}, the popup text, see the detailed description from the function \link[leaflet]{addMarkers}.  Default value is the \link[base]{rownames} of \code{coords}}
 
-\item{...}{additional parameters, currently not in use}
+\item{clusterOptions, ...}{additional parameters of the function \link[leaflet]{addMarkers}}
 }
 \value{
 The function \code{\link[=leaflet_mrk]{leaflet_mrk()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
 To create a \link[leaflet]{leaflet} with markers from coordinates.
+}
+\details{
+The function \code{\link[=leaflet_mrk]{leaflet_mrk()}} is a simple wrapper of the pipeline \code{leaflet() |> addTiles() |> addMarkers()}.
 }

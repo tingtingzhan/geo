@@ -8,7 +8,7 @@
 #' 
 #' @param x see **Usage**
 #' 
-#' @param ... potential parameters, currently not in use
+#' @param popup,... additional parameters of the function [leaflet_mrk()]
 #' 
 #' @returns 
 #' 
@@ -48,9 +48,9 @@ as.leaflet.sf <- function(x, ...) {
 #' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
 #' 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet()
 #' @export
-as.leaflet.iatalist <- function(x, ...) {
+as.leaflet.iatalist <- function(x, popup = rownames(ap), ...) {
   ap <- airports_ip2location[unlist(x), , drop = FALSE]
-  as.leaflet.sf(x = ap, popup = rownames(ap))
+  as.leaflet.sf(x = ap, popup = popup, ...)
 }
 
 
@@ -62,34 +62,37 @@ as.leaflet.iatalist <- function(x, ...) {
 #' 
 #' @param coords 2-column \link[base]{matrix} of markers, *longitude* on the 1st column and *latitude* on the 2nd column
 #' 
-#' @param popup \link[base]{character} \link[base]{vector}, the popup text.  Default value is the \link[base]{rownames} of `coords`
+#' @param popup \link[base]{character} \link[base]{vector}, the popup text, see the detailed description from the function \link[leaflet]{addMarkers}.  Default value is the \link[base]{rownames} of `coords`
 #' 
-#' @param ... additional parameters, currently not in use
+#' @param clusterOptions,... additional parameters of the function \link[leaflet]{addMarkers}
+#' 
+#' @details
+#' The function [leaflet_mrk()] is a simple wrapper of the pipeline `leaflet() |> addTiles() |> addMarkers()`.
+#' 
 #' 
 #' @returns
 #' The function [leaflet_mrk()] returns a \link[leaflet]{leaflet} object.
 #' 
-#' @importFrom leaflet leaflet addMarkers addTiles fitBounds markerClusterOptions
+#' @importFrom leaflet leaflet addMarkers addTiles markerClusterOptions
 #' @export
-leaflet_mrk <- function(coords, popup = rownames(coords), ...) {
+leaflet_mrk <- function(
+    coords, 
+    popup = rownames(coords), 
+    clusterOptions = markerClusterOptions(),
+    ...) {
   
   if (!is.matrix(coords) || !is.numeric(coords) || anyNA(coords) || dim(coords)[2L] != 2L) stop('coords must be coords')
   
   if (!length(popup) || anyNA(popup) || !all(nzchar(popup)))
     stop('popup must be of same length as coords') # lazy evaluation!
   
-  lng <- coords[,1L]
-  lat <- coords[,2L]
-  
   leaflet() |>
     addTiles() |>
-    fitBounds(
-      lat1 = min(lat), lat2 = max(lat), 
-      lng1 = min(lng), lng2 = max(lng)
-    ) |>
     addMarkers(
-      lng = lng, lat = lat, popup = popup,
-      clusterOptions = markerClusterOptions()
+      lng = coords[,1L], lat = coords[,2L], 
+      popup = popup,
+      clusterOptions = clusterOptions,
+      ...
     )
   
 }
