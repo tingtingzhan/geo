@@ -7,7 +7,6 @@
 #' \item{`airports_datahub`}{\url{https://github.com/datasets/airport-codes}}
 #' }
 #' 
-#' @importClassesFrom sp SpatialPointsDataFrame
 '_PACKAGE'
 
 # function name clash

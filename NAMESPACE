@@ -2,6 +2,7 @@
 
 S3method(as.leaflet,SpatialPoints)
 S3method(as.leaflet,iatalist)
+S3method(as.leaflet,sf)
 S3method(plot,iata)
 S3method(plot,iatalist)
 S3method(print,iata)
@@ -9,15 +10,14 @@ S3method(print,iatalist)
 export(as.iata)
 export(as.leaflet)
 export(gen_psw)
-export(leaflet_popup)
-importClassesFrom(sp,SpatialPointsDataFrame)
+export(leaflet_mrk)
 importFrom(geosphere,distGeo)
 importFrom(leaflet,
-  addPopups,
+  addMarkers,
   addTiles,
   fitBounds,
   leaflet,
-  popupOptions
+  markerClusterOptions
 )
 importFrom(plotly,
   add_lines,
@@ -28,3 +28,4 @@ importFrom(plotly,
   toRGB
 )
 importFrom(scales,pal_hue)
+importFrom(sf,st_coordinates)

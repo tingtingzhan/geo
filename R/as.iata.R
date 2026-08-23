@@ -28,7 +28,7 @@ as.iata <- function(x) {
       } 
       id <- x |>
         toupper() |>
-        match(table = airports_ip2location@data$iata, nomatch = NA_integer_)
+        match(table = airports_ip2location$iata, nomatch = NA_integer_)
       if (anyNA(id)) stop('must use IATA code')
       class(id) <- 'iata'
       return(id)
@@ -44,20 +44,23 @@ as.iata <- function(x) {
 
 
 #' @importFrom geosphere distGeo
+#' @importFrom sf st_coordinates
 #' @export
 print.iata <- function(x, ...) {
   ap <- airports_ip2location[x, , drop = FALSE]
   n <- length(x)
   sq1 <- seq_len(n-1L)
   sq2 <- seq_len(n)[-1L]
-  m_ <- distGeo(p1 = ap@coords[sq1,], p2 = ap@coords[sq2,]) # in meters
+  coords <- ap |>
+    st_coordinates()
+  m_ <- distGeo(p1 = coords[sq1,], p2 = coords[sq2,]) # in meters
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
     Kilometer = m_ / 1e3#,
     #Hour = (m_ / 1609.34) / 550 # average cruising speed, mile per hour
   )
   ret[] <- sprintf(fmt = '%.1f', ret)
-  rownames(ret) <- sprintf(fmt = '%s \u2708 %s', ap@data$iata[sq1], ap@data$iata[sq2])
+  rownames(ret) <- sprintf(fmt = '%s \u2708 %s', ap$iata[sq1], ap$iata[sq2])
   print(ret, quote = FALSE, right = TRUE)
   cat('\n')
   return(invisible(sum(m_ / 1609.34)))
@@ -113,6 +116,7 @@ plot.iatalist <- function(x, ..., map = plot_geo()) {
 # \url{https://plotly.com/r/lines-on-maps/}
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
 #' @importFrom scales pal_hue
+#' @importFrom sf st_coordinates
 #' @export
 plot.iata <- function(
     x,
@@ -142,7 +146,8 @@ plot.iata <- function(
     )
 ) {
   
-  coords <- airports_ip2location[x, , drop = FALSE]@coords
+  coords <- airports_ip2location[x, , drop = FALSE] |>
+    st_coordinates()
   col <- col |> toRGB()
   lon <- coords[,1L]
   lat <- coords[,2L]

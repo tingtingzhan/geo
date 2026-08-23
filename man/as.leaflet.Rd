@@ -2,15 +2,18 @@
 % Please edit documentation in R/leaflet.R
 \name{as.leaflet}
 \alias{as.leaflet}
-\alias{as.leaflet.iatalist}
 \alias{as.leaflet.SpatialPoints}
+\alias{as.leaflet.sf}
+\alias{as.leaflet.iatalist}
 \title{Convert to \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
 
-\method{as.leaflet}{iatalist}(x, ...)
-
 \method{as.leaflet}{SpatialPoints}(x, ...)
+
+\method{as.leaflet}{sf}(x, ...)
+
+\method{as.leaflet}{iatalist}(x, ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}
@@ -21,17 +24,16 @@ as.leaflet(x, ...)
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
 }
 \description{
-Convert to \CRANpkg{leaflet}
-}
-\details{
-Google geocode API has a query limit, thus 'character' location name such as 'white house'
-is not allowed.
+To convert an R object into a \link[leaflet]{leaflet}.
 }
 \note{
-1 degree approx 69 miles
+1 degree approx 69 miles.
+
+Google geocode API has a query limit, thus 'character' location name such as 'white house' is not allowed.
 }
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
+'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet()
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}

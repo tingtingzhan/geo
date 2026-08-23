@@ -2,68 +2,76 @@
 
 #' @title Convert to \CRANpkg{leaflet}
 #' 
+#' @description
+#' To convert an R object into a \link[leaflet]{leaflet}.
+#' 
+#' 
 #' @param x see **Usage**
 #' 
 #' @param ... potential parameters, currently not in use
-#' 
-#' @details 
-#' 
-#' Google geocode API has a query limit, thus 'character' location name such as 'white house'
-#' is not allowed.
 #' 
 #' @returns 
 #' 
 #' The function [as.leaflet()] returns a \link[leaflet]{leaflet} object.
 #' 
 #' @note 
-#' 1 degree approx 69 miles
+#' 1 degree approx 69 miles.
+#' 
+#' Google geocode API has a query limit, thus 'character' location name such as 'white house' is not allowed.
+#' 
+#' 
 #' 
 #' @references
 #' \url{http://rstudio.github.io/leaflet/}
 #' \url{https://developers.google.com/maps/documentation/geocoding/}
 #' \url{http://shiny.rstudio.com/gallery}
 #'
-#' @examples
-#' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
 #' @name as.leaflet
 #' @export
 as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 #' @rdname as.leaflet
 #' @export
-as.leaflet.iatalist <- function(x, ...) {
-  ap <- airports_ip2location[x[[1L]], , drop = FALSE] # 'SpatialPoints'
-  leaflet_popup(coords = ap@coords, popup = ap$iata, ...)
-}
+as.leaflet.SpatialPoints <- function(x, ...) {
+  leaflet_mrk(coords = x@coords, ...)
+} # for legacy \pkg{sp}
 
 
 #' @rdname as.leaflet
 #' @export
-as.leaflet.SpatialPoints <- function(x, ...) leaflet_popup(coords = x@coords, ...)
+as.leaflet.sf <- function(x, ...) {
+  leaflet_mrk(coords = st_coordinates(x), ...)
+}
 
-# still playing
-# as.leaflet.SpatialPolygons <- (PACovid19)
+#' @rdname as.leaflet
+#' @examples
+#' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
+#' 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet()
+#' @export
+as.leaflet.iatalist <- function(x, ...) {
+  ap <- airports_ip2location[unlist(x), , drop = FALSE]
+  as.leaflet.sf(x = ap, popup = rownames(ap))
+}
 
 
-#' @title \link[leaflet]{leaflet} with Popup
+
+#' @title \link[leaflet]{leaflet} with Markers
 #' 
 #' @description
 #' ..
 #' 
-#' @param coords 2-column \link[base]{matrix} of popup 
-#' *longitude* (1st column) and *latitude* (2nd column)
+#' @param coords 2-column \link[base]{matrix} of popup *longitude* (1st column) and *latitude* (2nd column)
 #' 
-#' @param popup \link[base]{character} \link[base]{vector},
-#' popup text.  Default is the \link[base]{rownames} of `coords`
+#' @param popup \link[base]{character} \link[base]{vector}, the popup text.  Default is the \link[base]{rownames} of `coords`
 #' 
 #' @param ... additional parameters, currently not in use
 #' 
 #' @returns
-#' The function [leaflet_popup()] returns an \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
+#' The function [leaflet_mrk()] returns a \link[leaflet]{leaflet} object, which inherits from \CRANpkg{htmlwidgets}.
 #' 
-#' @importFrom leaflet leaflet addPopups popupOptions addTiles fitBounds
+#' @importFrom leaflet leaflet addMarkers addTiles fitBounds markerClusterOptions
 #' @export
-leaflet_popup <- function(coords, popup = rownames(coords), ...) {
+leaflet_mrk <- function(coords, popup = rownames(coords), ...) {
   
   if (!is.matrix(coords) || !is.numeric(coords) || anyNA(coords) || dim(coords)[2L] != 2L) stop('coords must be coords')
   
@@ -79,9 +87,9 @@ leaflet_popup <- function(coords, popup = rownames(coords), ...) {
       lat1 = min(lat), lat2 = max(lat), 
       lng1 = min(lng), lng2 = max(lng)
     ) |>
-    addPopups(
-      lng = lng, lat = lat, popup = popup#,
-      #options = popupOptions(closeButton = FALSE, closeOnClick = FALSE)
+    addMarkers(
+      lng = lng, lat = lat, popup = popup,
+      clusterOptions = markerClusterOptions()
     )
   
 }
