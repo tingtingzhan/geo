@@ -2,7 +2,7 @@ Package: geo
 Type: Package
 Title: Fun Projects with Earth
 Version: 0.1.0
-Date: 2026-08-22
+Date: 2026-08-24
 Description: Earth based on 'sf', 'leaflet' and 'plotly::plot_geo()'.
 Language: en-US
 Encoding: UTF-8
