@@ -53,6 +53,8 @@ as.leaflet.sf <- function(x, ...) {
   
 }
 
+
+
 #' @rdname as.leaflet
 #' @examples
 #' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
@@ -91,6 +93,11 @@ leaflet_mrk <- function(
     clusterOptions = markerClusterOptions(),
     ...
 ) {
+  
+  if (is.data.frame(coords)) {
+    if (!all(vapply(coords, FUN = is.numeric, FUN.VALUE = NA))) stop()
+    coords <- as.matrix.data.frame(coords)
+  }
   
   if (!is.matrix(coords) || !is.numeric(coords) || anyNA(coords) || dim(coords)[2L] != 2L) stop('coords must be coords')
   
