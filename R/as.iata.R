@@ -146,12 +146,12 @@ plot.iata <- function(
     )
 ) {
   
-  coords <- airports_ip2location[x, , drop = FALSE] |>
+  ap <- airports_ip2location[x, , drop = FALSE]
+  coords <- ap |>
     st_coordinates()
   col <- col |> toRGB()
   lon <- coords[,1L]
   lat <- coords[,2L]
-  nm <- rownames(coords)
   n <- dim(coords)[1L]
   if (n <= 1L) stop('wont happen')
   
@@ -169,7 +169,7 @@ plot.iata <- function(
     add_markers(
       # `add_markers` after `add_segments` !!
       # it seems `hoverinfo` overwrites!!
-      x = lon, y = lat, text = nm,
+      x = lon, y = lat, text = ap$shortnm,
       marker = list(color = col),
       hoverinfo = 'text', 
       hoverlabel = list(

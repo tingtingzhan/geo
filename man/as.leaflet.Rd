@@ -2,23 +2,20 @@
 % Please edit documentation in R/leaflet.R
 \name{as.leaflet}
 \alias{as.leaflet}
-\alias{as.leaflet.SpatialPoints}
 \alias{as.leaflet.sf}
 \alias{as.leaflet.iatalist}
 \title{Convert to \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
 
-\method{as.leaflet}{SpatialPoints}(x, ...)
-
 \method{as.leaflet}{sf}(x, ...)
 
-\method{as.leaflet}{iatalist}(x, popup = rownames(ap), ...)
+\method{as.leaflet}{iatalist}(x, ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}
 
-\item{popup, ...}{additional parameters of the function \code{\link[=leaflet_mrk]{leaflet_mrk()}}}
+\item{...}{additional parameters of the functions \link[leaflet]{addMarkers} and \link[leaflet]{addPolygons}.}
 }
 \value{
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
@@ -30,8 +27,8 @@ To convert an R object into a \link[leaflet]{leaflet}.
 1 degree approx 69 miles.
 }
 \examples{
-'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
-'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet()
+'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet(popup = ~ shortnm)
+'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet(popup = ~ shortnm)
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}
