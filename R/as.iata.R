@@ -125,13 +125,13 @@ plot.iata <- function(
     col = pal_hue()(n = 1L),
     geo = list( # https://plotly.com/r/reference/layout/geo/
       resolution = 50, # 50 high resolution, 110 low resolution
-      framewidth = .7, framecolor = toRGB('grey50'), # outer frame of the earth
-      showland = TRUE, landcolor = toRGB('grey97'),
+      framewidth = .7, framecolor = toRGB('grey80'), # outer frame of the earth
+      showland = TRUE, landcolor = toRGB('linen'),
+      showocean = TRUE, oceancolor = toRGB('aliceblue'), coastlinecolor = toRGB('peachpuff'), coastlinewidth = .5,
       showlakes = TRUE, lakecolor = toRGB('lightblue'),
       showrivers = TRUE, rivercolor = toRGB('lightblue'), riverwidth = .5,
-      showcountries = TRUE, countrycolor = toRGB('grey50'), countrywidth = .5, 
+      showcountries = TRUE, countrycolor = toRGB('peachpuff'), countrywidth = .7, 
       # showsubunits = TRUE, subunitcolor = toRGB('blue'), # state borders; not working, not sure why
-      showocean = TRUE, oceancolor = toRGB('white'), coastlinecolor = toRGB('grey50'), coastlinewidth = .5,
       lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
       lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
       projection = list(
