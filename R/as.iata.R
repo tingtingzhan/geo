@@ -138,7 +138,6 @@ plot.iatalist <- function(x, ..., map = plot_geo()) {
 
 # @param map an htmlwidget of world map, default is the return of the function \link[plotly]{plot_geo}
 # @param col \link[base]{character} scalar
-# @param geo a \link[base]{list}, see \url{https://plotly.com/r/reference/layout/geo/} for detail
 # @references 
 # \url{https://plotly.com/r/lines-on-maps/}
 #' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
