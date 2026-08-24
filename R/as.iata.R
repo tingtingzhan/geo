@@ -40,27 +40,52 @@ as.iata <- function(x) {
 
 
 
-
-
-
 #' @importFrom geosphere distGeo
 #' @importFrom sf st_coordinates
-#' @export
-print.iata <- function(x, ...) {
-  ap <- airports_ip2location[x, , drop = FALSE]
-  n <- length(x)
+distGeo_ <- \(sf, nm) {
+  n <- nrow(sf)
   sq1 <- seq_len(n-1L)
   sq2 <- seq_len(n)[-1L]
-  coords <- ap |>
+  coords <- sf |>
     st_coordinates()
-  m_ <- distGeo(p1 = coords[sq1,], p2 = coords[sq2,]) # in meters
+  ret <- distGeo(p1 = coords[sq1,], p2 = coords[sq2,]) # in meters
+  nm <- eval(nm[[2L]], envir = sf) # `nm` must be one-sided formula
+  names(ret) <- sprintf(fmt = '%s \u2708 %s', nm[sq1], nm[sq2])
+  class(ret) <- 'distGeo'
+  return(ret)
+}
+
+
+#' @export
+format.distGeo <- function(x, ...) {
+  n <- length(x) + 1L
+  z <- character(length = n)
+  z[1L] <- sprintf(fmt = '%s: %.0f miles', names(x[1L]), x[1L]/1609.34)
+  z[n] <- sprintf(fmt = '%s: %.0f miles', names(x[n-1L]), x[n-1L]/1609.34)
+  for (i in 2:(n-1L)) {
+    z[i] <- sprintf(
+      fmt = '%s: %.0f miles\n%s: %.0f miles', 
+      names(x[i-1L]), x[i-1L]/1609.34,
+      names(x[i]), x[i]/1609.34
+    )
+  }
+  return(z)
+}
+
+
+
+
+
+#' @export
+print.iata <- function(x, ...) {
+  m_ <- airports_ip2location[x, , drop = FALSE] |>
+    distGeo_(nm = ~ iata)
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
     Kilometer = m_ / 1e3#,
     #Hour = (m_ / 1609.34) / 550 # average cruising speed, mile per hour
   )
   ret[] <- sprintf(fmt = '%.1f', ret)
-  rownames(ret) <- sprintf(fmt = '%s \u2708 %s', ap$iata[sq1], ap$iata[sq2])
   print(ret, quote = FALSE, right = TRUE)
   cat('\n')
   return(invisible(sum(m_ / 1609.34)))
@@ -72,7 +97,7 @@ print.iata <- function(x, ...) {
 print.iatalist <- function(x, ...) {
   
   x |>
-    vapply(FUN = print.iata, ..., FUN.VALUE = NA_real_) |> 
+    vapply(FUN = print.iata, ..., FUN.VALUE = NA_real_) |>
     sum() |> 
     sprintf(fmt = 'Total Mileage: %.1f') |> 
     cat()
@@ -123,27 +148,7 @@ plot.iata <- function(
     ..., 
     map = plot_geo(),
     col = pal_hue()(n = 1L),
-    geo = list( # https://plotly.com/r/reference/layout/geo/
-      resolution = 50, # 50 high resolution, 110 low resolution
-      framewidth = .7, framecolor = toRGB('grey80'), # outer frame of the earth
-      showland = TRUE, landcolor = toRGB('linen'),
-      showocean = TRUE, oceancolor = toRGB('aliceblue'), coastlinecolor = toRGB('peachpuff'), coastlinewidth = .5,
-      showlakes = TRUE, lakecolor = toRGB('lightblue'),
-      showrivers = TRUE, rivercolor = toRGB('lightblue'), riverwidth = .5,
-      showcountries = TRUE, countrycolor = toRGB('peachpuff'), countrywidth = .7, 
-      # showsubunits = TRUE, subunitcolor = toRGB('blue'), # state borders; not working, not sure why
-      lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
-      lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
-      projection = list(
-        type = 'orthographic',
-        rotation = list(
-          # roll = 0 # default 0, roll of rotational axis of Earth
-          lon = -100, lat = 40#, # let USA face user
-          # 'mean' of longitude is *not* easy to define!!
-          # mean of latitude is easy
-        )
-      )
-    )
+    geo = layout_geo
 ) {
   
   ap <- airports_ip2location[x, , drop = FALSE]
@@ -152,34 +157,37 @@ plot.iata <- function(
   col <- col |> toRGB()
   lon <- coords[,1L]
   lat <- coords[,2L]
+  
   n <- dim(coords)[1L]
   if (n <= 1L) stop('wont happen')
+  sq1 <- seq_len(n-1L)
+  sq2 <- seq_len(n)[-1L]
+  
+  marker_text <- distGeo_(sf = ap, nm = ~ iata) |>
+    format.distGeo() |>
+    sprintf(fmt = '%s\n%s', ap$shortnm, . = _)
   
   map |>
     add_segments(
-      x = lon[seq_len(n-1L)], xend = lon[2:n],
-      y = lat[seq_len(n-1L)], yend = lat[2:n],
-      line = list(color = col, width = 2),
-      #hoverinfo = 'none'
-      text = rep('abc', n-1L), hoverinfo = 'text'
-      # https://stackoverflow.com/questions/63458372/plotly-add-segment-with-tooltip-along-entire-segment
-      # https://github.com/plotly/plotly.R/issues/1832#issuecomment-675721763
-      # TL;DR: plotly cannot do this, as of Sep 2024
+      x = lon[sq1], xend = lon[sq2],
+      y = lat[sq1], yend = lat[sq2],
+      line = list(color = col, width = 2)
     ) |> 
     add_markers(
-      # `add_markers` after `add_segments` !!
-      # it seems `hoverinfo` overwrites!!
-      x = lon, y = lat, text = ap$shortnm,
+      x = lon, y = lat, text = marker_text,
       marker = list(color = col),
       hoverinfo = 'text', 
       hoverlabel = list(
-        font = list(color = 'white'),
+        #font = list(color = 'white'), # also not bad
+        bgcolor = 'white', font = col, # prettier
+        align = 'center', # seems not working consistently..
         bordercolor = col # default 'black' 
       )
     ) |> 
     layout(
       #title = NULL,
       showlegend = FALSE,
+      hoverlabel = list(align = 'center'), # seems not working consistently..
       geo = geo
     )
   

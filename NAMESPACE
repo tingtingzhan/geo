@@ -2,6 +2,7 @@
 
 S3method(as.leaflet,iatalist)
 S3method(as.leaflet,sf)
+S3method(format,distGeo)
 S3method(plot,iata)
 S3method(plot,iatalist)
 S3method(print,iata)
