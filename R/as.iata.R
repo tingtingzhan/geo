@@ -62,12 +62,14 @@ format.distGeo <- function(x, ...) {
   z <- character(length = n)
   z[1L] <- sprintf(fmt = '%s: %.0f miles', names(x[1L]), x[1L]/1609.34)
   z[n] <- sprintf(fmt = '%s: %.0f miles', names(x[n-1L]), x[n-1L]/1609.34)
-  for (i in 2:(n-1L)) {
-    z[i] <- sprintf(
-      fmt = '%s: %.0f miles\n%s: %.0f miles', 
-      names(x[i-1L]), x[i-1L]/1609.34,
-      names(x[i]), x[i]/1609.34
-    )
+  if (n > 2L) {
+    for (i in 2:(n-1L)) {
+      z[i] <- sprintf(
+        fmt = '%s: %.0f miles\n%s: %.0f miles', 
+        names(x[i-1L]), x[i-1L]/1609.34,
+        names(x[i]), x[i]/1609.34
+      )
+    }
   }
   return(z)
 }
