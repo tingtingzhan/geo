@@ -17,14 +17,14 @@
 #' @note 
 #' 1 degree approx 69 miles.
 #' 
-#' Google geocode API has a query limit, thus 'character' location name such as 'white house' is not allowed.
+#' Consider geocoding via \CRANpkg{tidygeocoder}.
 #' 
 #' 
 #' 
 #' @references
 #' \url{http://rstudio.github.io/leaflet/}
 #' \url{https://developers.google.com/maps/documentation/geocoding/}
-#' \url{http://shiny.rstudio.com/gallery}
+#' \url{https://shiny.posit.co/r/gallery/}
 #'
 #' @name as.leaflet
 #' @export
