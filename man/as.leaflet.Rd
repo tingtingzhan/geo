@@ -28,8 +28,6 @@ To convert an R object into a \link[leaflet]{leaflet}.
 }
 \note{
 1 degree approx 69 miles.
-
-Consider geocoding via \CRANpkg{tidygeocoder}.
 }
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet()
@@ -37,6 +35,5 @@ Consider geocoding via \CRANpkg{tidygeocoder}.
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}
-\url{https://developers.google.com/maps/documentation/geocoding/}
 \url{https://shiny.posit.co/r/gallery/}
 }

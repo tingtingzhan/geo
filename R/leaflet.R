@@ -17,13 +17,8 @@
 #' @note 
 #' 1 degree approx 69 miles.
 #' 
-#' Consider geocoding via \CRANpkg{tidygeocoder}.
-#' 
-#' 
-#' 
 #' @references
 #' \url{http://rstudio.github.io/leaflet/}
-#' \url{https://developers.google.com/maps/documentation/geocoding/}
 #' \url{https://shiny.posit.co/r/gallery/}
 #'
 #' @name as.leaflet
