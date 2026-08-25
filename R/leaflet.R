@@ -27,6 +27,7 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 
 #' @rdname as.leaflet
+#' @method as.leaflet sf
 #' @export
 as.leaflet.sf <- function(x, ...) {
   switch(
@@ -45,6 +46,7 @@ as.leaflet.sf <- function(x, ...) {
 #' @examples
 #' 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet(popup = ~ shortnm)
 #' 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet(popup = ~ shortnm)
+#' @method as.leaflet iatalist
 #' @export
 as.leaflet.iatalist <- function(x, ...) {
   airports_ip2location[unlist(x), , drop = FALSE] |>
@@ -71,13 +73,13 @@ leafletMarkers <- function(
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
     #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addMarkers(
-      group = 'Markers',
+      #group = 'Markers',
       clusterOptions = clusterOptions,
       ...
     ) |>
     addLayersControl(
       baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
-      overlayGroups = c('Markers'),
+      #overlayGroups = c('Markers'), # tzh prefers `addMarkers` be permanant
       options = layersControlOptions()
     )
   
@@ -97,14 +99,14 @@ leafletPolygons <- function(
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
     #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addPolygons(
-      group = 'Polygons',
+      #group = 'Polygons',
       fillColor = fillColor, fillOpacity = fillOpacity,
       weight = weight, color = color, opacity = opacity,
       ...
     ) |>
     addLayersControl(
       baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
-      overlayGroups = c('Polygons'),
+      #overlayGroups = c('Polygons'), # tzh prefers `addPolygons` be permanant
       options = layersControlOptions()
     )
 }
