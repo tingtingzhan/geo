@@ -69,14 +69,14 @@ leafletMarkers <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |>
+    #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addMarkers(
       group = 'Markers',
       clusterOptions = clusterOptions,
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite', 'Terrain'),
+      baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
       overlayGroups = c('Markers'),
       options = layersControlOptions()
     )
@@ -95,7 +95,7 @@ leafletPolygons <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |>
+    #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addPolygons(
       group = 'Polygons',
       fillColor = fillColor, fillOpacity = fillOpacity,
@@ -103,7 +103,7 @@ leafletPolygons <- function(
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite', 'Terrain'),
+      baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
       overlayGroups = c('Polygons'),
       options = layersControlOptions()
     )
