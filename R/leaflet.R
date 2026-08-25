@@ -57,7 +57,7 @@ as.leaflet.iatalist <- function(x, ...) {
 
 # @param sf an `sf` object
 #' @importFrom sf st_transform
-#' @importFrom leaflet leaflet addTiles addMarkers addPolygons markerClusterOptions
+#' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions addMarkers addPolygons markerClusterOptions
 leafletMarkers <- function(
     sf,
     clusterOptions = markerClusterOptions(),
@@ -67,10 +67,18 @@ leafletMarkers <- function(
   sf |>
     st_transform(x = _, crs = 4326) |>
     leaflet(data = _) |>
-    addTiles() |>
+    addTiles(group = 'OpenStreetMap') |>
+    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+    addProviderTiles(providers$OpenTopoMap, group = 'OpenTopoMap') |>
     addMarkers(
+      group = 'Markers',
       clusterOptions = clusterOptions,
       ...
+    ) |>
+    addLayersControl(
+      baseGroups = c('OpenStreetMap', 'Satellite', 'OpenTopoMap'),
+      overlayGroups = c('Markers'),
+      options = layersControlOptions(collapsed = TRUE)
     )
   
 }
@@ -85,11 +93,19 @@ leafletPolygons <- function(
   sf |>
     st_transform(x = _, crs = 4326) |>
     leaflet(data = _) |>
-    addTiles() |>
+    addTiles(group = 'OpenStreetMap') |>
+    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+    addProviderTiles(providers$OpenTopoMap, group = 'OpenTopoMap') |>
     addPolygons(
+      group = 'Polygons',
       fillColor = fillColor, fillOpacity = fillOpacity,
       weight = weight, color = color, opacity = opacity,
       ...
+    ) |>
+    addLayersControl(
+      baseGroups = c('OpenStreetMap', 'Satellite', 'OpenTopoMap'),
+      overlayGroups = c('Polygons'),
+      options = layersControlOptions(collapsed = TRUE)
     )
 }
 

@@ -12,11 +12,15 @@ export(as.leaflet)
 export(gen_psw)
 importFrom(geosphere,distGeo)
 importFrom(leaflet,
+  addLayersControl,
   addMarkers,
   addPolygons,
+  addProviderTiles,
   addTiles,
+  layersControlOptions,
   leaflet,
-  markerClusterOptions
+  markerClusterOptions,
+  providers
 )
 importFrom(plotly,
   add_lines,
