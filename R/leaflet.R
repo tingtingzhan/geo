@@ -27,18 +27,20 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 
 #' @rdname as.leaflet
+#' @importFrom sf st_geometry
 #' @method as.leaflet sf
 #' @export
 as.leaflet.sf <- function(x, ...) {
+  cls <- class(st_geometry(x))[[1L]]
   switch(
-    EXPR = class(x$geometry)[[1L]], 
+    EXPR = cls, 
     sfc_POINT = {
       leafletMarkers(x, ...)
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
       leafletPolygons(x, ...)
     }, sfc_LINESTRING = {
       leafletPolylines(x, ...)
-    }, stop('unsupported ', sQuote(class(x$geometry)[[1L]]))
+    }, stop('unsupported ', sQuote(cls))
   )
   
 }
@@ -64,7 +66,7 @@ as.leaflet.iatalist <- function(x, ...) {
 # @param sf an `sf` object
 #' @importFrom sf st_transform
 #' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions addMarkers addPolygons addPolylines markerClusterOptions
-leafletMarkers <- function(
+leafletMarkers <- \(
     sf,
     clusterOptions = markerClusterOptions(),
     ...
@@ -87,7 +89,7 @@ leafletMarkers <- function(
 }
 
 
-leafletPolygons <- function(
+leafletPolygons <- \(
     sf,
     fillColor = 'royalblue', fillOpacity = .1,
     weight = 2, color = 'white', opacity = 1,
@@ -111,7 +113,7 @@ leafletPolygons <- function(
 
 
 
-leafletPolylines <- function(
+leafletPolylines <- \(
     sf,
     ...
 ) {

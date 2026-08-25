@@ -34,5 +34,6 @@ importFrom(plotly,
 importFrom(scales,pal_hue)
 importFrom(sf,
   st_coordinates,
+  st_geometry,
   st_transform
 )
