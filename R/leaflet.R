@@ -8,7 +8,7 @@
 #' 
 #' @param x see **Usage**
 #' 
-#' @param ... additional parameters of the functions \link[leaflet]{addMarkers} and \link[leaflet]{addPolygons}.
+#' @param ... additional parameters of the functions \link[leaflet]{addMarkers}, \link[leaflet]{addPolylines} and \link[leaflet]{addPolygons}.
 #' 
 #' @returns 
 #' 
@@ -36,6 +36,8 @@ as.leaflet.sf <- function(x, ...) {
       leafletMarkers(x, ...)
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
       leafletPolygons(x, ...)
+    }, sfc_LINESTRING = {
+      leafletPolylines(x, ...)
     }, stop('unsupported ', sQuote(class(x$geometry)[[1L]]))
   )
   
@@ -57,9 +59,11 @@ as.leaflet.iatalist <- function(x, ...) {
 
 
 
+# leaflet::providers$Stadia.* # Quarto book authentication bug
+
 # @param sf an `sf` object
 #' @importFrom sf st_transform
-#' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions addMarkers addPolygons markerClusterOptions
+#' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions addMarkers addPolygons addPolylines markerClusterOptions
 leafletMarkers <- function(
     sf,
     clusterOptions = markerClusterOptions(),
@@ -71,15 +75,12 @@ leafletMarkers <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addMarkers(
-      #group = 'Markers',
       clusterOptions = clusterOptions,
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
-      #overlayGroups = c('Markers'), # tzh prefers `addMarkers` be permanant
+      baseGroups = c('OpenStreetMap', 'Satellite'),
       options = layersControlOptions()
     )
   
@@ -97,19 +98,34 @@ leafletPolygons <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    #addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |> # Quarto book authentication bug
     addPolygons(
-      #group = 'Polygons',
       fillColor = fillColor, fillOpacity = fillOpacity,
       weight = weight, color = color, opacity = opacity,
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite'), # , 'Terrain'
-      #overlayGroups = c('Polygons'), # tzh prefers `addPolygons` be permanant
+      baseGroups = c('OpenStreetMap', 'Satellite'),
       options = layersControlOptions()
     )
 }
 
 
+
+leafletPolylines <- function(
+    sf,
+    ...
+) {
+  sf |>
+    st_transform(x = _, crs = 4326) |>
+    leaflet(data = _) |>
+    addTiles(group = 'OpenStreetMap') |>
+    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+    addPolylines(
+      ...
+    ) |>
+    addLayersControl(
+      baseGroups = c('OpenStreetMap', 'Satellite'), 
+      options = layersControlOptions()
+    )
+}
 

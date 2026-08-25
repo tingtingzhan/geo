@@ -15,7 +15,7 @@ as.leaflet(x, ...)
 \arguments{
 \item{x}{see \strong{Usage}}
 
-\item{...}{additional parameters of the functions \link[leaflet]{addMarkers} and \link[leaflet]{addPolygons}.}
+\item{...}{additional parameters of the functions \link[leaflet]{addMarkers}, \link[leaflet]{addPolylines} and \link[leaflet]{addPolygons}.}
 }
 \value{
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
