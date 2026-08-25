@@ -33,7 +33,7 @@ as.leaflet.sf <- function(x, ...) {
     EXPR = class(x$geometry)[[1L]], 
     sfc_POINT = {
       leafletMarkers(x, ...)
-    }, sfc_MULTIPOLYGON = {
+    }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
       leafletPolygons(x, ...)
     }, stop('unsupported ', sQuote(class(x$geometry)[[1L]]))
   )
