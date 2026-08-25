@@ -69,16 +69,16 @@ leafletMarkers <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    addProviderTiles(providers$OpenTopoMap, group = 'OpenTopoMap') |>
+    addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |>
     addMarkers(
       group = 'Markers',
       clusterOptions = clusterOptions,
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite', 'OpenTopoMap'),
+      baseGroups = c('OpenStreetMap', 'Satellite', 'Terrain'),
       overlayGroups = c('Markers'),
-      options = layersControlOptions(collapsed = TRUE)
+      options = layersControlOptions()
     )
   
 }
@@ -95,7 +95,7 @@ leafletPolygons <- function(
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
     addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
-    addProviderTiles(providers$OpenTopoMap, group = 'OpenTopoMap') |>
+    addProviderTiles(providers$Stadia.StamenTerrain, group = 'Terrain') |>
     addPolygons(
       group = 'Polygons',
       fillColor = fillColor, fillOpacity = fillOpacity,
@@ -103,9 +103,9 @@ leafletPolygons <- function(
       ...
     ) |>
     addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite', 'OpenTopoMap'),
+      baseGroups = c('OpenStreetMap', 'Satellite', 'Terrain'),
       overlayGroups = c('Polygons'),
-      options = layersControlOptions(collapsed = TRUE)
+      options = layersControlOptions()
     )
 }
 
