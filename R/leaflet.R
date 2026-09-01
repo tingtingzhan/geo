@@ -35,11 +35,17 @@ as.leaflet.sf <- function(x, ...) {
   switch(
     EXPR = cls, 
     sfc_POINT = {
-      leafletMarkers(x, ...)
+      x |>
+        leafletBase() |>
+        leafletMarkers(...)
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
-      leafletPolygons(x, ...)
+      x |>
+        leafletBase() |>
+        leafletPolygons(...)
     }, sfc_LINESTRING = {
-      leafletPolylines(x, ...)
+      x |>
+        leafletBase() |>
+        leafletPolylines(...)
     }, stop('unsupported ', sQuote(cls))
   )
   
@@ -61,22 +67,27 @@ as.leaflet.iatalist <- function(x, ...) {
 
 
 
-# leaflet::providers$Stadia.* # Quarto book authentication bug
 
 # @param sf an `sf` object
 #' @importFrom sf st_transform
-#' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions addMarkers addPolygons addPolylines markerClusterOptions
-leafletMarkers <- \(
-    sf,
-    clusterOptions = markerClusterOptions(),
-    ...
-) {
-  
+#' @importFrom leaflet leaflet addTiles addProviderTiles providers 
+leafletBase <- \(sf) {
   sf |>
     st_transform(x = _, crs = 4326) |>
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
-    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite')
+  # leaflet::providers$Stadia.* # Quarto book authentication bug
+}
+
+
+#' @importFrom leaflet addLayersControl layersControlOptions addMarkers markerClusterOptions
+leafletMarkers <- \(
+  x,
+  clusterOptions = markerClusterOptions(),
+  ...
+) {
+  x |>
     addMarkers(
       clusterOptions = clusterOptions,
       ...
@@ -89,17 +100,15 @@ leafletMarkers <- \(
 }
 
 
+
+#' @importFrom leaflet addPolygons addLayersControl layersControlOptions
 leafletPolygons <- \(
-    sf,
+    x,
     fillColor = 'royalblue', fillOpacity = .1,
     weight = 2, color = 'white', opacity = 1,
     ...
 ) {
-  sf |>
-    st_transform(x = _, crs = 4326) |>
-    leaflet(data = _) |>
-    addTiles(group = 'OpenStreetMap') |>
-    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+  x |>
     addPolygons(
       fillColor = fillColor, fillOpacity = fillOpacity,
       weight = weight, color = color, opacity = opacity,
@@ -112,16 +121,12 @@ leafletPolygons <- \(
 }
 
 
-
+#' @importFrom leaflet addPolylines addLayersControl layersControlOptions
 leafletPolylines <- \(
-    sf,
+    x,
     ...
 ) {
-  sf |>
-    st_transform(x = _, crs = 4326) |>
-    leaflet(data = _) |>
-    addTiles(group = 'OpenStreetMap') |>
-    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
+  x |>
     addPolylines(
       ...
     ) |>
