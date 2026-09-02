@@ -30,7 +30,6 @@ moving_dist2gc.iatalist <- \(x, ...) {
 #' @importFrom sf st_coordinates
 #' @export
 moving_dist2gc.sf <- \(x, ...) {
-  if (nrow(x) < 3L) return(invisible())
   cls <- class(st_geometry(x))[[1L]]
   if (cls != 'sfc_POINT') return(invisible())
   x |>
@@ -46,6 +45,7 @@ moving_dist2gc.sf <- \(x, ...) {
 moving_dist2gc.matrix <- \(x, ...) {
   # `x` is ncol-2L 'matrix' for coordinates
   nr <- nrow(x)
+  if (nr < 3L) return(invisible())
   dist2gc(
     p1 = x[seq_len(nr-2L), , drop = FALSE], # gc start
     p2 = x[3:nr, , drop = FALSE], # gc end
