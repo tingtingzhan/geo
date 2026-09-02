@@ -5,6 +5,7 @@
 \alias{moving_dist2gc.iata}
 \alias{moving_dist2gc.iatalist}
 \alias{moving_dist2gc.sf}
+\alias{moving_dist2gc.matrix}
 \title{Moving Cross Track Distance}
 \usage{
 moving_dist2gc(x, ...)
@@ -14,6 +15,8 @@ moving_dist2gc(x, ...)
 \method{moving_dist2gc}{iatalist}(x, ...)
 
 \method{moving_dist2gc}{sf}(x, ...)
+
+\method{moving_dist2gc}{matrix}(x, ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}

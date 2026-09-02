@@ -27,21 +27,29 @@ moving_dist2gc.iatalist <- \(x, ...) {
 
 
 #' @rdname moving_dist2gc
-#' @importFrom geosphere dist2gc
 #' @importFrom sf st_coordinates
 #' @export
 moving_dist2gc.sf <- \(x, ...) {
   if (nrow(x) < 3L) return(invisible())
   cls <- class(st_geometry(x))[[1L]]
   if (cls != 'sfc_POINT') return(invisible())
-  coords <- x |>
-    st_coordinates()
-  nr <- nrow(coords)
-  dist2gc(
-    p1 = coords[seq_len(nr-2L), , drop = FALSE], # gc start
-    p2 = coords[3:nr, , drop = FALSE], # gc end
-    p3 = coords[2:(nr-1L), , drop = FALSE] # point away from gc
-  )
+  x |>
+    st_coordinates() |>
+    moving_dist2gc.matrix()
 }
 
 
+
+#' @rdname moving_dist2gc
+#' @importFrom geosphere dist2gc
+#' @export
+moving_dist2gc.matrix <- \(x, ...) {
+  # `x` is ncol-2L 'matrix' for coordinates
+  nr <- nrow(x)
+  dist2gc(
+    p1 = x[seq_len(nr-2L), , drop = FALSE], # gc start
+    p2 = x[3:nr, , drop = FALSE], # gc end
+    p3 = x[2:(nr-1L), , drop = FALSE] # point away from gc
+  )
+}
+  
