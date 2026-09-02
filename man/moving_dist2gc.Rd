@@ -21,7 +21,7 @@ moving_dist2gc(x, ...)
 \arguments{
 \item{x}{see \strong{Usage}}
 
-\item{...}{additional parameters, currently of no use}
+\item{...}{additional parameters of the function \link[geosphere]{dist2gc}}
 }
 \description{
 Moving Cross Track Distance

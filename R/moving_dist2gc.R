@@ -4,7 +4,7 @@
 #' 
 #' @param x see **Usage**
 #' 
-#' @param ... additional parameters, currently of no use
+#' @param ... additional parameters of the function \link[geosphere]{dist2gc}
 #' 
 #' @name moving_dist2gc
 #' @export
@@ -35,7 +35,7 @@ moving_dist2gc.sf <- \(x, ...) {
   if (cls != 'sfc_POINT') return(invisible())
   x |>
     st_coordinates() |>
-    moving_dist2gc.matrix()
+    moving_dist2gc.matrix(...)
 }
 
 
@@ -49,7 +49,8 @@ moving_dist2gc.matrix <- \(x, ...) {
   dist2gc(
     p1 = x[seq_len(nr-2L), , drop = FALSE], # gc start
     p2 = x[3:nr, , drop = FALSE], # gc end
-    p3 = x[2:(nr-1L), , drop = FALSE] # point away from gc
+    p3 = x[2:(nr-1L), , drop = FALSE], # point away from gc
+    ...
   )
 }
   
