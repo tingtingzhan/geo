@@ -3,6 +3,9 @@
 S3method(as.leaflet,iatalist)
 S3method(as.leaflet,sf)
 S3method(format,distGeo)
+S3method(moving_dist2gc,iata)
+S3method(moving_dist2gc,iatalist)
+S3method(moving_dist2gc,sf)
 S3method(plot,iata)
 S3method(plot,iatalist)
 S3method(print,iata)
@@ -10,7 +13,11 @@ S3method(print,iatalist)
 export(as.iata)
 export(as.leaflet)
 export(gen_psw)
-importFrom(geosphere,distGeo)
+export(moving_dist2gc)
+importFrom(geosphere,
+  dist2gc,
+  distGeo
+)
 importFrom(leaflet,
   addLayersControl,
   addMarkers,
