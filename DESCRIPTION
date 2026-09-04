@@ -2,13 +2,13 @@ Package: geo
 Type: Package
 Title: Fun Projects with Earth
 Version: 0.1.0
-Date: 2026-09-01
+Date: 2026-09-04
 Description: Earth based on 'sf', 'geosphere', 'leaflet' and 'plotly::plot_geo()'.
 Language: en-US
 Encoding: UTF-8
 License: GPL-2
 Authors@R: c(person(given = 'Tingting', family = 'Zhan', role = c('aut', 'cre'), email = 'tingtingzhan@gmail.com'))
 Depends: R (>= 4.6)
-Imports: geosphere (== 1.6.8), leaflet (== 2.2.3.9000), plotly (== 4.12.1), scales (== 1.4.0), sf (== 1.1.2)
+Imports: geosphere (== 1.6.8), leaflet (== 2.2.3), plotly (== 4.12.1), scales (== 1.4.0), sf (== 1.1.2)
 Config/roxygen2/version: 8.1.0
 Config/roxygen2/markdown: TRUE
