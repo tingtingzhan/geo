@@ -140,13 +140,14 @@ plot.iatalist <- function(x, ..., map = .globe1()) {
 # @param col \link[base]{character} scalar
 # @references 
 # \url{https://plotly.com/r/lines-on-maps/}
-#' @importFrom plotly plot_geo add_markers add_segments add_lines layout toRGB
+#' @importFrom plotly add_markers add_text add_segments add_polygons toRGB
 #' @importFrom scales pal_hue
 #' @importFrom sf st_coordinates
 #' @export
 plot.iata <- function(
     x,
     ..., 
+    time = Sys.time(),
     map = .globe1(),
     col = pal_hue()(n = 1L)
 ) {
@@ -184,11 +185,19 @@ plot.iata <- function(
         bordercolor = col # default 'black' 
       )
     ) |>
-    add_lines(
-      data = terminatorPoints(time = Sys.time()),
+    add_text(
+      data = subsolarPoint(time = time),
       x = ~ lon, y = ~ lat,
-      line = list(color = 'grey', width = .5),
-      inherit = FALSE
+      text = '\u2600\ufe0f',
+      textfont = list(size = 20),
+      hoverinfo = 'none'
+    ) |>
+    add_polygons(
+      data = terminatorPoints(time = time),
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0),
+      fillcolor = 'rgba(0, 0, 0, .05)',
+      hoverinfo = 'none'
     )
   
 }

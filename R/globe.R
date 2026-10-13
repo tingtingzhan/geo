@@ -1,6 +1,6 @@
 
 
-#' @importFrom plotly toRGB
+#' @importFrom plotly plot_geo layout toRGB
 .globe1 <- \() {
   plot_geo() |>
     layout(
