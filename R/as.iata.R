@@ -183,6 +183,12 @@ plot.iata <- function(
         align = 'center', # seems not working consistently..
         bordercolor = col # default 'black' 
       )
+    ) |>
+    add_lines(
+      data = terminatorPoints(time = Sys.time()),
+      x = ~ lon, y = ~ lat,
+      line = list(color = 'grey', width = .5),
+      inherit = FALSE
     )
   
 }
