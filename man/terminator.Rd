@@ -11,12 +11,28 @@ subsolarPoint(time = Sys.time(), ...)
 terminatorPoints(time = Sys.time(), n = 4L, ...)
 }
 \arguments{
-\item{time}{a \link[base]{POSIXct} object, default value is \code{Sys.time()}}
+\item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
 
 \item{...}{additional parameters, currently of no use}
 
-\item{n}{\link[base]{integer} scalar, default value is \code{4L}}
+\item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a circle on the globe, while +/-180 longitude overlap)}
 }
 \description{
-Subsolar Point and Terminator Points at Current Time
+To find the latitude and longitude of the subsolar point and the day-night terminator.
+}
+\details{
+The function \code{\link[=subsolarPoint]{subsolarPoint()}} finds the latitude and longitude of the subsolar point.
+
+The function \code{\link[=terminatorPoints]{terminatorPoints()}} finds the latitude and longitude of the points on the day-night terminator.
+}
+\examples{
+subsolarPoint()
+
+terminatorPoints()
+
+}
+\references{
+\url{https://en.wikipedia.org/wiki/Subsolar_point}
+
+\url{https://en.wikipedia.org/wiki/Terminator_(solar)}
 }

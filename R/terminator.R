@@ -4,9 +4,22 @@
 
 #' @title Subsolar Point and Terminator Points at Current Time
 #' 
-#' @param time a \link[base]{POSIXct} object, default value is `Sys.time()`
+#' @description
+#' To find the latitude and longitude of the subsolar point and the day-night terminator.
+#' 
+#' 
+#' @param time a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}
 #' 
 #' @param ... additional parameters, currently of no use
+#' 
+#' @details
+#' The function [subsolarPoint()] finds the latitude and longitude of the subsolar point. 
+#' 
+#' @references
+#' \url{https://en.wikipedia.org/wiki/Subsolar_point}
+#' 
+#' @examples
+#' subsolarPoint()
 #' 
 #' @name terminator
 #' @export
@@ -35,7 +48,16 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 
 #' @rdname terminator
 #' 
-#' @param n \link[base]{integer} scalar, default value is `4L`
+#' @param n \link[base]{integer} scalar, number of points, default value is `4L` (three points determine a circle on the globe, while +/-180 longitude overlap)
+#' 
+#' @details
+#' The function [terminatorPoints()] finds the latitude and longitude of the points on the day-night terminator.
+#' 
+#' @references
+#' \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
+#' 
+#' @examples
+#' terminatorPoints()
 #' 
 #' @export
 terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
