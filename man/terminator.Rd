@@ -51,6 +51,8 @@ moonEmoji()
 \url{https://en.wikipedia.org/wiki/Subsolar_point}
 
 \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
+
+\url{https://www.timeanddate.com/worldclock/sunearth.html}
 }
 \author{
 Google Gemini \url{https://gemini.google.com}.

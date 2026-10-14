@@ -95,6 +95,9 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 #' @details
 #' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
 #' 
+#' @references
+#' \url{https://www.timeanddate.com/worldclock/sunearth.html}
+#' 
 #' @examples
 #' sublunarPoint()
 #' 
