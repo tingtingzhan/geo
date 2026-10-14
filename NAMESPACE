@@ -14,7 +14,9 @@ S3method(print,iatalist)
 export(as.iata)
 export(as.leaflet)
 export(gen_psw)
+export(moonEmoji)
 export(moving_dist2gc)
+export(sublunarPoint)
 export(subsolarPoint)
 export(terminatorPoints)
 importFrom(geosphere,
@@ -32,6 +34,11 @@ importFrom(leaflet,
   leaflet,
   markerClusterOptions,
   providers
+)
+importFrom(lunar,lunar.phase)
+importFrom(oce,
+  moonAngle,
+  siderealTime
 )
 importFrom(plotly,
   add_markers,

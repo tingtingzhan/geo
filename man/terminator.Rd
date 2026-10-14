@@ -4,11 +4,17 @@
 \alias{terminator}
 \alias{subsolarPoint}
 \alias{terminatorPoints}
+\alias{sublunarPoint}
+\alias{moonEmoji}
 \title{Subsolar Point and Terminator Points at Current Time}
 \usage{
 subsolarPoint(time = Sys.time(), ...)
 
 terminatorPoints(time = Sys.time(), n = 4L, ...)
+
+sublunarPoint(time = Sys.time(), ...)
+
+moonEmoji(date = Sys.Date(), ...)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
@@ -16,6 +22,8 @@ terminatorPoints(time = Sys.time(), n = 4L, ...)
 \item{...}{additional parameters, currently of no use}
 
 \item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a circle on the globe, while +/-180 longitude overlap)}
+
+\item{date}{a \link[base]{Date} object, default value is the current time on user's computer from the function \link[base]{Sys.Date}}
 }
 \description{
 To find the latitude and longitude of the subsolar point and the day-night terminator.
@@ -24,15 +32,28 @@ To find the latitude and longitude of the subsolar point and the day-night termi
 The function \code{\link[=subsolarPoint]{subsolarPoint()}} finds the latitude and longitude of the subsolar point.
 
 The function \code{\link[=terminatorPoints]{terminatorPoints()}} finds the latitude and longitude of the points on the day-night terminator.
+
+The function \code{\link[=sublunarPoint]{sublunarPoint()}} finds the latitude and longitude of the sublunar point.
+
+The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
 }
 \examples{
 subsolarPoint()
 
 terminatorPoints()
 
+sublunarPoint()
+
+moonEmoji()
+
 }
 \references{
 \url{https://en.wikipedia.org/wiki/Subsolar_point}
 
 \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
+}
+\author{
+Google Gemini \url{https://gemini.google.com}.
+
+Tingting Zhan (for correcting a critical flaw in the function \code{\link[=terminatorPoints]{terminatorPoints()}})
 }

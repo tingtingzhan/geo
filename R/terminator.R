@@ -18,6 +18,11 @@
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
+#' @author
+#' Google Gemini \url{https://gemini.google.com}.
+#' 
+#' Tingting Zhan (for correcting a critical flaw in the function [terminatorPoints()])
+#' 
 #' @examples
 #' subsolarPoint()
 #' 
@@ -85,6 +90,62 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 }
 
 
+#' @rdname terminator
+#' 
+#' @details
+#' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
+#' 
+#' @examples
+#' sublunarPoint()
+#' 
+#' @importFrom oce moonAngle siderealTime
+#' @export
+sublunarPoint <- \(time = Sys.time(), ...) {
+  # 1. Parse the target timestamp in strict UTC time
+  target_time <- as.POSIXct(time, tz = "UTC")
+  
+  # 2. Extract geocentric Right Ascension and Declination 
+  # Using long = 0, lat = 0 gives us the unprimed Greenwich baseline coordinates
+  lunar_data <- moonAngle(t = target_time, longitude = 0, latitude = 0)
+  
+  # Latitude of the sublunar point matches the declination exactly
+  sublunar_lat <- lunar_data$declination
+  
+  # 3. Calculate Greenwich Sidereal Time (GST) using the updated standalone function
+  # Note: oce::siderealTime returns time in decimal hours (0 to 24)
+  gst_hours <- siderealTime(target_time)
+  gst_degrees <- gst_hours * 15 # Convert hours to degrees (360 degrees / 24 hours)
+  
+  # 4. Longitude is the Moon's Right Ascension minus Greenwich Sidereal Time
+  sublunar_lon <- lunar_data$rightAscension - gst_degrees
+  
+  # Normalize longitude to the standard range of [-180, +180] degrees
+  sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
+  
+  data.frame(lat  = sublunar_lat, lon = sublunar_lon)
+  
+}
 
-
+#' @rdname terminator
+#' 
+#' @param date a \link[base]{Date} object, default value is the current time on user's computer from the function \link[base]{Sys.Date}
+#' 
+#' @details
+#' The function [moonEmoji()] finds the moon phase.
+#' 
+#' @examples
+#' moonEmoji()
+#' 
+#' @importFrom lunar lunar.phase
+#' @export
+moonEmoji <- \(date = Sys.Date(), ...) {
+  date |>
+    lunar.phase(...) |>
+    cut.default(
+      #breaks = c(0, pi/2, pi, 3*pi/2, 2*pi), # ?lunar::lunar.phase
+      breaks = seq.int(from = 0, to = 2*pi, length.out = 10L), # for the 9 emoji's
+      labels = c('\U1f311', '\U1f312', '\U1f313', '\U1f314', '\U1f315', '\U1f316', '\U1f317', '\U1f318', '\U1f311'),
+      include.lowest = TRUE, right = TRUE
+    )
+}
 

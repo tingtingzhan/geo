@@ -1,4 +1,31 @@
 
+#' @importFrom plotly add_text add_polygons
+.globe2 <- \(time = Sys.time(), ...) {
+  .globe1() |>
+    add_text(
+      data = subsolarPoint(time = time),
+      x = ~ lon, y = ~ lat,
+      text = '\u2600\ufe0f',
+      textfont = list(size = 20),
+      hoverinfo = 'none'
+    ) |>
+    add_text(
+      data = sublunarPoint(time = time),
+      x = ~ lon, y = ~ lat,
+      text = time |> as.Date() |> moonEmoji(),
+      textfont = list(size = 18),
+      hoverinfo = 'none'
+    ) |>    
+    add_polygons(
+      data = terminatorPoints(time = time),
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0),
+      fillcolor = 'rgba(0, 0, 0, .05)',
+      hoverinfo = 'none'
+    )
+}
+
+
 
 #' @importFrom plotly plot_geo layout toRGB
 .globe1 <- \() {
