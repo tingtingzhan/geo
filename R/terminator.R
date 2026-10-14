@@ -21,7 +21,7 @@
 #' @author
 #' Google Gemini \url{https://gemini.google.com}.
 #' 
-#' Tingting Zhan (for correcting a critical flaw in the function [terminatorPoints()])
+#' Tingting Zhan (for the function [moonEmoji()], and correcting a critical flaw in the function [terminatorPoints()])
 #' 
 #' @examples
 #' subsolarPoint()

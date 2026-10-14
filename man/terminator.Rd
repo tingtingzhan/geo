@@ -57,5 +57,5 @@ moonEmoji()
 \author{
 Google Gemini \url{https://gemini.google.com}.
 
-Tingting Zhan (for correcting a critical flaw in the function \code{\link[=terminatorPoints]{terminatorPoints()}})
+Tingting Zhan (for the function \code{\link[=moonEmoji]{moonEmoji()}}, and correcting a critical flaw in the function \code{\link[=terminatorPoints]{terminatorPoints()}})
 }
