@@ -74,13 +74,11 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
   sslon <- ss$lon * pi / 180
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
-  lon <- seq.int(from = 180, to = -180, length.out = n) # for terminator (which is a great circle)
-  
-  ha <- (lon * pi / 180) - sslon # \lambda - \lambda_s
+  lon <- seq.int(from = pi, to = -pi, length.out = n) # terminator is a great circle!
   
   data.frame(
-    lat = atan(-cos(ha) / tan(sslat)) * 180 / pi, 
-    lon = lon
+    lat = atan(-cos(lon - sslon) / tan(sslat)) / pi * 180, 
+    lon = lon / pi * 180
   )
   
 }
@@ -153,9 +151,9 @@ moonEmoji <- \(time = Sys.time(), ...) {
 
 #' @rdname terminator
 #' 
-#' @param zenith \link[base]{double} scalar, the solar zenith angle \eqn{\theta_z} in radius
+#' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
 #' 
-#' @param max.n \link[base]{integer} scalar, maximum fineness for twilight (which is **not** a great circle!).  Default value is `501L`
+#' @param max.n \link[base]{integer} scalar, maximum fineness for twilight (which is **not** a great circle!).  Default value is `1001L`
 #' 
 #' @details
 #' The function [twilightPoints()] finds the latitude and longitude of the points on
@@ -169,14 +167,14 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' \url{https://en.wikipedia.org/wiki/Twilight}
 #' 
 #' @examples
-#' twilightPoints(zenith = (90+12) * pi / 180, n = 201L)
+#' twilightPoints(sza = (90+12) * pi / 180, n = 201L)
 #' 
 #' @importFrom rootSolve uniroot.all
 #' @export
 twilightPoints <- \(
   time = Sys.time(), 
-  zenith,
-  max.n = 501L,
+  sza,
+  max.n = 1001L,
   ...
 ) {
   
@@ -191,7 +189,7 @@ twilightPoints <- \(
   # `lon` # \lambda in radius, \link[base]{vector}
   
   fn <- \(x, lon) {
-    (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(zenith)
+    (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)
   } 
   # `fn` does not have analytical solution
   # `fn` is not monotone, i.e., **not** ?stats::uniroot
@@ -217,7 +215,10 @@ twilightPoints <- \(
     ))
   }
   
-  if (FALSE) { # tested correct; ?plotly::add_markers
+  if (FALSE) { 
+    # !!! KEEP !!!
+    # in case \pkg{rootSolve} updates break my code!
+    # tested correct; ?plotly::add_markers
     
     lon <- rep(lon, times = nz)
     return(data.frame(

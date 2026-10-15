@@ -17,7 +17,7 @@ sublunarPoint(time = Sys.time(), ...)
 
 moonEmoji(time = Sys.time(), ...)
 
-twilightPoints(time = Sys.time(), zenith, max.n = 501L, ...)
+twilightPoints(time = Sys.time(), sza, max.n = 1001L, ...)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
@@ -26,9 +26,9 @@ twilightPoints(time = Sys.time(), zenith, max.n = 501L, ...)
 
 \item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a polygon on the globe, while +/-180 longitude overlap)}
 
-\item{zenith}{\link[base]{double} scalar, the solar zenith angle \eqn{\theta_z} in radius}
+\item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius}
 
-\item{max.n}{\link[base]{integer} scalar, maximum fineness for twilight (which is \strong{not} a great circle!).  Default value is \code{501L}}
+\item{max.n}{\link[base]{integer} scalar, maximum fineness for twilight (which is \strong{not} a great circle!).  Default value is \code{1001L}}
 }
 \description{
 To find the latitude and longitude of the subsolar point and the day-night terminator.
@@ -58,7 +58,7 @@ sublunarPoint()
 
 moonEmoji()
 
-twilightPoints(zenith = (90+12) * pi / 180, n = 201L)
+twilightPoints(sza = (90+12) * pi / 180, n = 201L)
 
 }
 \references{

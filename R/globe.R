@@ -6,17 +6,17 @@
   .globe2(time = time) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .06)',
-      data = twilightPoints(time = time, zenith = (90+6)*pi/180),
+      data = twilightPoints(time = time, sza = (90+6)*pi/180),
       x = ~ lon, y = ~ lat, hoverinfo = 'none'
     ) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .07)',
-      data = twilightPoints(time = time, zenith = (90+12)*pi/180),
+      data = twilightPoints(time = time, sza = (90+12)*pi/180),
       x = ~ lon, y = ~ lat, hoverinfo = 'none'
     ) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .08)',
-      data = twilightPoints(time = time, zenith = (90+18)*pi/180),
+      data = twilightPoints(time = time, sza = (90+18)*pi/180),
       x = ~ lon, y = ~ lat, hoverinfo = 'none'
     )
   
@@ -31,17 +31,24 @@
   .globe1() |>
     add_text(
       data = subsolarPoint(time = time),
-      x = ~ lon, y = ~ lat,
-      text = '\u2600\ufe0f',
+      x = ~ lon, y = ~ lat, text = '\u2600\ufe0f',
       textfont = list(size = 20),
-      hoverinfo = 'none'
+      hovertemplate = '<b>Sun:</b> (%{lon:.2f}, %{lat:.2f})<extra></extra>',
+        # Adding <extra></extra> at the end of `hovertemplate` explicitly hides the secondary trace name box
+      hoverlabel = list(
+        bgcolor = 'white', font = 'darkorange',
+        bordercolor = 'darkorange'
+      )
     ) |>
     add_text(
       data = sublunarPoint(time = time),
-      x = ~ lon, y = ~ lat,
-      text = time |> as.Date() |> moonEmoji(),
+      x = ~ lon, y = ~ lat, text = moonEmoji(time = time),
       textfont = list(size = 18),
-      hoverinfo = 'none'
+      hovertemplate = '<b>Moon:</b> (%{lon:.2f}, %{lat:.2f})<extra></extra>',
+      hoverlabel = list(
+        bgcolor = 'white', font = 'cornflowerblue',
+        bordercolor = 'cornflowerblue'
+      )
     ) |>    
     add_polygons(
       data = terminatorPoints(time = time),
