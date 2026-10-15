@@ -16,6 +16,8 @@
 #' The function [subsolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
 #' @references
+#' \url{https://en.wikipedia.org/wiki/Twilight}
+#' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
 #' @author
@@ -37,11 +39,11 @@ subsolarPoint <- \(time = Sys.time(), ...) {
   hour <- time$hour + time$min/60 + time$sec/3600 # hour of day
   
   # Solar Declination (latitude where sun is directly overhead)
-  # Simple approximation formula (by Gemini)
+  # Simple approximation formula
   declination <- 23.44 * sin(2 * pi * (doy - 80) / 365.25)
   
   # Greenwich Hour Angle / Subsolar Longitude
-  # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude (by Gemini)
+  # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
   solar_lon <- (12 - hour) * 15
   # Keep within -180 to 180 degrees
   solar_lon <- ((solar_lon + 180) %% 360) - 180
@@ -69,25 +71,67 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
   
   ss <- time |>
     subsolarPoint()
+  sslat <- ss$lat * pi / 180
+  sslon <- ss$lon * pi / 180
   
-  # Convert degrees to radians for trigonometry (by Gemini)
-  gplat_rad <- ss$lat * pi / 180
-  gplon_rad <- ss$lon * pi / 180
+  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
+  lon <- seq.int(from = 180, to = -180, length.out = n) # for terminator (which is a great circle)
   
-  #longs <- seq.int(from = -180, to = 180, length.out = n) # Gemini original, wrong!!
-  longs <- seq.int(from = 180, to = -180, length.out = n) 
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  # **not** subsolar point and the opposite polar !!! 
-  longs_rad <- longs * pi / 180
+  ha <- (lon * pi / 180) - sslon # \lambda - \lambda_s
   
-  # Spherical math to find latitude for each longitude step (by Gemini)
-  ha <- longs_rad - gplon_rad
-  lats_rad <- atan(-cos(ha) / tan(gplat_rad))
-  lats <- lats_rad * 180 / pi
-  
-  data.frame(lat = lats, lon = longs)
+  data.frame(
+    lat = atan(-cos(ha) / tan(sslat)) * 180 / pi, 
+    lon = lon
+  )
   
 }
+
+
+#' @importFrom stats optimize
+twilightPoints <- \(
+  time = Sys.time(), 
+  zenith, # \theta_z in radius
+  max.n = 201L, 
+  ...
+) { # still not perfect.. why?
+  
+  ss <- time |>
+    subsolarPoint()
+  sslat <- ss$lat * pi / 180
+  sslon <- ss$lon * pi / 180
+  
+  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
+  # twilight is **not** great circle!!
+  lon <- seq(from = pi, to = -pi, length.out = max.n)
+  # `lon` # \lambda in radius, \link[base]{vector}
+  
+  fn <- \(x, lon) {
+    z <- (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(zenith) # original
+    abs(z)
+  } # `fn` not uniroot!!!
+  
+  lat <- z <- double(length = length(lon))
+  
+  for (i in seq_along(lon)) {
+    o <- optimize(
+      f = fn, lon = lon[i],
+      lower = -pi/2, upper = pi/2
+    )
+    lat[i] <- o$minimum
+    z[i] <- o$objective
+  }
+  
+  id <- (abs(z) < 1e-4)
+  #stopifnot(all(id))
+  
+  return(data.frame(
+    lat = lat[id] * 180 / pi,
+    lon = lon[id] * 180 / pi
+  ))
+  
+  
+}
+
 
 
 #' @rdname terminator

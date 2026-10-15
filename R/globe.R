@@ -1,6 +1,39 @@
 
+
+#' @importFrom plotly add_text add_polygons
+.globe3 <- \(time = Sys.time(), ...) {
+  
+  .globe2(time = time) |>
+    add_polygons(
+      data = twilightPoints(zenith = (90+6) * pi / 180),
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0),
+      fillcolor = 'rgba(0, 0, 0, .06)',
+      hoverinfo = 'none'
+    ) |>
+    add_polygons(
+      data = twilightPoints(zenith = (90+12) * pi / 180),
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0),
+      fillcolor = 'rgba(0, 0, 0, .07)',
+      hoverinfo = 'none'
+    ) |>
+    add_polygons(
+      data = twilightPoints(zenith = (90+18) * pi / 180),
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0),
+      fillcolor = 'rgba(0, 0, 0, .08)',
+      hoverinfo = 'none'
+    )
+  
+}
+
+
+
+
 #' @importFrom plotly add_text add_polygons
 .globe2 <- \(time = Sys.time(), ...) {
+  
   .globe1() |>
     add_text(
       data = subsolarPoint(time = time),
@@ -23,6 +56,7 @@
       fillcolor = 'rgba(0, 0, 0, .05)',
       hoverinfo = 'none'
     )
+  
 }
 
 

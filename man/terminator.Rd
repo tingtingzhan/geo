@@ -48,6 +48,8 @@ moonEmoji()
 
 }
 \references{
+\url{https://en.wikipedia.org/wiki/Twilight}
+\url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 \url{https://en.wikipedia.org/wiki/Subsolar_point}
 
 \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
