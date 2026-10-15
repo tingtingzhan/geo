@@ -14,6 +14,10 @@ S3method(print,iatalist)
 export(as.iata)
 export(as.leaflet)
 export(gen_psw)
+export(globe)
+export(globe0)
+export(globe_sunmoon)
+export(globe_twilight)
 export(moonEmoji)
 export(moving_dist2gc)
 export(sublunarPoint)
@@ -40,6 +44,10 @@ importFrom(lunar,lunar.phase)
 importFrom(oce,
   moonAngle,
   siderealTime
+)
+importFrom(parallel,
+  detectCores,
+  mclapply
 )
 importFrom(plotly,
   add_markers,

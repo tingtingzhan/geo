@@ -1,9 +1,27 @@
 
 
+#' @title The Earth with Various Layers
+#' 
+#' @description
+#' The Earth with various layers.
+#' 
+#' 
+#' @param time a \link[base]{POSIXct} object, see the function [subsolarPoint()]
+#' 
+#' @param ... additional parameters, currently of no use
+#' 
+#' @details
+#' The function [globe_twilight()] adds civil, nautical and astronomical twilight, on top of [globe_sunmoon()].
+#' 
+#' @examples
+#' globe_twilight()
+#' 
+#' @name globe
 #' @importFrom plotly add_text add_polygons
-.globe3 <- \(time = Sys.time(), ...) {
+#' @export
+globe_twilight <- \(time = Sys.time(), ...) {
   
-  .globe2(time = time) |>
+  globe_sunmoon(time = time) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .06)',
       data = twilightPoints(time = time, sza = (90+6)*pi/180),
@@ -24,11 +42,18 @@
 
 
 
-
+#' @rdname globe
+#' @details
+#' The function [globe_sunmoon()] adds the subsolar point, sublunar point and the terminator, on top of [globe()].
+#' 
+#' @examples
+#' globe_sunmoon()
+#' 
 #' @importFrom plotly add_text add_polygons
-.globe2 <- \(time = Sys.time(), ...) {
+#' @export
+globe_sunmoon <- \(time = Sys.time(), ...) {
   
-  .globe1() |>
+  globe() |>
     add_text(
       data = subsolarPoint(time = time),
       x = ~ lon, y = ~ lat, text = '\u2600\ufe0f',
@@ -61,9 +86,16 @@
 }
 
 
-
+#' @rdname globe
+#' @details
+#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries` and USA facing the user.
+#' 
+#' @examples
+#' globe()
+#' 
 #' @importFrom plotly plot_geo layout toRGB
-.globe1 <- \() {
+#' @export
+globe <- \() {
   plot_geo() |>
     layout(
       showlegend = FALSE,
@@ -92,8 +124,16 @@
 }
 
 
-# minimum code to get a globe
-.globe0 <- \() {
+#' @rdname globe
+#' @details
+#' The function [globe0()] contains the minimum code to plot the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
+#' 
+#' @examples
+#' globe0()
+#' 
+#' @importFrom plotly plot_geo layout
+#' @export
+globe0 <- \() {
   plot_geo() |>
     layout(
       geo = list(

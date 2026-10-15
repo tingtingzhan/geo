@@ -121,7 +121,7 @@ print.iatalist <- function(x, ...) {
 plot.iatalist <- function(
     x, 
     ..., 
-    map = .globe3() #.globe2()
+    map = globe_twilight()
 ) {
   
   n <- x |> 
@@ -151,7 +151,7 @@ plot.iatalist <- function(
 plot.iata <- function(
     x,
     ..., 
-    map = .globe3(), #.globe2(),
+    map = globe_twilight(),
     col = pal_hue()(n = 1L)
 ) {
   

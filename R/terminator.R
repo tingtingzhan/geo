@@ -155,6 +155,8 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @param max.n \link[base]{integer} scalar, maximum fineness for twilight (which is **not** a great circle!).  Default value is `1001L`
 #' 
+#' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
+#' 
 #' @details
 #' The function [twilightPoints()] finds the latitude and longitude of the points on
 #' \describe{
@@ -170,11 +172,13 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' twilightPoints(sza = (90+12) * pi / 180, n = 201L)
 #' 
 #' @importFrom rootSolve uniroot.all
+#' @importFrom parallel mclapply detectCores
 #' @export
 twilightPoints <- \(
   time = Sys.time(), 
   sza,
   max.n = 1001L,
+  mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 ) {
   
@@ -196,12 +200,12 @@ twilightPoints <- \(
   # `fn` may have multiple local minimum, i.e., **not** ?base::optimize
   
   z <- lon |>
-    lapply(FUN = \(i) {
-      uniroot.all( # super fast!!!
+    mclapply(FUN = \(i) {
+      uniroot.all( # already super fast!!!
         f = fn, lon = i,
         lower = -pi/2, upper = pi/2
       )
-    })
+    }, mc.cores = mc.cores)
   
   nz <- lengths(z)
   

@@ -17,7 +17,13 @@ sublunarPoint(time = Sys.time(), ...)
 
 moonEmoji(time = Sys.time(), ...)
 
-twilightPoints(time = Sys.time(), sza, max.n = 1001L, ...)
+twilightPoints(
+  time = Sys.time(),
+  sza,
+  max.n = 1001L,
+  mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
+  ...
+)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
@@ -29,6 +35,8 @@ twilightPoints(time = Sys.time(), sza, max.n = 1001L, ...)
 \item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius}
 
 \item{max.n}{\link[base]{integer} scalar, maximum fineness for twilight (which is \strong{not} a great circle!).  Default value is \code{1001L}}
+
+\item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
 \description{
 To find the latitude and longitude of the subsolar point and the day-night terminator.
