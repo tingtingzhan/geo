@@ -49,10 +49,10 @@ importFrom(plotly,
   plot_geo,
   toRGB
 )
+importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
   st_coordinates,
   st_geometry,
   st_transform
 )
-importFrom(stats,optimize)

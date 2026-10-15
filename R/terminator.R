@@ -87,13 +87,18 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 }
 
 
-#' @importFrom stats optimize
+if (FALSE) {
+  debug(twilightPoints); twilightPoints(zenith = (90+12) * pi / 180)
+}
+
+
+#' @importFrom rootSolve uniroot.all
 twilightPoints <- \(
   time = Sys.time(), 
   zenith, # \theta_z in radius
-  max.n = 201L, 
+  max.n = 301L, # needs super fine close to polar, but why?
   ...
-) { # still not perfect.. why?
+) {
   
   ss <- time |>
     subsolarPoint()
@@ -106,29 +111,71 @@ twilightPoints <- \(
   # `lon` # \lambda in radius, \link[base]{vector}
   
   fn <- \(x, lon) {
-    z <- (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(zenith) # original
-    abs(z)
-  } # `fn` not uniroot!!!
+    (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(zenith)
+  } 
+  # `fn` does not have analytical solution
+  # `fn` is not monotone, i.e., **not** ?stats::uniroot
+  # `fn` may have multiple local minimum, i.e., **not** ?base::optimize
   
-  lat <- z <- double(length = length(lon))
+  z <- lon |>
+    lapply(FUN = \(i) {
+      uniroot.all( # super fast!!!
+        f = fn, lon = i,
+        lower = -pi/2, upper = pi/2
+      )
+    })
   
-  for (i in seq_along(lon)) {
-    o <- optimize(
-      f = fn, lon = lon[i],
-      lower = -pi/2, upper = pi/2
-    )
-    lat[i] <- o$minimum
-    z[i] <- o$objective
+  nz <- lengths(z)
+  
+  lat <- z |>
+    unlist(use.names = FALSE) # whatever!!!
+  
+  if (all(nz == 1L)) { # hew!!
+    return(data.frame(
+      lat = lat / pi * 180,
+      lon = lon / pi * 180
+    ))
   }
   
-  id <- (abs(z) < 1e-4)
-  #stopifnot(all(id))
+  if (FALSE) { # tested correct; ?plotly::add_markers
+    
+    lon <- rep(lon, times = nz)
+    return(data.frame(
+      lat = lat / pi * 180,
+      lon = lon / pi * 180  
+    ))
+    
+  } else {
+    
+    id <- (nz > 0L)
+    lon <- c(lon[id], rev.default(lon[id]))
+    lat <- c(
+      z[id] |> 
+        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
+      z[id] |> 
+        rev.default() |>
+        vapply(FUN = \(i) {
+          if (length(i) == 1L) i[1L] else i[2L]
+        }, FUN.VALUE = NA_real_)
+    )
+    return(data.frame(
+      lat = lat / pi * 180,
+      lon = lon / pi * 180  
+    ))
+    #return(data.frame(
+    #  lat = c(lat, lat[1L]) / pi * 180,
+    #  lon = c(lon, lon[1L]) / pi * 180  
+    #)) # same!!!
+    
+  }
   
-  return(data.frame(
-    lat = lat[id] * 180 / pi,
-    lon = lon[id] * 180 / pi
-  ))
-  
+  # this is not right with a polygon on the earth..
+  #id <- chull(x = lon, y = lat)
+  #id <- c(id, id[1L]) # close the polygon
+  #return(data.frame(
+  #  lat = lat[id] / pi * 180,
+  #  lon = lon[id] / pi * 180  
+  #))
   
 }
 

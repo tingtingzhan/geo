@@ -4,27 +4,21 @@
 .globe3 <- \(time = Sys.time(), ...) {
   
   .globe2(time = time) |>
+    #add_polygons(
+    #  line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .06)',
+    #  data = twilightPoints(zenith = (90+6) * pi / 180),
+    #  x = ~ lon, y = ~ lat, hoverinfo = 'none'
+    #) |>
     add_polygons(
-      data = twilightPoints(zenith = (90+6) * pi / 180),
-      x = ~ lon, y = ~ lat,
-      line = list(width = 0),
-      fillcolor = 'rgba(0, 0, 0, .06)',
-      hoverinfo = 'none'
-    ) |>
-    add_polygons(
+      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .07)',
       data = twilightPoints(zenith = (90+12) * pi / 180),
-      x = ~ lon, y = ~ lat,
-      line = list(width = 0),
-      fillcolor = 'rgba(0, 0, 0, .07)',
-      hoverinfo = 'none'
-    ) |>
-    add_polygons(
-      data = twilightPoints(zenith = (90+18) * pi / 180),
-      x = ~ lon, y = ~ lat,
-      line = list(width = 0),
-      fillcolor = 'rgba(0, 0, 0, .08)',
-      hoverinfo = 'none'
-    )
+      x = ~ lon, y = ~ lat, hoverinfo = 'none'
+    )# |>
+    #add_polygons(
+    #  line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .08)',
+    #  data = twilightPoints(zenith = (90+18) * pi / 180),
+    #  x = ~ lon, y = ~ lat, hoverinfo = 'none'
+    #)
   
 }
 
