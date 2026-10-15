@@ -16,7 +16,6 @@
 #' The function [subsolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
 #' @references
-#' \url{https://en.wikipedia.org/wiki/Twilight}
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
@@ -55,7 +54,7 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 
 #' @rdname terminator
 #' 
-#' @param n \link[base]{integer} scalar, number of points, default value is `4L` (three points determine a circle on the globe, while +/-180 longitude overlap)
+#' @param n \link[base]{integer} scalar, number of points, default value is `4L` (three points determine a polygon on the globe, while +/-180 longitude overlap)
 #' 
 #' @details
 #' The function [terminatorPoints()] finds the latitude and longitude of the points on the day-night terminator.
@@ -87,16 +86,97 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 }
 
 
-if (FALSE) {
-  debug(twilightPoints); twilightPoints(zenith = (90+12) * pi / 180)
+
+#' @rdname terminator
+#' 
+#' @details
+#' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
+#' 
+#' @references
+#' \url{https://www.timeanddate.com/worldclock/sunearth.html}
+#' 
+#' @examples
+#' sublunarPoint()
+#' 
+#' @importFrom oce moonAngle siderealTime
+#' @export
+sublunarPoint <- \(time = Sys.time(), ...) {
+  # 1. Parse the target timestamp in strict UTC time
+  target_time <- as.POSIXct(time, tz = "UTC")
+  
+  # 2. Extract geocentric Right Ascension and Declination 
+  # Using long = 0, lat = 0 gives us the unprimed Greenwich baseline coordinates
+  lunar_data <- moonAngle(t = target_time, longitude = 0, latitude = 0)
+  
+  # Latitude of the sublunar point matches the declination exactly
+  sublunar_lat <- lunar_data$declination
+  
+  # 3. Calculate Greenwich Sidereal Time (GST) using the updated standalone function
+  # Note: oce::siderealTime returns time in decimal hours (0 to 24)
+  gst_hours <- siderealTime(target_time)
+  gst_degrees <- gst_hours * 15 # Convert hours to degrees (360 degrees / 24 hours)
+  
+  # 4. Longitude is the Moon's Right Ascension minus Greenwich Sidereal Time
+  sublunar_lon <- lunar_data$rightAscension - gst_degrees
+  
+  # Normalize longitude to the standard range of [-180, +180] degrees
+  sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
+  
+  data.frame(lat  = sublunar_lat, lon = sublunar_lon)
+  
+}
+
+#' @rdname terminator
+#' 
+#' @details
+#' The function [moonEmoji()] finds the moon phase.
+#' 
+#' @examples
+#' moonEmoji()
+#' 
+#' @importFrom lunar lunar.phase
+#' @export
+moonEmoji <- \(time = Sys.time(), ...) {
+  time |>
+    as.Date() |>
+    lunar.phase(...) |> # next: find the hour `shift`
+    cut.default(
+      #breaks = c(0, pi/2, pi, 3*pi/2, 2*pi), # ?lunar::lunar.phase
+      breaks = seq.int(from = 0, to = 2*pi, length.out = 10L), # for the 9 emoji's
+      labels = c('\U1f311', '\U1f312', '\U1f313', '\U1f314', '\U1f315', '\U1f316', '\U1f317', '\U1f318', '\U1f311'),
+      include.lowest = TRUE, right = TRUE
+    )
 }
 
 
+
+
+#' @rdname terminator
+#' 
+#' @param zenith \link[base]{double} scalar, the solar zenith angle \eqn{\theta_z} in radius
+#' 
+#' @param max.n \link[base]{integer} scalar, maximum fineness for twilight (which is **not** a great circle!).  Default value is `501L`
+#' 
+#' @details
+#' The function [twilightPoints()] finds the latitude and longitude of the points on
+#' \describe{
+#' \item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
+#' \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
+#' \item{Astronomical twilight}{when \eqn{\theta_z = \frac{90+18}{180}\cdot\pi}}
+#' }
+#' 
+#' @references
+#' \url{https://en.wikipedia.org/wiki/Twilight}
+#' 
+#' @examples
+#' twilightPoints(zenith = (90+12) * pi / 180, n = 201L)
+#' 
 #' @importFrom rootSolve uniroot.all
+#' @export
 twilightPoints <- \(
   time = Sys.time(), 
-  zenith, # \theta_z in radius
-  max.n = 301L, # needs super fine close to polar, but why?
+  zenith,
+  max.n = 501L,
   ...
 ) {
   
@@ -162,84 +242,9 @@ twilightPoints <- \(
       lat = lat / pi * 180,
       lon = lon / pi * 180  
     ))
-    #return(data.frame(
-    #  lat = c(lat, lat[1L]) / pi * 180,
-    #  lon = c(lon, lon[1L]) / pi * 180  
-    #)) # same!!!
     
   }
   
-  # this is not right with a polygon on the earth..
-  #id <- chull(x = lon, y = lat)
-  #id <- c(id, id[1L]) # close the polygon
-  #return(data.frame(
-  #  lat = lat[id] / pi * 180,
-  #  lon = lon[id] / pi * 180  
-  #))
-  
 }
 
-
-
-#' @rdname terminator
-#' 
-#' @details
-#' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
-#' 
-#' @references
-#' \url{https://www.timeanddate.com/worldclock/sunearth.html}
-#' 
-#' @examples
-#' sublunarPoint()
-#' 
-#' @importFrom oce moonAngle siderealTime
-#' @export
-sublunarPoint <- \(time = Sys.time(), ...) {
-  # 1. Parse the target timestamp in strict UTC time
-  target_time <- as.POSIXct(time, tz = "UTC")
-  
-  # 2. Extract geocentric Right Ascension and Declination 
-  # Using long = 0, lat = 0 gives us the unprimed Greenwich baseline coordinates
-  lunar_data <- moonAngle(t = target_time, longitude = 0, latitude = 0)
-  
-  # Latitude of the sublunar point matches the declination exactly
-  sublunar_lat <- lunar_data$declination
-  
-  # 3. Calculate Greenwich Sidereal Time (GST) using the updated standalone function
-  # Note: oce::siderealTime returns time in decimal hours (0 to 24)
-  gst_hours <- siderealTime(target_time)
-  gst_degrees <- gst_hours * 15 # Convert hours to degrees (360 degrees / 24 hours)
-  
-  # 4. Longitude is the Moon's Right Ascension minus Greenwich Sidereal Time
-  sublunar_lon <- lunar_data$rightAscension - gst_degrees
-  
-  # Normalize longitude to the standard range of [-180, +180] degrees
-  sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
-  
-  data.frame(lat  = sublunar_lat, lon = sublunar_lon)
-  
-}
-
-#' @rdname terminator
-#' 
-#' @param date a \link[base]{Date} object, default value is the current time on user's computer from the function \link[base]{Sys.Date}
-#' 
-#' @details
-#' The function [moonEmoji()] finds the moon phase.
-#' 
-#' @examples
-#' moonEmoji()
-#' 
-#' @importFrom lunar lunar.phase
-#' @export
-moonEmoji <- \(date = Sys.Date(), ...) {
-  date |>
-    lunar.phase(...) |>
-    cut.default(
-      #breaks = c(0, pi/2, pi, 3*pi/2, 2*pi), # ?lunar::lunar.phase
-      breaks = seq.int(from = 0, to = 2*pi, length.out = 10L), # for the 9 emoji's
-      labels = c('\U1f311', '\U1f312', '\U1f313', '\U1f314', '\U1f315', '\U1f316', '\U1f317', '\U1f318', '\U1f311'),
-      include.lowest = TRUE, right = TRUE
-    )
-}
 

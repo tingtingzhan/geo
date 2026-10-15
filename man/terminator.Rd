@@ -6,6 +6,7 @@
 \alias{terminatorPoints}
 \alias{sublunarPoint}
 \alias{moonEmoji}
+\alias{twilightPoints}
 \title{Subsolar Point and Terminator Points at Current Time}
 \usage{
 subsolarPoint(time = Sys.time(), ...)
@@ -14,16 +15,20 @@ terminatorPoints(time = Sys.time(), n = 4L, ...)
 
 sublunarPoint(time = Sys.time(), ...)
 
-moonEmoji(date = Sys.Date(), ...)
+moonEmoji(time = Sys.time(), ...)
+
+twilightPoints(time = Sys.time(), zenith, max.n = 501L, ...)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
 
 \item{...}{additional parameters, currently of no use}
 
-\item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a circle on the globe, while +/-180 longitude overlap)}
+\item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a polygon on the globe, while +/-180 longitude overlap)}
 
-\item{date}{a \link[base]{Date} object, default value is the current time on user's computer from the function \link[base]{Sys.Date}}
+\item{zenith}{\link[base]{double} scalar, the solar zenith angle \eqn{\theta_z} in radius}
+
+\item{max.n}{\link[base]{integer} scalar, maximum fineness for twilight (which is \strong{not} a great circle!).  Default value is \code{501L}}
 }
 \description{
 To find the latitude and longitude of the subsolar point and the day-night terminator.
@@ -36,6 +41,13 @@ The function \code{\link[=terminatorPoints]{terminatorPoints()}} finds the latit
 The function \code{\link[=sublunarPoint]{sublunarPoint()}} finds the latitude and longitude of the sublunar point.
 
 The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
+
+The function \code{\link[=twilightPoints]{twilightPoints()}} finds the latitude and longitude of the points on
+\describe{
+\item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
+\item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
+\item{Astronomical twilight}{when \eqn{\theta_z = \frac{90+18}{180}\cdot\pi}}
+}
 }
 \examples{
 subsolarPoint()
@@ -46,15 +58,18 @@ sublunarPoint()
 
 moonEmoji()
 
+twilightPoints(zenith = (90+12) * pi / 180, n = 201L)
+
 }
 \references{
-\url{https://en.wikipedia.org/wiki/Twilight}
 \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 \url{https://en.wikipedia.org/wiki/Subsolar_point}
 
 \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
 
 \url{https://www.timeanddate.com/worldclock/sunearth.html}
+
+\url{https://en.wikipedia.org/wiki/Twilight}
 }
 \author{
 Google Gemini \url{https://gemini.google.com}.

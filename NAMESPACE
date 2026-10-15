@@ -19,6 +19,7 @@ export(moving_dist2gc)
 export(sublunarPoint)
 export(subsolarPoint)
 export(terminatorPoints)
+export(twilightPoints)
 importFrom(geosphere,
   dist2gc,
   distGeo
