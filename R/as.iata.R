@@ -144,7 +144,7 @@ plot.iatalist <- function(
 # @param col \link[base]{character} scalar
 # @references 
 # \url{https://plotly.com/r/lines-on-maps/}
-#' @importFrom plotly add_markers add_segments toRGB
+#' @importFrom plotly add_markers add_segments
 #' @importFrom scales pal_hue
 #' @importFrom sf st_coordinates
 #' @export
@@ -158,7 +158,6 @@ plot.iata <- function(
   ap <- airports_ip2location[x, , drop = FALSE]
   coords <- ap |>
     st_coordinates()
-  col <- col |> toRGB()
   lon <- coords[,1L]
   lat <- coords[,2L]
   

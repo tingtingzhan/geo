@@ -26,11 +26,11 @@ The Earth with various layers.
 \details{
 The function \code{\link[=globe_twilight]{globe_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=globe_sunmoon]{globe_sunmoon()}}.
 
-The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the subsolar point, sublunar point and the terminator, on top of \code{\link[=globe]{globe()}}.
+The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe]{globe()}}.
 
-The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries} and USA facing the user.
+The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes and USA facing the user.
 
-The function \code{\link[=globe0]{globe0()}} contains the minimum code to plot the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
+The function \code{\link[=globe0]{globe0()}} contains the minimum code to create the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
 }
 \examples{
 globe_twilight()

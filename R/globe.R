@@ -44,7 +44,7 @@ globe_twilight <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the subsolar point, sublunar point and the terminator, on top of [globe()].
+#' The function [globe_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [globe()].
 #' 
 #' @examples
 #' globe_sunmoon()
@@ -88,12 +88,12 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries` and USA facing the user.
+#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes and USA facing the user.
 #' 
 #' @examples
 #' globe()
 #' 
-#' @importFrom plotly plot_geo layout toRGB
+#' @importFrom plotly plot_geo layout
 #' @export
 globe <- \() {
   plot_geo() |>
@@ -101,15 +101,15 @@ globe <- \() {
       showlegend = FALSE,
       geo = list( # https://plotly.com/r/reference/layout/geo/
         resolution = 50, # 50 high resolution, 110 low resolution
-        framewidth = .7, framecolor = toRGB('grey80'), # outer frame of the earth
-        showland = TRUE, landcolor = toRGB('linen'),
-        showocean = TRUE, oceancolor = toRGB('aliceblue'), coastlinecolor = toRGB('peachpuff'), coastlinewidth = .5,
-        showlakes = TRUE, lakecolor = toRGB('lightblue'),
-        showrivers = TRUE, rivercolor = toRGB('lightblue'), riverwidth = .5,
-        showcountries = TRUE, countrycolor = toRGB('peachpuff'), countrywidth = .7, 
-        # showsubunits = TRUE, subunitcolor = toRGB('blue'), # state borders; not working, not sure why
-        lonaxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
-        lataxis = list(showgrid = TRUE, gridcolor = toRGB('gray80'), gridwidth = .5),
+        framewidth = .7, framecolor = 'white', # outer frame of the earth. 'white' is the prettiest!! 'grey' is okay. But must use plotly::toRGB('grey80')
+        showland = TRUE, landcolor = 'linen',
+        showocean = TRUE, oceancolor = 'aliceblue', coastlinecolor = 'peachpuff', coastlinewidth = .5,
+        showlakes = TRUE, lakecolor = 'lightblue',
+        showrivers = TRUE, rivercolor = 'lightblue', riverwidth = .5,
+        showcountries = TRUE, countrycolor = 'peachpuff', countrywidth = .7, 
+        # showsubunits = TRUE, subunitcolor = 'blue', # state borders; not working, not sure why
+        lonaxis = list(showgrid = TRUE, gridcolor = 'gray80', gridwidth = .5),
+        lataxis = list(showgrid = TRUE, gridcolor = 'gray80', gridwidth = .5),
         projection = list(
           type = 'orthographic',
           rotation = list(
@@ -126,7 +126,7 @@ globe <- \() {
 
 #' @rdname globe
 #' @details
-#' The function [globe0()] contains the minimum code to plot the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
+#' The function [globe0()] contains the minimum code to create the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
 #' 
 #' @examples
 #' globe0()

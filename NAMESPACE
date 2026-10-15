@@ -55,8 +55,7 @@ importFrom(plotly,
   add_segments,
   add_text,
   layout,
-  plot_geo,
-  toRGB
+  plot_geo
 )
 importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
