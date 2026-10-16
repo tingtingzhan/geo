@@ -26,7 +26,7 @@ The Earth with various layers.
 \details{
 The function \code{\link[=globe_twilight]{globe_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=globe_sunmoon]{globe_sunmoon()}}.
 
-The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe]{globe()}}.
+The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the equatorial, the tropics, the polar circles, the meridian and antimeridian, the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe]{globe()}}.
 
 The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, and USA facing the user.
 
