@@ -44,7 +44,7 @@ globe_twilight <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [globe()].
+#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of [globe()].
 #' 
 #' @examples
 #' globe_sunmoon()
@@ -53,7 +53,30 @@ globe_twilight <- \(time = Sys.time(), ...) {
 #' @export
 globe_sunmoon <- \(time = Sys.time(), ...) {
   
+  lon <- seq(from = -180, to = 180, length.out = 501L)
+  path_line <- list(color = toRGB('gray80'), width = .4, dash = 'dot')
+  
   globe() |>
+    add_paths(
+      x = lon, y = 66.56, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
+    add_paths(
+      x = lon, y = -66.56, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
+    add_paths(
+      x = lon, y = 23.44, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
+    add_paths(
+      x = lon, y = -23.44, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
+    add_paths(
+      x = lon, y = 0, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
     add_text(
       data = subsolarPoint(time = time),
       x = ~ lon, y = ~ lat, text = '\u2600\ufe0f',
@@ -88,12 +111,12 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes and USA facing the user.
+#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user.
 #' 
 #' @examples
 #' globe()
 #' 
-#' @importFrom plotly plot_geo layout
+#' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
 globe <- \() {
   plot_geo() |>

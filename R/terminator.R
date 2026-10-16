@@ -239,9 +239,7 @@ twilightPoints <- \(
         vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
       z[id] |> 
         rev.default() |>
-        vapply(FUN = \(i) {
-          if (length(i) == 1L) i[1L] else i[2L]
-        }, FUN.VALUE = NA_real_)
+        vapply(FUN = \(i) i[length(i)], FUN.VALUE = NA_real_)
     )
     return(data.frame(
       lat = lat / pi * 180,

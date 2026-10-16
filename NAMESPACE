@@ -51,11 +51,13 @@ importFrom(parallel,
 )
 importFrom(plotly,
   add_markers,
+  add_paths,
   add_polygons,
   add_segments,
   add_text,
   layout,
-  plot_geo
+  plot_geo,
+  toRGB
 )
 importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
