@@ -172,7 +172,8 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' twilightPoints(sza = (90+12) * pi / 180, n = 201L)
 #' 
 #' @importFrom rootSolve uniroot.all
-#' @importFrom parallel mclapply detectCores
+#' @importFrom parallel mclapply detectCores 
+# @importFrom parallel makeCluster stopCluster parLapply
 #' @export
 twilightPoints <- \(
   time = Sys.time(), 
@@ -202,13 +203,31 @@ twilightPoints <- \(
   # `fn` is not monotone, i.e., **not** ?stats::uniroot
   # `fn` may have multiple local minimum, i.e., **not** ?base::optimize
   
-  z <- lon |>
-    mclapply(FUN = \(i) {
-      uniroot.all( # already super fast!!!
-        f = fn, lon = i,
-        lower = -pi/2, upper = pi/2
-      )
-    }, mc.cores = mc.cores)
+  unr_fn <- \(i) {
+    uniroot.all( # already super fast!!!
+      f = fn, lon = i,
+      lower = -pi/2, upper = pi/2
+    )
+  }
+
+  if (Sys.getenv('POSITRON') == '1') {
+    
+    # multi-core: correct way
+    #cl <- makeCluster(mc.cores, type = 'PSOCK')
+    #z <- lon |>
+    #  parLapply(cl = cl, fun = unr_fn)
+    #stopCluster(cl)
+    # end of multi-core
+    
+    # not using multi-core is actually faster
+    z <- lon |>
+      lapply(FUN = unr_fn)
+    
+  } else {
+    z <- lon |>
+      mclapply(FUN = unr_fn, mc.cores = mc.cores)
+  }
+
   
   nz <- lengths(z)
   
