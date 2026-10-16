@@ -189,8 +189,11 @@ twilightPoints <- \(
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
   # twilight is **not** great circle!!
-  lon <- seq(from = pi, to = -pi, length.out = max.n)
   # `lon` # \lambda in radius, \link[base]{vector}
+  # must start with `sslon`, otherwise polygon may be messed up!
+  lon <- seq(from = sslon, to = sslon - 2*pi, length.out = max.n)
+  # Normalize longitude to (-pi, pi)
+  lon <- ((lon + pi) %% (2*pi)) - pi
   
   fn <- \(x, lon) {
     (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)
