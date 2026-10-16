@@ -44,17 +44,16 @@ globe_twilight <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the meridian and antimeridian, the subsolar point, the sublunar point and the terminator, on top of [globe()].
+#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of [globe()].
 #' 
 #' @examples
 #' globe_sunmoon()
 #' 
-#' @importFrom plotly add_text add_polygons
+#' @importFrom plotly add_paths add_text add_polygons
 #' @export
 globe_sunmoon <- \(time = Sys.time(), ...) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L)
-  lat <- seq(from = -90, to = 90, length.out = 3L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
   
   globe() |>
@@ -76,14 +75,6 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     ) |>
     add_paths(
       x = lon, y = 0, 
-      line = path_line, hoverinfo = 'none'
-    ) |>
-    add_paths(
-      x = 0, y = lat, 
-      line = path_line, hoverinfo = 'none'
-    ) |>
-    add_paths(
-      x = 180, y = lat, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_text(
@@ -120,7 +111,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user.
+#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, the meridian and antimeridian, and USA facing the user.
 #' 
 #' @examples
 #' globe()
@@ -128,7 +119,19 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
 globe <- \() {
+  
+  lat <- seq(from = -90, to = 90, length.out = 3L)
+  path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
+  
   plot_geo() |>
+    add_paths(
+      x = 0, y = lat, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
+    add_paths(
+      x = 180, y = lat, 
+      line = path_line, hoverinfo = 'none'
+    ) |>
     layout(
       showlegend = FALSE,
       geo = list( # https://plotly.com/r/reference/layout/geo/
@@ -158,14 +161,14 @@ globe <- \() {
 
 #' @rdname globe
 #' @details
-#' The function [globe0()] contains the minimum code to create the earth (calling only the functions \link[plotly]{plot_geo} and \link[plotly]{layout}).
+#' The function [globe_minimal()] contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an `'orthographic'` projection).
 #' 
 #' @examples
-#' globe0()
+#' globe_minimal()
 #' 
 #' @importFrom plotly plot_geo layout
 #' @export
-globe0 <- \() {
+globe_minimal <- \() {
   plot_geo() |>
     layout(
       geo = list(
