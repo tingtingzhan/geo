@@ -250,7 +250,6 @@ twilightPolygon <- \(
     z <- lon |>
       mclapply(FUN = unr_fn, mc.cores = mc.cores)
   }
-
   
   nz <- lengths(z)
   
