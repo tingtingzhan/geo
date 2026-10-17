@@ -4,6 +4,8 @@
 \alias{as.leaflet}
 \alias{as.leaflet.sf}
 \alias{as.leaflet.iatalist}
+\alias{as.leaflet.POINT}
+\alias{as.leaflet.POLYGON}
 \title{Convert to \CRANpkg{leaflet}}
 \usage{
 as.leaflet(x, ...)
@@ -20,6 +22,10 @@ as.leaflet(x, ...)
 )
 
 \method{as.leaflet}{iatalist}(x, ...)
+
+\method{as.leaflet}{POINT}(x, ...)
+
+\method{as.leaflet}{POLYGON}(x, ...)
 }
 \arguments{
 \item{x}{see \strong{Usage}}
@@ -42,6 +48,9 @@ To convert an R object into a \link[leaflet]{leaflet}.
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet(popup = ~ shortnm)
 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet(popup = ~ shortnm)
+subsolarPoint() |> as.leaflet(popup = 'Sun')
+twilightPolygon(sza = (90+6) * pi / 180) |> as.leaflet() # not perfect yet!
+
 }
 \references{
 \url{http://rstudio.github.io/leaflet/}

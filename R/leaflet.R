@@ -80,11 +80,32 @@ as.leaflet.sf <- \(
 #' 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet(popup = ~ shortnm)
 #' @method as.leaflet iatalist
 #' @export
-as.leaflet.iatalist <- function(x, ...) {
+as.leaflet.iatalist <- \(x, ...) {
   airports_ip2location[unlist(x), , drop = FALSE] |>
     as.leaflet.sf(...)
 }
 
+
+#' @rdname as.leaflet
+#' @examples
+#' subsolarPoint() |> as.leaflet(popup = 'Sun')
+#' @importFrom sf st_sf st_sfc
+#' @method as.leaflet POINT
+#' @export
+as.leaflet.POINT <- \(x, ...) {
+  st_sf(
+    geometry = st_sfc(x, crs = 4326)
+  ) |>
+    as.leaflet.sf(...)
+}
+
+#' @rdname as.leaflet
+#' @examples
+#' twilightPolygon(sza = (90+6) * pi / 180) |> as.leaflet() # not perfect yet!
+#' 
+#' @method as.leaflet POLYGON
+#' @export
+as.leaflet.POLYGON <- as.leaflet.POINT
 
 
 
