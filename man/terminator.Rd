@@ -3,21 +3,21 @@
 \name{terminator}
 \alias{terminator}
 \alias{subsolarPoint}
-\alias{terminatorPoints}
+\alias{terminatorPolygon}
 \alias{sublunarPoint}
 \alias{moonEmoji}
-\alias{twilightPoints}
+\alias{twilightPolygon}
 \title{Subsolar Point and Terminator Points at Current Time}
 \usage{
 subsolarPoint(time = Sys.time(), ...)
 
-terminatorPoints(time = Sys.time(), n = 4L, ...)
+terminatorPolygon(time = Sys.time(), n = 4L, ...)
 
 sublunarPoint(time = Sys.time(), ...)
 
 moonEmoji(time = Sys.time(), ...)
 
-twilightPoints(
+twilightPolygon(
   time = Sys.time(),
   sza,
   max.n = 1001L,
@@ -38,19 +38,28 @@ twilightPoints(
 
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
+\value{
+The function \code{\link[=subsolarPoint]{subsolarPoint()}} returns a \link[sf]{st_point} object.
+
+The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} returns a \link[sf]{st_polygon} object.
+
+The function \code{\link[=sublunarPoint]{sublunarPoint()}} returns a \link[sf]{st_point} object.
+
+The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[sf]{st_polygon} object.
+}
 \description{
 To find the latitude and longitude of the subsolar point and the day-night terminator.
 }
 \details{
 The function \code{\link[=subsolarPoint]{subsolarPoint()}} finds the latitude and longitude of the subsolar point.
 
-The function \code{\link[=terminatorPoints]{terminatorPoints()}} finds the latitude and longitude of the points on the day-night terminator.
+The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} finds the latitude and longitude of the points on the day-night terminator.
 
 The function \code{\link[=sublunarPoint]{sublunarPoint()}} finds the latitude and longitude of the sublunar point.
 
 The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
 
-The function \code{\link[=twilightPoints]{twilightPoints()}} finds the latitude and longitude of the points on
+The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitude and longitude of the points on
 \describe{
 \item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
 \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
@@ -60,13 +69,13 @@ The function \code{\link[=twilightPoints]{twilightPoints()}} finds the latitude 
 \examples{
 subsolarPoint()
 
-terminatorPoints()
+terminatorPolygon()
 
 sublunarPoint()
 
 moonEmoji()
 
-twilightPoints(sza = (90+12) * pi / 180, n = 201L)
+twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
 
 }
 \references{
@@ -82,5 +91,5 @@ twilightPoints(sza = (90+12) * pi / 180, n = 201L)
 \author{
 Google Gemini \url{https://gemini.google.com}.
 
-Tingting Zhan (for the function \code{\link[=moonEmoji]{moonEmoji()}}, and correcting a critical flaw in the function \code{\link[=terminatorPoints]{terminatorPoints()}})
+Tingting Zhan (for the function \code{\link[=moonEmoji]{moonEmoji()}}, and correcting a critical flaw in the function \code{\link[=terminatorPolygon]{terminatorPolygon()}})
 }

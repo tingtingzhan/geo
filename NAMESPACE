@@ -22,8 +22,8 @@ export(moonEmoji)
 export(moving_dist2gc)
 export(sublunarPoint)
 export(subsolarPoint)
-export(terminatorPoints)
-export(twilightPoints)
+export(terminatorPolygon)
+export(twilightPolygon)
 importFrom(geosphere,
   dist2gc,
   distGeo
@@ -64,5 +64,7 @@ importFrom(scales,pal_hue)
 importFrom(sf,
   st_coordinates,
   st_geometry,
+  st_point,
+  st_polygon,
   st_transform
 )

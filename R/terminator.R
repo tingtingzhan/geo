@@ -15,6 +15,9 @@
 #' @details
 #' The function [subsolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
+#' @returns 
+#' The function [subsolarPoint()] returns a \link[sf]{st_point} object.
+#' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
@@ -22,12 +25,13 @@
 #' @author
 #' Google Gemini \url{https://gemini.google.com}.
 #' 
-#' Tingting Zhan (for the function [moonEmoji()], and correcting a critical flaw in the function [terminatorPoints()])
+#' Tingting Zhan (for the function [moonEmoji()], and correcting a critical flaw in the function [terminatorPolygon()])
 #' 
 #' @examples
 #' subsolarPoint()
 #' 
 #' @name terminator
+#' @importFrom sf st_point
 #' @export
 subsolarPoint <- \(time = Sys.time(), ...) {
   
@@ -47,7 +51,9 @@ subsolarPoint <- \(time = Sys.time(), ...) {
   # Keep within -180 to 180 degrees
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
-  return(data.frame(lat = declination, lon = solar_lon))
+  return(st_point(x = c(solar_lon, declination)))
+  
+  
 }
 
 
@@ -57,29 +63,38 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 #' @param n \link[base]{integer} scalar, number of points, default value is `4L` (three points determine a polygon on the globe, while +/-180 longitude overlap)
 #' 
 #' @details
-#' The function [terminatorPoints()] finds the latitude and longitude of the points on the day-night terminator.
+#' The function [terminatorPolygon()] finds the latitude and longitude of the points on the day-night terminator.
+#' 
+#' @returns 
+#' The function [terminatorPolygon()] returns a \link[sf]{st_polygon} object.
+#' 
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
 #' 
 #' @examples
-#' terminatorPoints()
+#' terminatorPolygon()
 #' 
+#' @importFrom sf st_polygon
 #' @export
-terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
+terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   ss <- time |>
     subsolarPoint()
-  sslat <- ss$lat * pi / 180
-  sslon <- ss$lon * pi / 180
+  sslon <- ss[1L] * pi / 180
+  sslat <- ss[2L] * pi / 180
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
   lon <- seq.int(from = pi, to = -pi, length.out = n) # terminator is a great circle!
   
-  data.frame(
-    lat = atan(-cos(lon - sslon) / tan(sslat)) / pi * 180, 
-    lon = lon / pi * 180
-  )
+  z <- cbind(
+    lon = lon,
+    lat = atan(-cos(lon - sslon) / tan(sslat))
+  )  / pi * 180
+  
+  rbind(z, z[1L, ]) |> # to close the polygon
+    list() |>
+    st_polygon()
   
 }
 
@@ -90,6 +105,9 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 #' @details
 #' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
 #' 
+#' @returns 
+#' The function [sublunarPoint()] returns a \link[sf]{st_point} object.
+#' 
 #' @references
 #' \url{https://www.timeanddate.com/worldclock/sunearth.html}
 #' 
@@ -97,6 +115,7 @@ terminatorPoints <- \(time = Sys.time(), n = 4L, ...) {
 #' sublunarPoint()
 #' 
 #' @importFrom oce moonAngle siderealTime
+#' @importFrom sf st_point
 #' @export
 sublunarPoint <- \(time = Sys.time(), ...) {
   # 1. Parse the target timestamp in strict UTC time
@@ -120,7 +139,7 @@ sublunarPoint <- \(time = Sys.time(), ...) {
   # Normalize longitude to the standard range of [-180, +180] degrees
   sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
   
-  data.frame(lat  = sublunar_lat, lon = sublunar_lon)
+  return(st_point(x = c(sublunar_lon, sublunar_lat)))
   
 }
 
@@ -158,24 +177,28 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
 #' 
 #' @details
-#' The function [twilightPoints()] finds the latitude and longitude of the points on
+#' The function [twilightPolygon()] finds the latitude and longitude of the points on
 #' \describe{
 #' \item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
 #' \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
 #' \item{Astronomical twilight}{when \eqn{\theta_z = \frac{90+18}{180}\cdot\pi}}
 #' }
 #' 
+#' @returns
+#' The function [twilightPolygon()] returns a \link[sf]{st_polygon} object.
+#' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Twilight}
 #' 
 #' @examples
-#' twilightPoints(sza = (90+12) * pi / 180, n = 201L)
+#' twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
 #' 
+#' @importFrom sf st_polygon
 #' @importFrom rootSolve uniroot.all
 #' @importFrom parallel mclapply detectCores 
 # @importFrom parallel makeCluster stopCluster parLapply
 #' @export
-twilightPoints <- \(
+twilightPolygon <- \(
   time = Sys.time(), 
   sza,
   max.n = 1001L,
@@ -185,8 +208,8 @@ twilightPoints <- \(
   
   ss <- time |>
     subsolarPoint()
-  sslat <- ss$lat * pi / 180
-  sslon <- ss$lon * pi / 180
+  sslon <- ss[1L] * pi / 180
+  sslat <- ss[2L] * pi / 180
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
   # twilight is **not** great circle!!
@@ -235,25 +258,8 @@ twilightPoints <- \(
     unlist(use.names = FALSE) # whatever!!!
   
   if (all(nz == 1L)) { # hew!!
-    return(data.frame(
-      lat = lat / pi * 180,
-      lon = lon / pi * 180
-    ))
-  }
-  
-  if (FALSE) { 
-    # !!! KEEP !!!
-    # in case \pkg{rootSolve} updates break my code!
-    # tested correct; ?plotly::add_markers
-    
-    lon <- rep(lon, times = nz)
-    return(data.frame(
-      lat = lat / pi * 180,
-      lon = lon / pi * 180  
-    ))
-    
+    # do nothing!!
   } else {
-    
     id <- (nz > 0L)
     lon <- c(lon[id], rev.default(lon[id]))
     lat <- c(
@@ -263,12 +269,13 @@ twilightPoints <- \(
         rev.default() |>
         vapply(FUN = \(i) i[length(i)], FUN.VALUE = NA_real_)
     )
-    return(data.frame(
-      lat = lat / pi * 180,
-      lon = lon / pi * 180  
-    ))
-    
   }
+  
+  z <- cbind(lon, lat) / pi * 180
+  
+  rbind(z, z[1L, ]) |> # to close the polygon
+    list() |>
+    st_polygon()
   
 }
 

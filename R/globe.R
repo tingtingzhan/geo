@@ -21,21 +21,22 @@
 #' @export
 globe_twilight <- \(time = Sys.time(), ...) {
   
+  civil <- twilightPolygon(time = time, sza = (90+6)*pi/180)[[1L]]
+  nautical <- twilightPolygon(time = time, sza = (90+12)*pi/180)[[1L]]
+  astronomical <- twilightPolygon(time = time, sza = (90+18)*pi/180)[[1L]]
+  
   globe_sunmoon(time = time) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .051)',
-      data = twilightPoints(time = time, sza = (90+6)*pi/180),
-      x = ~ lon, y = ~ lat, hoverinfo = 'none'
+      x = civil[,1L], y = civil[,2L], hoverinfo = 'none'
     ) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .052)',
-      data = twilightPoints(time = time, sza = (90+12)*pi/180),
-      x = ~ lon, y = ~ lat, hoverinfo = 'none'
+      x = nautical[,1L], y = nautical[,2L], hoverinfo = 'none'
     ) |>
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .053)',
-      data = twilightPoints(time = time, sza = (90+18)*pi/180),
-      x = ~ lon, y = ~ lat, hoverinfo = 'none'
+      x = astronomical[,1L], y = astronomical[,2L], hoverinfo = 'none'
     )
   
 }
@@ -55,6 +56,9 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
+  subsolar <- subsolarPoint(time = time)
+  sublunar <- sublunarPoint(time = time)
+  terminator <- terminatorPolygon(time = time)[[1L]]
   
   globe() |>
     add_paths(
@@ -78,8 +82,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
       line = path_line, hoverinfo = 'none'
     ) |>
     add_text(
-      data = subsolarPoint(time = time),
-      x = ~ lon, y = ~ lat, text = '\u2600\ufe0f',
+      x = subsolar[1L], y = subsolar[2L], text = '\u2600\ufe0f',
       textfont = list(size = 20),
       hovertemplate = '<b>Sun:</b> (%{lon:.3f}, %{lat:.3f})<extra></extra>',
         # Adding <extra></extra> at the end of `hovertemplate` explicitly hides the secondary trace name box
@@ -89,8 +92,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
       )
     ) |>
     add_text(
-      data = sublunarPoint(time = time),
-      x = ~ lon, y = ~ lat, text = moonEmoji(time = time),
+      x = sublunar[1L], y = sublunar[2L], text = moonEmoji(time = time),
       textfont = list(size = 18),
       hovertemplate = '<b>Moon:</b> (%{lon:.3f}, %{lat:.3f})<extra></extra>',
       hoverlabel = list(
@@ -99,11 +101,8 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
       )
     ) |>    
     add_polygons(
-      data = terminatorPoints(time = time),
-      x = ~ lon, y = ~ lat,
-      line = list(width = 0),
-      fillcolor = 'rgba(0, 0, 0, .05)',
-      hoverinfo = 'none'
+      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .05)',
+      x = terminator[,1L], y = terminator[,2L], hoverinfo = 'none'
     )
   
 }
