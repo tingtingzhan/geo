@@ -27,25 +27,47 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 
 #' @rdname as.leaflet
+#' 
+#' @param clusterOptions see the function \link[leaflet]{addMarkers}
+#' 
+#' @param fillColor,fillOpacity,weight,color,opacity see the function \link[leaflet]{addPolygons}
+#' 
+#' @param ... additional parameters, currently of no use
+#' 
 #' @importFrom sf st_geometry
+#' @importFrom leaflet addMarkers markerClusterOptions
+#' @importFrom leaflet addPolygons
+#' @importFrom leaflet addPolylines
 #' @method as.leaflet sf
 #' @export
-as.leaflet.sf <- function(x, ...) {
+as.leaflet.sf <- \(
+    x, 
+    clusterOptions = markerClusterOptions(), # ?leaflet::addMarkers
+    fillColor = 'royalblue', fillOpacity = .1, weight = 2, color = 'white', opacity = 1, # ?leaflet::addPolygons
+    ...
+) {
   cls <- class(st_geometry(x))[[1L]]
   switch(
     EXPR = cls, 
     sfc_POINT = {
       x |>
-        leafletBase() |>
-        leafletMarkers(...)
+        leaflet_minimal() |>
+        addMarkers(
+          clusterOptions = clusterOptions,
+          ...
+        )
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
       x |>
-        leafletBase() |>
-        leafletPolygons(...)
+        leaflet_minimal() |>
+        addPolygons(
+          fillColor = fillColor, fillOpacity = fillOpacity,
+          weight = weight, color = color, opacity = opacity,
+          ...
+        )
     }, sfc_LINESTRING = {
       x |>
-        leafletBase() |>
-        leafletPolylines(...)
+        leaflet_minimal() |>
+        addPolylines(...)
     }, stop('unsupported ', sQuote(cls))
   )
   
@@ -67,72 +89,25 @@ as.leaflet.iatalist <- function(x, ...) {
 
 
 
+# leaflet::providers$Stadia.* # Quarto book authentication bug
 
 # @param sf an `sf` object
 #' @importFrom sf st_transform
-#' @importFrom leaflet leaflet addTiles addProviderTiles providers 
-leafletBase <- \(sf) {
+#' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions
+leaflet_minimal <- \(sf) {
   sf |>
     st_transform(x = _, crs = 4326) |>
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>
-    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite')
-  # leaflet::providers$Stadia.* # Quarto book authentication bug
-}
-
-
-#' @importFrom leaflet addLayersControl layersControlOptions addMarkers markerClusterOptions
-leafletMarkers <- \(
-  x, # 'leaflet' object
-  clusterOptions = markerClusterOptions(),
-  ...
-) {
-  x |>
-    addMarkers(
-      clusterOptions = clusterOptions,
-      ...
-    ) |>
+    addProviderTiles(providers$Esri.WorldImagery, group = 'Satellite') |>
     addLayersControl(
       baseGroups = c('OpenStreetMap', 'Satellite'),
       options = layersControlOptions()
     )
-  
+  # returns a 'leaflet' object with 
+  # attr(.$x, which = 'leafletData') being the input 'sf'
 }
 
 
 
-#' @importFrom leaflet addPolygons addLayersControl layersControlOptions
-leafletPolygons <- \(
-    x, # 'leaflet' object
-    fillColor = 'royalblue', fillOpacity = .1,
-    weight = 2, color = 'white', opacity = 1,
-    ...
-) {
-  x |>
-    addPolygons(
-      fillColor = fillColor, fillOpacity = fillOpacity,
-      weight = weight, color = color, opacity = opacity,
-      ...
-    ) |>
-    addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite'),
-      options = layersControlOptions()
-    )
-}
-
-
-#' @importFrom leaflet addPolylines addLayersControl layersControlOptions
-leafletPolylines <- \(
-    x, # 'leaflet' object
-    ...
-) {
-  x |>
-    addPolylines(
-      ...
-    ) |>
-    addLayersControl(
-      baseGroups = c('OpenStreetMap', 'Satellite'), 
-      options = layersControlOptions()
-    )
-}
 

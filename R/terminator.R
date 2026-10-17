@@ -252,6 +252,7 @@ twilightPolygon <- \(
       lapply(FUN = unr_fn)
     
   } else {
+    # does improve speed in RStudio!
     z <- lon |>
       mclapply(FUN = unr_fn, mc.cores = mc.cores)
   }
