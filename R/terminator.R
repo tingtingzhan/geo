@@ -57,6 +57,11 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 }
 
 
+# library(leaflet)
+# leaflet() |> addTiles() |> addPolygons(terminatorPolygon())
+# # not yet
+
+
 
 #' @rdname terminator
 #' 

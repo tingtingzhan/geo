@@ -83,7 +83,7 @@ leafletBase <- \(sf) {
 
 #' @importFrom leaflet addLayersControl layersControlOptions addMarkers markerClusterOptions
 leafletMarkers <- \(
-  x,
+  x, # 'leaflet' object
   clusterOptions = markerClusterOptions(),
   ...
 ) {
@@ -103,7 +103,7 @@ leafletMarkers <- \(
 
 #' @importFrom leaflet addPolygons addLayersControl layersControlOptions
 leafletPolygons <- \(
-    x,
+    x, # 'leaflet' object
     fillColor = 'royalblue', fillOpacity = .1,
     weight = 2, color = 'white', opacity = 1,
     ...
@@ -123,7 +123,7 @@ leafletPolygons <- \(
 
 #' @importFrom leaflet addPolylines addLayersControl layersControlOptions
 leafletPolylines <- \(
-    x,
+    x, # 'leaflet' object
     ...
 ) {
   x |>
