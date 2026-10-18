@@ -4,12 +4,15 @@
 \alias{globe}
 \alias{globe_twilight}
 \alias{globe_sunmoon}
+\alias{globe_meridian}
 \alias{globe_minimal}
 \title{The Earth with Various Layers}
 \usage{
 globe_twilight(time = Sys.time(), ...)
 
 globe_sunmoon(time = Sys.time(), ...)
+
+globe_meridian()
 
 globe()
 
@@ -26,9 +29,11 @@ The Earth with various layers.
 \details{
 The function \code{\link[=globe_twilight]{globe_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=globe_sunmoon]{globe_sunmoon()}}.
 
-The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe]{globe()}}.
+The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe_meridian]{globe_meridian()}}.
 
-The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, the meridian and antimeridian, and USA facing the user.
+The function \code{\link[=globe_meridian]{globe_meridian()}} adds the meridian and antimeridian on top of \code{\link[=globe]{globe()}}.
+
+The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, and USA facing the user.
 
 The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection).
 }
@@ -36,6 +41,8 @@ The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum 
 globe_twilight()
 
 globe_sunmoon()
+
+globe_meridian()
 
 globe()
 

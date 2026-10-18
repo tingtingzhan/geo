@@ -45,7 +45,7 @@ globe_twilight <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of [globe()].
+#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of [globe_meridian()].
 #' 
 #' @examples
 #' globe_sunmoon()
@@ -60,7 +60,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
   sublunar <- sublunarPoint(time = time)
   terminator <- terminatorPolygon(time = time)[[1L]]
   
-  globe() |>
+  globe_meridian() |>
     add_paths(
       x = lon, y = 66.56, 
       line = path_line, hoverinfo = 'none'
@@ -110,19 +110,19 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 #' @rdname globe
 #' @details
-#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, the meridian and antimeridian, and USA facing the user.
+#' The function [globe_meridian()] adds the meridian and antimeridian on top of [globe()].
 #' 
 #' @examples
-#' globe()
+#' globe_meridian()
 #' 
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
-globe <- \() {
+globe_meridian <- \() {
   
   lat <- seq(from = -90, to = 90, length.out = 3L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
   
-  plot_geo() |>
+  globe() |>
     add_paths(
       x = 0, y = lat, 
       line = path_line, hoverinfo = 'none'
@@ -130,7 +130,23 @@ globe <- \() {
     add_paths(
       x = 180, y = lat, 
       line = path_line, hoverinfo = 'none'
-    ) |>
+    )
+}
+
+
+
+
+#' @rdname globe
+#' @details
+#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user.
+#' 
+#' @examples
+#' globe()
+#' 
+#' @importFrom plotly plot_geo add_paths toRGB layout
+#' @export
+globe <- \() {
+  plot_geo() |>
     layout(
       showlegend = FALSE,
       geo = list( # https://plotly.com/r/reference/layout/geo/
@@ -156,6 +172,10 @@ globe <- \() {
       )
     )
 }
+
+
+
+
 
 
 #' @rdname globe

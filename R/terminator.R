@@ -1,14 +1,13 @@
 
-# first draft by Gemini !!!
 
 
-#' @title Subsolar Point and Terminator Points at Current Time
+#' @title Subsolar/Sublunar Point, Terminator and  Twilight Zones
 #' 
 #' @description
-#' To find the latitude and longitude of the subsolar point and the day-night terminator.
+#' To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
 #' 
 #' 
-#' @param time a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}
+#' @param time a \link[base]{POSIXct} object, default value is the current date and time on user's computer from the function \link[base]{Sys.time}
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
@@ -21,11 +20,6 @@
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
-#' 
-#' @author
-#' Google Gemini \url{https://gemini.google.com}.
-#' 
-#' Tingting Zhan (for the function [moonEmoji()], and correcting a critical flaw in the function [terminatorPolygon()])
 #' 
 #' @examples
 #' subsolarPoint()
@@ -65,7 +59,11 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 
 #' @rdname terminator
 #' 
-#' @param n \link[base]{integer} scalar, number of points, default value is `4L` (three points determine a polygon on the globe, while +/-180 longitude overlap)
+#' @param n \link[base]{integer} scalar.
+#' \describe{
+#' \item{For the function [terminatorPolygon()]:}{Number of points, default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+#' \item{For the function [twilightPolygon()]:}{Maximum fineness for the borders of the various twilight zones, default value is `1001L`.  Twilight zone borders are **not** great circles!}
+#' }
 #' 
 #' @details
 #' The function [terminatorPolygon()] finds the latitude and longitude of the points on the day-night terminator.
@@ -177,12 +175,10 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
 #' 
-#' @param max.n \link[base]{integer} scalar, maximum fineness for twilight (which is **not** a great circle!).  Default value is `1001L`
-#' 
 #' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
 #' 
 #' @details
-#' The function [twilightPolygon()] finds the latitude and longitude of the points on
+#' The function [twilightPolygon()] finds the latitude and longitude of the borders of
 #' \describe{
 #' \item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
 #' \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
@@ -206,7 +202,7 @@ moonEmoji <- \(time = Sys.time(), ...) {
 twilightPolygon <- \(
   time = Sys.time(), 
   sza,
-  max.n = 1001L,
+  n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 ) {
@@ -220,7 +216,7 @@ twilightPolygon <- \(
   # twilight is **not** great circle!!
   # `lon` # \lambda in radius, \link[base]{vector}
   # must start with `sslon`, otherwise polygon may be messed up!
-  lon <- seq(from = sslon, to = sslon - 2*pi, length.out = max.n)
+  lon <- seq(from = sslon, to = sslon - 2*pi, length.out = n)
   # Normalize longitude to (-pi, pi)
   lon <- ((lon + pi) %% (2*pi)) - pi
   

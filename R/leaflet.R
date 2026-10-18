@@ -101,6 +101,11 @@ as.leaflet.POINT <- \(x, ...) {
 
 #' @rdname as.leaflet
 #' @examples
+#' # \pkg{leaflet} does **not** draw edges with great circle!
+#' terminatorPolygon() |> as.leaflet()
+#' 
+#' terminatorPolygon(n = 501L) |> as.leaflet()
+#' 
 #' twilightPolygon(sza = (90+6) * pi / 180) |> as.leaflet() # not perfect yet!
 #' 
 #' @method as.leaflet POLYGON

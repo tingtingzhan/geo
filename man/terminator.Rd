@@ -7,7 +7,7 @@
 \alias{sublunarPoint}
 \alias{moonEmoji}
 \alias{twilightPolygon}
-\title{Subsolar Point and Terminator Points at Current Time}
+\title{Subsolar/Sublunar Point, Terminator and  Twilight Zones}
 \usage{
 subsolarPoint(time = Sys.time(), ...)
 
@@ -20,21 +20,23 @@ moonEmoji(time = Sys.time(), ...)
 twilightPolygon(
   time = Sys.time(),
   sza,
-  max.n = 1001L,
+  n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 )
 }
 \arguments{
-\item{time}{a \link[base]{POSIXct} object, default value is the current time on user's computer from the function \link[base]{Sys.time}}
+\item{time}{a \link[base]{POSIXct} object, default value is the current date and time on user's computer from the function \link[base]{Sys.time}}
 
 \item{...}{additional parameters, currently of no use}
 
-\item{n}{\link[base]{integer} scalar, number of points, default value is \code{4L} (three points determine a polygon on the globe, while +/-180 longitude overlap)}
+\item{n}{\link[base]{integer} scalar.
+\describe{
+\item{For the function \code{\link[=terminatorPolygon]{terminatorPolygon()}}:}{Number of points, default value is \code{4L}.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+\item{For the function \code{\link[=twilightPolygon]{twilightPolygon()}}:}{Maximum fineness for the borders of the various twilight zones, default value is \code{1001L}.  Twilight zone borders are \strong{not} great circles!}
+}}
 
 \item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius}
-
-\item{max.n}{\link[base]{integer} scalar, maximum fineness for twilight (which is \strong{not} a great circle!).  Default value is \code{1001L}}
 
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
@@ -48,7 +50,7 @@ The function \code{\link[=sublunarPoint]{sublunarPoint()}} returns a \link[sf]{s
 The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[sf]{st_polygon} object.
 }
 \description{
-To find the latitude and longitude of the subsolar point and the day-night terminator.
+To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
 }
 \details{
 The function \code{\link[=subsolarPoint]{subsolarPoint()}} finds the latitude and longitude of the subsolar point.
@@ -59,7 +61,7 @@ The function \code{\link[=sublunarPoint]{sublunarPoint()}} finds the latitude an
 
 The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
 
-The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitude and longitude of the points on
+The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitude and longitude of the borders of
 \describe{
 \item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
 \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
@@ -87,9 +89,4 @@ twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
 \url{https://www.timeanddate.com/worldclock/sunearth.html}
 
 \url{https://en.wikipedia.org/wiki/Twilight}
-}
-\author{
-Google Gemini \url{https://gemini.google.com}.
-
-Tingting Zhan (for the function \code{\link[=moonEmoji]{moonEmoji()}}, and correcting a critical flaw in the function \code{\link[=terminatorPolygon]{terminatorPolygon()}})
 }
