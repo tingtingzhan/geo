@@ -36,8 +36,9 @@ subsolarPoint <- \(time = Sys.time(), ...) {
   hour <- time$hour + time$min/60 + time$sec/3600 # hour of day
   
   # Solar Declination (latitude where sun is directly overhead)
-  # Simple approximation formula
-  declination <- 23.44 * sin(2 * pi * (doy - 80) / 365.25)
+  # Cooper (1969) doi:10.1016/0038-092X(69)90047-4
+  # same as ?solrad::Declination
+  declination <- 23.45 * sin(2 * pi * (284+doy) / 365.25)
   
   # Greenwich Hour Angle / Subsolar Longitude
   # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
