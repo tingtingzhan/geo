@@ -6,12 +6,15 @@
 #' The Earth with various layers.
 #' 
 #' 
-#' @param time a \link[base]{POSIXct} object, see the function [subsolarPoint()]
+#' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()]
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
 #' @details
 #' The function [globe_twilight()] adds civil, nautical and astronomical twilight, on top of [globe_sunmoon()].
+#' 
+#' @note
+#' Twilight polygons (for the function [globe_twilight()]) are challenging for \link[plotly]{animation_opts}.
 #' 
 #' @examples
 #' globe_twilight()
@@ -21,9 +24,12 @@
 #' @export
 globe_twilight <- \(time = Sys.time(), ...) {
   
-  civil <- twilightPolygon(time = time, sza = (90+6)*pi/180)[[1L]]
-  nautical <- twilightPolygon(time = time, sza = (90+12)*pi/180)[[1L]]
-  astronomical <- twilightPolygon(time = time, sza = (90+18)*pi/180)[[1L]]
+  civil <- twilightPolygon(time = time, sza = (90+6)*pi/180) |>
+    st_coordinates()
+  nautical <- twilightPolygon(time = time, sza = (90+12)*pi/180) |>
+    st_coordinates()
+  astronomical <- twilightPolygon(time = time, sza = (90+18)*pi/180) |>
+    st_coordinates()
   
   globe_sunmoon(time = time) |>
     add_polygons(
@@ -43,22 +49,125 @@ globe_twilight <- \(time = Sys.time(), ...) {
 
 
 
+hovertemplate_ <- \(x) {
+  x |>
+    sprintf(fmt = '<b>%s</b> (%%{lon:.3f}, %%{lat:.3f})<extra></extra>')
+  # Adding <extra></extra> at the end of `hovertemplate` explicitly hides the secondary trace name box
+}
+
+hoverlabel_ <- \(x) {
+  list(
+    bgcolor = 'white', font = x, bordercolor = x
+  )
+}
+
+
+
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of [globe_meridian()].
+#' The function [globe_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [globe_TropicPolar()].
 #' 
 #' @examples
 #' globe_sunmoon()
 #' 
-#' @importFrom plotly add_paths add_text add_polygons
+#' @importFrom plotly add_text add_polygons
 #' @export
 globe_sunmoon <- \(time = Sys.time(), ...) {
   
+  subsolar <- subSolarPoint(time = time)
+  sublunar <- subLunarPoint(time = time)
+  terminator <- terminatorPolygon(time = time)[[1L]]
+  
+  globe_TropicPolar() |>
+    add_text(
+      x = subsolar[1L], y = subsolar[2L], text = '\u2600\ufe0f',
+      textfont = list(size = 20),
+      hovertemplate = hovertemplate_('Sun'),
+      hoverlabel = hoverlabel_('darkorange')
+    ) |>
+    add_text(
+      x = sublunar[1L], y = sublunar[2L], text = moonEmoji(time = time),
+      textfont = list(size = 18),
+      hovertemplate = hovertemplate_('Moon'),
+      hoverlabel = hoverlabel_('cornflowerblue')
+    ) |>    
+    add_polygons(
+      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .05)',
+      x = terminator[,1L], y = terminator[,2L], hoverinfo = 'none'
+    )
+  
+}
+
+
+if (FALSE) {
+  globe_sunmoon_path(n = 101L)
+}
+
+#' @importFrom plotly add_trace animation_opts
+globe_sunmoon_path <- \(
+  time = Sys.time(), 
+  n = 1001L,
+  ...
+) {
+  
+  # +/- 12hours
+  intv <- time + c(-1, 1) * 60*60*24/2
+  tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
+  
+  subsolar <- subSolarPath(tm = tm)
+  sublunar <- subLunarPath(tm = tm)
+  # ignore terminator
+  
+  # ask Google/Gemini 
+  # `R plot_ly animation_opts`
+  # `R plotly plot_geo frame`
+  
+  globe_TropicPolar() |>
+    add_trace(
+      x = ~ geometry |> 
+        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
+      y = ~ geometry |> 
+        vapply(FUN = `[`, 2L, FUN.VALUE = NA_real_),
+      data = subsolar,
+      frame = ~ time,
+      hovertemplate = hovertemplate_('Sun'),
+      hoverlabel = hoverlabel_('darkorange')
+    ) |>
+    add_trace(
+      x = ~ geometry |> 
+        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
+      y = ~ geometry |> 
+        vapply(FUN = `[`, 2L, FUN.VALUE = NA_real_),
+      data = sublunar,
+      frame = ~ time,
+      hovertemplate = hovertemplate_('Moon'),
+      hoverlabel = hoverlabel_('cornflowerblue')
+    ) |>
+    animation_opts(
+      frame = 10,
+      transition = 10,
+      redraw = TRUE
+    )
+  
+  # how to disable the non-current point?
+  
+}
+
+
+
+#' @rdname globe
+#' @details
+#' The function [globe_TropicPolar()] adds the equatorial, the tropics, and the polar circles, on top of [globe_meridian()].
+#' 
+#' @examples
+#' globe_TropicPolar()
+#' 
+#' @importFrom plotly add_paths
+#' @export
+globe_TropicPolar <- \() {
+  
   lon <- seq(from = -180, to = 180, length.out = 501L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
-  subsolar <- subsolarPoint(time = time)
-  sublunar <- sublunarPoint(time = time)
-  terminator <- terminatorPolygon(time = time)[[1L]]
   
   globe_meridian() |>
     add_paths(
@@ -80,32 +189,10 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     add_paths(
       x = lon, y = 0, 
       line = path_line, hoverinfo = 'none'
-    ) |>
-    add_text(
-      x = subsolar[1L], y = subsolar[2L], text = '\u2600\ufe0f',
-      textfont = list(size = 20),
-      hovertemplate = '<b>Sun:</b> (%{lon:.3f}, %{lat:.3f})<extra></extra>',
-        # Adding <extra></extra> at the end of `hovertemplate` explicitly hides the secondary trace name box
-      hoverlabel = list(
-        bgcolor = 'white', font = 'darkorange',
-        bordercolor = 'darkorange'
-      )
-    ) |>
-    add_text(
-      x = sublunar[1L], y = sublunar[2L], text = moonEmoji(time = time),
-      textfont = list(size = 18),
-      hovertemplate = '<b>Moon:</b> (%{lon:.3f}, %{lat:.3f})<extra></extra>',
-      hoverlabel = list(
-        bgcolor = 'white', font = 'cornflowerblue',
-        bordercolor = 'cornflowerblue'
-      )
-    ) |>    
-    add_polygons(
-      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .05)',
-      x = terminator[,1L], y = terminator[,2L], hoverinfo = 'none'
     )
-  
 }
+
+
 
 
 #' @rdname globe

@@ -12,22 +12,22 @@
 #' @param ... additional parameters, currently of no use
 #' 
 #' @details
-#' The function [subsolarPoint()] finds the latitude and longitude of the subsolar point. 
+#' The function [subSolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
 #' @returns 
-#' The function [subsolarPoint()] returns a \link[sf]{st_point} object.
+#' The function [subSolarPoint()] returns a \link[sf]{st_point} object.
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
 #' @examples
-#' subsolarPoint()
+#' subSolarPoint()
 #' 
 #' @name terminator
 #' @importFrom sf st_point
 #' @export
-subsolarPoint <- \(time = Sys.time(), ...) {
+subSolarPoint <- \(time = Sys.time(), ...) {
   
   time <- time |>
     as.POSIXlt(tz = 'UTC')
@@ -47,14 +47,50 @@ subsolarPoint <- \(time = Sys.time(), ...) {
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
   return(st_point(x = c(solar_lon, declination)))
+
+}
+
+
+
+#' @importFrom sf st_sfc st_sf
+subSolarPath <- \(
+  time = Sys.time(), 
+  n = 1001L, 
+  tm = seq(from = intv[1L], to = intv[2L], length.out = n),
+  ...
+) {
   
+  # +/- 12hours
+  intv <- time + c(-1, 1) * 60*60*24/2
+
+  tm |>
+    lapply(FUN = subSolarPoint, ...) |>
+    c(crs = 4326, . = _) |>
+    do.call(what = 'st_sfc', args = _) |>
+    st_sf(time = tm, geometry = _)
   
 }
 
 
-# library(leaflet)
-# leaflet() |> addTiles() |> addPolygons(terminatorPolygon())
-# # not yet
+#' @importFrom sf st_sfc st_sf
+subLunarPath <- \(
+  time = Sys.time(), 
+  n = 1001L, 
+  tm = seq(from = intv[1L], to = intv[2L], length.out = n),
+  ...
+) {
+  
+  # +/- 12hours
+  intv <- time + c(-1, 1) * 60*60*24/2
+  
+  tm |>
+    lapply(FUN = subLunarPoint, ...) |>
+    c(crs = 4326, . = _) |>
+    do.call(what = 'st_sfc', args = _) |>
+    st_sf(time = tm, geometry = _)
+  
+}
+
 
 
 
@@ -84,7 +120,7 @@ subsolarPoint <- \(time = Sys.time(), ...) {
 terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   ss <- time |>
-    subsolarPoint()
+    subSolarPoint()
   sslon <- ss[1L] * pi / 180
   sslat <- ss[2L] * pi / 180
   
@@ -107,21 +143,21 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 #' @rdname terminator
 #' 
 #' @details
-#' The function [sublunarPoint()] finds the latitude and longitude of the sublunar point. 
+#' The function [subLunarPoint()] finds the latitude and longitude of the sublunar point. 
 #' 
 #' @returns 
-#' The function [sublunarPoint()] returns a \link[sf]{st_point} object.
+#' The function [subLunarPoint()] returns a \link[sf]{st_point} object.
 #' 
 #' @references
 #' \url{https://www.timeanddate.com/worldclock/sunearth.html}
 #' 
 #' @examples
-#' sublunarPoint()
+#' subLunarPoint()
 #' 
 #' @importFrom oce moonAngle siderealTime
 #' @importFrom sf st_point
 #' @export
-sublunarPoint <- \(time = Sys.time(), ...) {
+subLunarPoint <- \(time = Sys.time(), ...) {
   # 1. Parse the target timestamp in strict UTC time
   target_time <- as.POSIXct(time, tz = "UTC")
   
@@ -209,7 +245,7 @@ twilightPolygon <- \(
 ) {
   
   ss <- time |>
-    subsolarPoint()
+    subSolarPoint()
   sslon <- ss[1L] * pi / 180
   sslat <- ss[2L] * pi / 180
   

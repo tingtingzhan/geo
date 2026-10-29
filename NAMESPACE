@@ -17,14 +17,15 @@ export(as.iata)
 export(as.leaflet)
 export(gen_psw)
 export(globe)
+export(globe_TropicPolar)
 export(globe_meridian)
 export(globe_minimal)
 export(globe_sunmoon)
 export(globe_twilight)
 export(moonEmoji)
 export(moving_dist2gc)
-export(sublunarPoint)
-export(subsolarPoint)
+export(subLunarPoint)
+export(subSolarPoint)
 export(terminatorPolygon)
 export(twilightPolygon)
 importFrom(geosphere,
@@ -58,6 +59,8 @@ importFrom(plotly,
   add_polygons,
   add_segments,
   add_text,
+  add_trace,
+  animation_opts,
   layout,
   plot_geo,
   toRGB

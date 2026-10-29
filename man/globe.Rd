@@ -4,6 +4,7 @@
 \alias{globe}
 \alias{globe_twilight}
 \alias{globe_sunmoon}
+\alias{globe_TropicPolar}
 \alias{globe_meridian}
 \alias{globe_minimal}
 \title{The Earth with Various Layers}
@@ -12,6 +13,8 @@ globe_twilight(time = Sys.time(), ...)
 
 globe_sunmoon(time = Sys.time(), ...)
 
+globe_TropicPolar()
+
 globe_meridian()
 
 globe()
@@ -19,7 +22,7 @@ globe()
 globe_minimal()
 }
 \arguments{
-\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subsolarPoint]{subsolarPoint()}}}
+\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}}
 
 \item{...}{additional parameters, currently of no use}
 }
@@ -29,7 +32,9 @@ The Earth with various layers.
 \details{
 The function \code{\link[=globe_twilight]{globe_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=globe_sunmoon]{globe_sunmoon()}}.
 
-The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the equatorial, the tropics, the polar circles, the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe_meridian]{globe_meridian()}}.
+The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe_TropicPolar]{globe_TropicPolar()}}.
+
+The function \code{\link[=globe_TropicPolar]{globe_TropicPolar()}} adds the equatorial, the tropics, and the polar circles, on top of \code{\link[=globe_meridian]{globe_meridian()}}.
 
 The function \code{\link[=globe_meridian]{globe_meridian()}} adds the meridian and antimeridian on top of \code{\link[=globe]{globe()}}.
 
@@ -37,10 +42,15 @@ The function \code{\link[=globe]{globe()}} is the default earth, with \code{land
 
 The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection).
 }
+\note{
+Twilight polygons (for the function \code{\link[=globe_twilight]{globe_twilight()}}) are challenging for \link[plotly]{animation_opts}.
+}
 \examples{
 globe_twilight()
 
 globe_sunmoon()
+
+globe_TropicPolar()
 
 globe_meridian()
 

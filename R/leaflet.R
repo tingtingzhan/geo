@@ -88,14 +88,15 @@ as.leaflet.iatalist <- \(x, ...) {
 
 #' @rdname as.leaflet
 #' @examples
-#' subsolarPoint() |> as.leaflet(popup = 'Sun')
+#' subSolarPoint() |> as.leaflet(popup = 'Sub-Solar Point')
+#' subLunarPoint() |> as.leaflet(popup = 'Sub-Lunar Point')
 #' @importFrom sf st_sf st_sfc
 #' @method as.leaflet POINT
 #' @export
 as.leaflet.POINT <- \(x, ...) {
-  st_sf(
-    geometry = st_sfc(x, crs = 4326)
-  ) |>
+  x |>
+    st_sfc(crs = 4326) |>
+    st_sf(geometry = _) |>
     as.leaflet.sf(...)
 }
 
@@ -133,6 +134,18 @@ leaflet_minimal <- \(sf) {
   # returns a 'leaflet' object with 
   # attr(.$x, which = 'leafletData') being the input 'sf'
 }
+
+
+
+
+
+
+# library(leaflet)
+# leaflet() |> addTiles() |> addPolygons(terminatorPolygon())
+# # not yet
+
+
+
 
 
 

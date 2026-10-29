@@ -48,7 +48,8 @@ To convert an R object into a \link[leaflet]{leaflet}.
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet(popup = ~ shortnm)
 'EWR-PHL-JFK-IAD, DFW-IAH' |> as.iata() |> as.leaflet(popup = ~ shortnm)
-subsolarPoint() |> as.leaflet(popup = 'Sun')
+subSolarPoint() |> as.leaflet(popup = 'Sub-Solar Point')
+subLunarPoint() |> as.leaflet(popup = 'Sub-Lunar Point')
 # \pkg{leaflet} does **not** draw edges with great circle!
 terminatorPolygon() |> as.leaflet()
 

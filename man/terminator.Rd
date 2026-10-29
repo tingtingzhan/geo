@@ -2,18 +2,18 @@
 % Please edit documentation in R/terminator.R
 \name{terminator}
 \alias{terminator}
-\alias{subsolarPoint}
+\alias{subSolarPoint}
 \alias{terminatorPolygon}
-\alias{sublunarPoint}
+\alias{subLunarPoint}
 \alias{moonEmoji}
 \alias{twilightPolygon}
 \title{Subsolar/Sublunar Point, Terminator and  Twilight Zones}
 \usage{
-subsolarPoint(time = Sys.time(), ...)
+subSolarPoint(time = Sys.time(), ...)
 
 terminatorPolygon(time = Sys.time(), n = 4L, ...)
 
-sublunarPoint(time = Sys.time(), ...)
+subLunarPoint(time = Sys.time(), ...)
 
 moonEmoji(time = Sys.time(), ...)
 
@@ -41,11 +41,11 @@ twilightPolygon(
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
 \value{
-The function \code{\link[=subsolarPoint]{subsolarPoint()}} returns a \link[sf]{st_point} object.
+The function \code{\link[=subSolarPoint]{subSolarPoint()}} returns a \link[sf]{st_point} object.
 
 The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} returns a \link[sf]{st_polygon} object.
 
-The function \code{\link[=sublunarPoint]{sublunarPoint()}} returns a \link[sf]{st_point} object.
+The function \code{\link[=subLunarPoint]{subLunarPoint()}} returns a \link[sf]{st_point} object.
 
 The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[sf]{st_polygon} object.
 }
@@ -53,11 +53,11 @@ The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[s
 To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
 }
 \details{
-The function \code{\link[=subsolarPoint]{subsolarPoint()}} finds the latitude and longitude of the subsolar point.
+The function \code{\link[=subSolarPoint]{subSolarPoint()}} finds the latitude and longitude of the subsolar point.
 
 The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} finds the latitude and longitude of the points on the day-night terminator.
 
-The function \code{\link[=sublunarPoint]{sublunarPoint()}} finds the latitude and longitude of the sublunar point.
+The function \code{\link[=subLunarPoint]{subLunarPoint()}} finds the latitude and longitude of the sublunar point.
 
 The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
 
@@ -69,11 +69,11 @@ The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitud
 }
 }
 \examples{
-subsolarPoint()
+subSolarPoint()
 
 terminatorPolygon()
 
-sublunarPoint()
+subLunarPoint()
 
 moonEmoji()
 
