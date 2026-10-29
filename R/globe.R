@@ -80,13 +80,15 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
   
   globe_TropicPolar() |>
     add_text(
-      x = subsolar[1L], y = subsolar[2L], text = '\u2600\ufe0f',
+      x = subsolar[1L], y = subsolar[2L], 
+      text = '\u2600\ufe0f',
       textfont = list(size = 20),
       hovertemplate = hovertemplate_('Sun'),
       hoverlabel = hoverlabel_('darkorange')
     ) |>
     add_text(
-      x = sublunar[1L], y = sublunar[2L], text = moonEmoji(time = time),
+      x = sublunar[1L], y = sublunar[2L], 
+      text = moonEmoji(time = time),
       textfont = list(size = 18),
       hovertemplate = hovertemplate_('Moon'),
       hoverlabel = hoverlabel_('cornflowerblue')
@@ -100,48 +102,52 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 
 if (FALSE) {
-  globe_sunmoon_path(n = 101L)
+  debug(globe_sunmoon_path); globe_sunmoon_path()
 }
 
-#' @importFrom plotly add_trace animation_opts
+#' @importFrom plotly animation_opts
 globe_sunmoon_path <- \(
   time = Sys.time(), 
-  n = 101L,
+  n = 11L,
   ...
 ) {
   
   # +/- 12hours
   intv <- time + c(-1, 1) * 60*60*24/2
   tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
+  tm_char <- format(tm) # ?base::format.POSIXct
   
   subsolar <- subSolarPoint(time = tm)
   sublunar <- subLunarPoint(time = tm)
-  # ignore terminator
+  # ignore terminator, for now
   
   # ask Google/Gemini 
   # `R plot_ly animation_opts`
   # `R plotly plot_geo frame`
   
   globe_TropicPolar() |>
-    add_trace(
+    add_text(
       x = subsolar[,1L], y = subsolar[,2L],
-      frame = ~ tm,
+      text = '\u2600\ufe0f',
+      frame = tm_char,
       hovertemplate = hovertemplate_('Sun'),
       hoverlabel = hoverlabel_('darkorange')
     ) |>
-    add_trace(
+    add_text(
       x = sublunar[,1L], y = sublunar[,2L],
-      frame = ~ tm,
+      text = moonEmoji(time = time),
+      frame = tm_char,
       hovertemplate = hovertemplate_('Moon'),
       hoverlabel = hoverlabel_('cornflowerblue')
     ) |>
     animation_opts(
-      frame = 10,
-      transition = 10,
-      redraw = TRUE
+      frame = 1000,
+      transition = 500,
+      easing = 'linear',
+      redraw = FALSE
     )
   
-  # how to disable the non-current point?
+  # why sun and moon do no move...
   
 }
 
