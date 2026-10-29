@@ -70,6 +70,7 @@ importFrom(scales,pal_hue)
 importFrom(sf,
   st_coordinates,
   st_geometry,
+  st_multipoint,
   st_point,
   st_polygon,
   st_sf,

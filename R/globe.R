@@ -106,7 +106,7 @@ if (FALSE) {
 #' @importFrom plotly add_trace animation_opts
 globe_sunmoon_path <- \(
   time = Sys.time(), 
-  n = 1001L,
+  n = 101L,
   ...
 ) {
   
@@ -114,8 +114,8 @@ globe_sunmoon_path <- \(
   intv <- time + c(-1, 1) * 60*60*24/2
   tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
   
-  subsolar <- subSolarPath(tm = tm)
-  sublunar <- subLunarPath(tm = tm)
+  subsolar <- subSolarPoint(time = tm)
+  sublunar <- subLunarPoint(time = tm)
   # ignore terminator
   
   # ask Google/Gemini 
@@ -124,22 +124,14 @@ globe_sunmoon_path <- \(
   
   globe_TropicPolar() |>
     add_trace(
-      x = ~ geometry |> 
-        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
-      y = ~ geometry |> 
-        vapply(FUN = `[`, 2L, FUN.VALUE = NA_real_),
-      data = subsolar,
-      frame = ~ time,
+      x = subsolar[,1L], y = subsolar[,2L],
+      frame = ~ tm,
       hovertemplate = hovertemplate_('Sun'),
       hoverlabel = hoverlabel_('darkorange')
     ) |>
     add_trace(
-      x = ~ geometry |> 
-        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
-      y = ~ geometry |> 
-        vapply(FUN = `[`, 2L, FUN.VALUE = NA_real_),
-      data = sublunar,
-      frame = ~ time,
+      x = sublunar[,1L], y = sublunar[,2L],
+      frame = ~ tm,
       hovertemplate = hovertemplate_('Moon'),
       hoverlabel = hoverlabel_('cornflowerblue')
     ) |>

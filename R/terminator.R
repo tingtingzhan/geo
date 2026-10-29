@@ -25,9 +25,11 @@
 #' subSolarPoint()
 #' 
 #' @name terminator
-#' @importFrom sf st_point
+#' @importFrom sf st_point st_multipoint
 #' @export
 subSolarPoint <- \(time = Sys.time(), ...) {
+  
+  # already vectorized!!
   
   time <- time |>
     as.POSIXlt(tz = 'UTC')
@@ -46,48 +48,11 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   # Keep within -180 to 180 degrees
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
-  return(st_point(x = c(solar_lon, declination)))
-
-}
-
-
-
-#' @importFrom sf st_sfc st_sf
-subSolarPath <- \(
-  time = Sys.time(), 
-  n = 1001L, 
-  tm = seq(from = intv[1L], to = intv[2L], length.out = n),
-  ...
-) {
+  if (length(time) == 1L) {
+    return(st_point(x = c(solar_lon, declination)))
+  }
   
-  # +/- 12hours
-  intv <- time + c(-1, 1) * 60*60*24/2
-
-  tm |>
-    lapply(FUN = subSolarPoint, ...) |>
-    c(crs = 4326, . = _) |>
-    do.call(what = 'st_sfc', args = _) |>
-    st_sf(time = tm, geometry = _)
-  
-}
-
-
-#' @importFrom sf st_sfc st_sf
-subLunarPath <- \(
-  time = Sys.time(), 
-  n = 1001L, 
-  tm = seq(from = intv[1L], to = intv[2L], length.out = n),
-  ...
-) {
-  
-  # +/- 12hours
-  intv <- time + c(-1, 1) * 60*60*24/2
-  
-  tm |>
-    lapply(FUN = subLunarPoint, ...) |>
-    c(crs = 4326, . = _) |>
-    do.call(what = 'st_sfc', args = _) |>
-    st_sf(time = tm, geometry = _)
+  return(st_multipoint(x = cbind(solar_lon, declination)))
   
 }
 
@@ -155,22 +120,26 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 #' subLunarPoint()
 #' 
 #' @importFrom oce moonAngle siderealTime
-#' @importFrom sf st_point
+#' @importFrom sf st_point st_multipoint
 #' @export
 subLunarPoint <- \(time = Sys.time(), ...) {
+  
+  # already vectorized!!
+  
   # 1. Parse the target timestamp in strict UTC time
-  target_time <- as.POSIXct(time, tz = "UTC")
+  time <- time |>
+    as.POSIXct(tz = 'UTC')
   
   # 2. Extract geocentric Right Ascension and Declination 
   # Using long = 0, lat = 0 gives us the unprimed Greenwich baseline coordinates
-  lunar_data <- moonAngle(t = target_time, longitude = 0, latitude = 0)
+  lunar_data <- moonAngle(t = time, longitude = 0, latitude = 0)
   
   # Latitude of the sublunar point matches the declination exactly
   sublunar_lat <- lunar_data$declination
   
   # 3. Calculate Greenwich Sidereal Time (GST) using the updated standalone function
   # Note: oce::siderealTime returns time in decimal hours (0 to 24)
-  gst_hours <- siderealTime(target_time)
+  gst_hours <- siderealTime(time)
   gst_degrees <- gst_hours * 15 # Convert hours to degrees (360 degrees / 24 hours)
   
   # 4. Longitude is the Moon's Right Ascension minus Greenwich Sidereal Time
@@ -179,7 +148,11 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   # Normalize longitude to the standard range of [-180, +180] degrees
   sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
   
-  return(st_point(x = c(sublunar_lon, sublunar_lat)))
+  if (length(time) == 1L) {
+    return(st_point(x = c(sublunar_lon, sublunar_lat)))
+  }
+  
+  return(st_multipoint(x = cbind(sublunar_lon, sublunar_lat)))
   
 }
 
