@@ -59,3 +59,6 @@ globe()
 globe_minimal()
 
 }
+\references{
+\url{https://plotly.com/r/reference/layout/geo/}
+}

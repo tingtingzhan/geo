@@ -270,6 +270,9 @@ globe <- \() {
 #' @examples
 #' globe_minimal()
 #' 
+#' @references
+#' \url{https://plotly.com/r/reference/layout/geo/}
+#' 
 #' @importFrom plotly plot_geo layout
 #' @export
 globe_minimal <- \() {
@@ -278,6 +281,7 @@ globe_minimal <- \() {
       geo = list(
         projection = list(
           type = 'orthographic'
+          #type = 'equirectangular'
         )
       )
     )
