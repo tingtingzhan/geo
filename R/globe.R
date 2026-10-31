@@ -96,6 +96,10 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     add_polygons(
       line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .05)',
       x = terminator[,1L], y = terminator[,2L], hoverinfo = 'none'
+    ) |>
+    layout(
+      title = time |>
+        format.POSIXct(usetz = TRUE)
     )
   
 }
@@ -115,7 +119,8 @@ globe_sunmoon_path <- \(
   # +/- 12hours
   intv <- time + c(-1, 1) * 60*60*24/2
   tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
-  tm_char <- format(tm) # ?base::format.POSIXct
+  tm_char <- tm |>
+    format.POSIXct(usetz = TRUE)
   
   subsolar <- subSolarPoint(time = tm)
   sublunar <- subLunarPoint(time = tm)
