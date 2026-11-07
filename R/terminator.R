@@ -211,18 +211,21 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @export
 twilightPolygon <- \(
   time = Sys.time(), 
-  sza,
+  sza = stop('must provide `sza`'),
   n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 ) {
+  
+  if (!is.double(sza) || length(sza) != 1L || is.na(sza)) stop('sza must be double scalar')
+  
+  if ((sza < pi/2) || (sza > pi)) stop('`sza` out of range')
   
   ss <- time |>
     subSolarPoint()
   sslon <- ss[1L] * pi / 180
   sslat <- ss[2L] * pi / 180
   
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
   # twilight is **not** great circle!!
   # `lon` # \lambda in radius, \link[base]{vector}
   # must start with `sslon`, otherwise polygon may be messed up!
