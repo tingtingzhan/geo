@@ -19,7 +19,7 @@ moonEmoji(time = Sys.time(), ...)
 
 twilightPolygon(
   time = Sys.time(),
-  sza,
+  sza = stop("must provide `sza`"),
   n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
@@ -31,12 +31,12 @@ twilightPolygon(
 \item{...}{additional parameters, currently of no use}
 
 \item{n}{\link[base]{integer} scalar.
-\describe{
-\item{For the function \code{\link[=terminatorPolygon]{terminatorPolygon()}}:}{Number of points, default value is \code{4L}.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
-\item{For the function \code{\link[=twilightPolygon]{twilightPolygon()}}:}{Maximum fineness for the borders of the various twilight zones, default value is \code{1001L}.  Twilight zone borders are \strong{not} great circles!}
+\itemize{
+\item{Number of points in \code{\link[=terminatorPolygon]{terminatorPolygon()}}, default value is \code{4L}.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+\item{Maximum fineness for \code{\link[=twilightPolygon]{twilightPolygon()}}, default value is \code{1001L}.  Twilight zone borders are \strong{not} great circles!}
 }}
 
-\item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius}
+\item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)}
 
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
@@ -67,6 +67,9 @@ The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitud
 \item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
 \item{Astronomical twilight}{when \eqn{\theta_z = \frac{90+18}{180}\cdot\pi}}
 }
+}
+\note{
+The function \code{\link[=twilightPolygon]{twilightPolygon()}}: is it worthwhile to vectorize the parameter \code{sza} and return an \link[sf]{st_multipolygon} object?
 }
 \examples{
 subSolarPoint()

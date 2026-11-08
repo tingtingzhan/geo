@@ -62,9 +62,9 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' @rdname terminator
 #' 
 #' @param n \link[base]{integer} scalar.
-#' \describe{
-#' \item{For the function [terminatorPolygon()]:}{Number of points, default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
-#' \item{For the function [twilightPolygon()]:}{Maximum fineness for the borders of the various twilight zones, default value is `1001L`.  Twilight zone borders are **not** great circles!}
+#' \itemize{
+#' \item{Number of points in [terminatorPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+#' \item{Maximum fineness for [twilightPolygon()], default value is `1001L`.  Twilight zone borders are **not** great circles!}
 #' }
 #' 
 #' @details
@@ -183,7 +183,7 @@ moonEmoji <- \(time = Sys.time(), ...) {
 
 #' @rdname terminator
 #' 
-#' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
+#' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)
 #' 
 #' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
 #' 
@@ -197,6 +197,9 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @returns
 #' The function [twilightPolygon()] returns a \link[sf]{st_polygon} object.
+#' 
+#' @note
+#' The function [twilightPolygon()]: is it worthwhile to vectorize the parameter `sza` and return an \link[sf]{st_multipolygon} object?
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Twilight}
@@ -247,7 +250,8 @@ twilightPolygon <- \(
     )
   }
 
-  if (Sys.getenv('POSITRON') == '1') {
+  if ((.Platform$OS.type == 'windows') || 
+      (Sys.getenv('POSITRON') == '1')) {
     
     # multi-core: correct way
     #cl <- makeCluster(mc.cores, type = 'PSOCK')
