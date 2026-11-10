@@ -75,11 +75,7 @@ add_sf_active <- \(
   fillColor = 'royalblue', fillOpacity = .1, weight = 2, color = 'white', opacity = 1, # ?leaflet::addPolygons
   ...
 ) {
-  
-  x <- x |>
-    st_transform(x = _, crs = 4326)
-  # sf:::st_transform.sf transforms only the active 'sfc'
-  
+
   cls <- class(st_geometry(x))[[1L]]
   
   switch(
