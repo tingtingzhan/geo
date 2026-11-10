@@ -33,6 +33,7 @@ importFrom(geosphere,
   distGeo
 )
 importFrom(leaflet,
+  addAwesomeMarkers,
   addLayersControl,
   addMarkers,
   addPolygons,

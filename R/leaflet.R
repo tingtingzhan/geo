@@ -64,14 +64,14 @@ as.leaflet.sf <- \(x, ...) {
 
 
 
-#' @importFrom leaflet addMarkers markerClusterOptions
+#' @importFrom leaflet addMarkers addAwesomeMarkers markerClusterOptions
 #' @importFrom leaflet addPolygons
 #' @importFrom leaflet addPolylines
 #' @importFrom sf st_geometry
 add_sf_active <- \(
   map, # 'leaflet'
   x, # 'sf'
-  clusterOptions = markerClusterOptions(), # ?leaflet::addMarkers
+  clusterOptions = markerClusterOptions(), icon = NULL, # ?leaflet::addMarkers
   fillColor = 'royalblue', fillOpacity = .1, weight = 2, color = 'white', opacity = 1, # ?leaflet::addPolygons
   ...
 ) {
@@ -83,15 +83,35 @@ add_sf_active <- \(
   cls <- class(st_geometry(x))[[1L]]
   
   switch(
+    
     EXPR = cls, 
+    
     sfc_POINT = {
-      map |>
-        addMarkers(
-          data = x,
-          clusterOptions = clusterOptions,
-          ...
-        )
+      
+      if (inherits(icon, what = 'leaflet_awesome_icon')) {
+        
+        map |>
+          addAwesomeMarkers(
+            data = x,
+            clusterOptions = clusterOptions,
+            icon = icon,
+            ...
+          )
+        
+      } else {
+      
+        map |>
+          addMarkers(
+            data = x,
+            clusterOptions = clusterOptions,
+            icon = icon,
+            ...
+          )
+        
+      }
+
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
+      
       map |>
         addPolygons(
           data = x,
@@ -99,13 +119,17 @@ add_sf_active <- \(
           weight = weight, color = color, opacity = opacity,
           ...
         )
+      
     }, sfc_LINESTRING = {
+      
       map |>
         addPolylines(
           data = x,
           ...
         )
+      
     }, stop('unsupported ', sQuote(cls))
+    
   )
   
 }
