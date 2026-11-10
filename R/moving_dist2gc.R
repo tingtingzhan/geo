@@ -27,7 +27,7 @@ moving_dist2gc.iatalist <- \(x, ...) {
 
 
 #' @rdname moving_dist2gc
-#' @importFrom sf st_coordinates
+#' @importFrom sf st_geometry st_coordinates
 #' @export
 moving_dist2gc.sf <- \(x, ...) {
   cls <- class(st_geometry(x))[[1L]]
