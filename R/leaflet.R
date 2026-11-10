@@ -31,7 +31,7 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 #' @note
 #' The function \link[sf]{st_geometry} picks only the active geometry.
 #' 
-#' @importFrom sf st_transform st_geometry<-
+#' @importFrom sf st_geometry<-
 #' @method as.leaflet sf
 #' @export
 as.leaflet.sf <- \(x, ...) {

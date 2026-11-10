@@ -6,7 +6,7 @@
 #' 
 #' @param crs,... parameters of the function \link[sf]{st_transform}
 #' 
-#' @importFrom sf st_geometry st_geometry<- st_transform
+#' @importFrom sf st_geometry<- st_transform
 #' @export
 st_transform_all <- \(x, crs = 4326, ...) {
   
