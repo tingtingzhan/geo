@@ -67,6 +67,7 @@ importFrom(plotly,
 importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
+  "st_geometry<-",
   st_coordinates,
   st_geometry,
   st_multipoint,

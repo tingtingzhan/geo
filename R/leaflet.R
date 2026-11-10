@@ -28,46 +28,75 @@ as.leaflet <- function(x, ...) UseMethod(generic = 'as.leaflet')
 
 #' @rdname as.leaflet
 #' 
-#' @param clusterOptions see the function \link[leaflet]{addMarkers}
+#' @note
+#' The function \link[sf]{st_geometry} picks only the active geometry.
 #' 
-#' @param fillColor,fillOpacity,weight,color,opacity see the function \link[leaflet]{addPolygons}
-#' 
-#' @param ... additional parameters, currently of no use
-#' 
-#' @importFrom sf st_geometry
+#' @importFrom sf st_geometry st_geometry<-
+#' @method as.leaflet sf
+#' @export
+as.leaflet.sf <- \(x, ...) {
+  
+  cls <- x |>
+    vapply(FUN = inherits, what = 'sfc', FUN.VALUE = NA)
+  
+  if (sum(cls) == 1L) {
+    return(as_leaflet_sf_active(x = x, ...))
+  }
+  
+  map <- leaflet_minimal(x)
+  
+  for (i in names(which(cls))) {
+    st_geometry(x) <- i
+    map <- map |>
+      as_leaflet_sf_active(map = _, x = x, ...)
+  }
+  
+  return(map)
+  
+}
+
+
+
+
 #' @importFrom leaflet addMarkers markerClusterOptions
 #' @importFrom leaflet addPolygons
 #' @importFrom leaflet addPolylines
-#' @method as.leaflet sf
-#' @export
-as.leaflet.sf <- \(
-    x, 
-    clusterOptions = markerClusterOptions(), # ?leaflet::addMarkers
-    fillColor = 'royalblue', fillOpacity = .1, weight = 2, color = 'white', opacity = 1, # ?leaflet::addPolygons
-    ...
+#' @importFrom sf st_transform 
+as_leaflet_sf_active <- \(
+  map = leaflet_minimal(x), # 'leaflet'
+  x, # 'sf'
+  clusterOptions = markerClusterOptions(), # ?leaflet::addMarkers
+  fillColor = 'royalblue', fillOpacity = .1, weight = 2, color = 'white', opacity = 1, # ?leaflet::addPolygons
+  ...
 ) {
+  
   cls <- class(st_geometry(x))[[1L]]
   switch(
     EXPR = cls, 
     sfc_POINT = {
-      x |>
-        leaflet_minimal() |>
+      map |>
         addMarkers(
+          data = x |>
+            st_transform(x = _, crs = 4326),
           clusterOptions = clusterOptions,
           ...
         )
     }, sfc_POLYGON =, sfc_MULTIPOLYGON = {
-      x |>
-        leaflet_minimal() |>
+      map |>
         addPolygons(
+          data = x |>
+            st_transform(x = _, crs = 4326),
           fillColor = fillColor, fillOpacity = fillOpacity,
           weight = weight, color = color, opacity = opacity,
           ...
         )
     }, sfc_LINESTRING = {
-      x |>
-        leaflet_minimal() |>
-        addPolylines(...)
+      map |>
+        addPolylines(
+          data = x |>
+            st_transform(x = _, crs = 4326),
+          ...
+        )
     }, stop('unsupported ', sQuote(cls))
   )
   
@@ -118,11 +147,11 @@ as.leaflet.POLYGON <- as.leaflet.POINT
 
 # leaflet::providers$Stadia.* # Quarto book authentication bug
 
-# @param sf an `sf` object
+# @param x an `sf` object
 #' @importFrom sf st_transform
 #' @importFrom leaflet leaflet addTiles addProviderTiles providers addLayersControl layersControlOptions
-leaflet_minimal <- \(sf) {
-  sf |>
+leaflet_minimal <- \(x) {
+  x |> # 'sf' object
     st_transform(x = _, crs = 4326) |>
     leaflet(data = _) |>
     addTiles(group = 'OpenStreetMap') |>

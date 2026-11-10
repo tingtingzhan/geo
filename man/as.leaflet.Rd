@@ -10,16 +10,7 @@
 \usage{
 as.leaflet(x, ...)
 
-\method{as.leaflet}{sf}(
-  x,
-  clusterOptions = markerClusterOptions(),
-  fillColor = "royalblue",
-  fillOpacity = 0.1,
-  weight = 2,
-  color = "white",
-  opacity = 1,
-  ...
-)
+\method{as.leaflet}{sf}(x, ...)
 
 \method{as.leaflet}{iatalist}(x, ...)
 
@@ -30,11 +21,7 @@ as.leaflet(x, ...)
 \arguments{
 \item{x}{see \strong{Usage}}
 
-\item{...}{additional parameters, currently of no use}
-
-\item{clusterOptions}{see the function \link[leaflet]{addMarkers}}
-
-\item{fillColor, fillOpacity, weight, color, opacity}{see the function \link[leaflet]{addPolygons}}
+\item{...}{additional parameters of the functions \link[leaflet]{addMarkers}, \link[leaflet]{addPolylines} and \link[leaflet]{addPolygons}.}
 }
 \value{
 The function \code{\link[=as.leaflet]{as.leaflet()}} returns a \link[leaflet]{leaflet} object.
@@ -44,6 +31,8 @@ To convert an R object into a \link[leaflet]{leaflet}.
 }
 \note{
 1 degree approx 69 miles.
+
+The function \link[sf]{st_geometry} picks only the active geometry.
 }
 \examples{
 'EWR-PHL-JFK-IAD' |> as.iata() |> as.leaflet(popup = ~ shortnm)
