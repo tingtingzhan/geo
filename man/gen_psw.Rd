@@ -15,13 +15,13 @@ gen_psw(
 \arguments{
 \item{size}{\link[base]{integer} scalar, number of characters allowed.  Default \code{40L}}
 
-\item{digit}{\link[base]{logical} scalar, whether digits \code{0-9} are allowed. Default \code{TRUE}}
+\item{digit}{\link[base]{logical} scalar, whether digits \code{0-9} are required. Default \code{TRUE}}
 
-\item{lower}{\link[base]{logical} scalar, whether lower case characters \code{a-z} are allowed. Default \code{TRUE}}
+\item{lower}{\link[base]{logical} scalar, whether lower case characters \code{a-z} are required. Default \code{TRUE}}
 
-\item{upper}{\link[base]{logical} scalar, whether upper case characters \code{A-Z} are allowed. Default \code{TRUE}}
+\item{upper}{\link[base]{logical} scalar, whether upper case characters \code{A-Z} are required. Default \code{TRUE}}
 
-\item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols allowed. Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
+\item{symbol}{\link[base]{character} scalar or \link[base]{vector}, symbols required. Use \code{character()}, \code{''} or \code{NULL} to indicate no symbol allowed}
 }
 \value{
 The function \code{\link[=gen_psw]{gen_psw()}} returns a \link[base]{character} scalar.

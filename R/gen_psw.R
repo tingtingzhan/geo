@@ -4,13 +4,13 @@
 #' 
 #' @param size \link[base]{integer} scalar, number of characters allowed.  Default `40L`
 #' 
-#' @param digit \link[base]{logical} scalar, whether digits `0-9` are allowed. Default `TRUE`
+#' @param digit \link[base]{logical} scalar, whether digits `0-9` are required. Default `TRUE`
 #' 
-#' @param lower \link[base]{logical} scalar, whether lower case characters `a-z` are allowed. Default `TRUE`
+#' @param lower \link[base]{logical} scalar, whether lower case characters `a-z` are required. Default `TRUE`
 #' 
-#' @param upper \link[base]{logical} scalar, whether upper case characters `A-Z` are allowed. Default `TRUE`
+#' @param upper \link[base]{logical} scalar, whether upper case characters `A-Z` are required. Default `TRUE`
 #' 
-#' @param symbol \link[base]{character} scalar or \link[base]{vector}, symbols allowed. Use `character()`, `''` or `NULL` to indicate no symbol allowed
+#' @param symbol \link[base]{character} scalar or \link[base]{vector}, symbols required. Use `character()`, `''` or `NULL` to indicate no symbol allowed
 #' 
 #' @returns
 #' The function [gen_psw()] returns a \link[base]{character} scalar.
@@ -19,13 +19,16 @@
 #' gen_psw(50L)
 #' 
 #' @export
-gen_psw <- function(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = '~!@#$%^&*') {
+gen_psw <- \(size = 40L, digit = TRUE, lower = TRUE, upper = TRUE, symbol = '~!@#$%^&*') {
   
   if (!is.integer(size) || length(size) != 1L || is.na(size) || size <= 1L) stop('`size` must be >=2L integer')
   
   x <- character()
   x_digit <- as.character(0:9)
-  x_symbol <- setdiff(unlist(strsplit(symbol, split = '')), y = c(' '))
+  x_symbol <- symbol |>
+    strsplit(split = '') |>
+    unlist() |>
+    setdiff(y = c(' '))
   if (digit) x <- c(x, x_digit)
   if (lower) x <- c(x, letters)
   if (upper) x <- c(x, LETTERS)

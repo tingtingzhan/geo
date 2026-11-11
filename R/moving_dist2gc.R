@@ -8,7 +8,7 @@
 #' 
 #' @name moving_dist2gc
 #' @export
-moving_dist2gc <- function(x, ...) UseMethod(generic = 'moving_dist2gc')
+moving_dist2gc <- \(x, ...) UseMethod(generic = 'moving_dist2gc')
 
 
 #' @rdname moving_dist2gc

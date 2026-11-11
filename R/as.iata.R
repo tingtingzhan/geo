@@ -16,7 +16,7 @@
 #' as.iata('NRT-HNL-YVR')
 #' as.iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
 #' @export
-as.iata <- function(x) {
+as.iata <- \(x) {
   if (!is.character(x)) stop('only accepts airport names as character')
   ret <- x |>
     strsplit(split = ', ', fixed = TRUE) |>
@@ -57,7 +57,7 @@ distGeo_ <- \(sf, nm) {
 
 
 #' @export
-format.distGeo <- function(x, ...) {
+format.distGeo <- \(x, ...) {
   n <- length(x) + 1L
   z <- character(length = n)
   z[1L] <- sprintf(fmt = '%s: %.0f miles', names(x[1L]), x[1L]/1609.34)
@@ -79,7 +79,7 @@ format.distGeo <- function(x, ...) {
 
 
 #' @export
-print.iata <- function(x, ...) {
+print.iata <- \(x, ...) {
   m_ <- airports_ip2location[x, , drop = FALSE] |>
     distGeo_(nm = ~ iata)
   ret = cbind(
@@ -96,7 +96,7 @@ print.iata <- function(x, ...) {
 
 
 #' @export
-print.iatalist <- function(x, ...) {
+print.iatalist <- \(x, ...) {
   
   x |>
     vapply(FUN = print.iata, ..., FUN.VALUE = NA_real_) |>
@@ -118,7 +118,7 @@ print.iatalist <- function(x, ...) {
 
 
 #' @export
-plot.iatalist <- function(
+plot.iatalist <- \(
     x, 
     ..., 
     map = globe_twilight()
@@ -148,7 +148,7 @@ plot.iatalist <- function(
 #' @importFrom scales pal_hue
 #' @importFrom sf st_coordinates
 #' @export
-plot.iata <- function(
+plot.iata <- \(
     x,
     ..., 
     map = globe_twilight(),
