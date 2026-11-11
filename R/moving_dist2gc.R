@@ -12,9 +12,11 @@ moving_dist2gc <- \(x, ...) UseMethod(generic = 'moving_dist2gc')
 
 
 #' @rdname moving_dist2gc
+#' @importFrom sf st_as_sf
 #' @export
 moving_dist2gc.iata <- \(x, ...) {
-  airports_ip2location[x, , drop = FALSE] |>
+  x |>
+    st_as_sf() |>
     moving_dist2gc.sf(...)
 }
 

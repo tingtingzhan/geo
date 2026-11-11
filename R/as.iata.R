@@ -77,10 +77,11 @@ format.distGeo <- \(x, ...) {
 
 
 
-
+#' @importFrom sf st_as_sf
 #' @export
 print.iata <- \(x, ...) {
-  m_ <- airports_ip2location[x, , drop = FALSE] |>
+  m_ <- x |>
+    st_as_sf() |>
     distGeo_(nm = ~ iata)
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
@@ -101,6 +102,12 @@ print.iata <- \(x, ...) {
 st_as_sf.iatalist <- \(x, ...) {
   airports_ip2location[unlist(x), , drop = FALSE]
 }
+
+#' @exportS3Method sf::st_as_sf
+st_as_sf.iata <- \(x, ...) {
+  airports_ip2location[x, , drop = FALSE]
+}
+
 
 
 
@@ -157,7 +164,7 @@ plot.iatalist <- \(
 # \url{https://plotly.com/r/lines-on-maps/}
 #' @importFrom plotly add_markers add_segments
 #' @importFrom scales pal_hue
-#' @importFrom sf st_coordinates
+#' @importFrom sf st_coordinates st_as_sf
 #' @export
 plot.iata <- \(
     x,
@@ -166,7 +173,8 @@ plot.iata <- \(
     col = pal_hue()(n = 1L)
 ) {
   
-  ap <- airports_ip2location[x, , drop = FALSE]
+  ap <- x |>
+    st_as_sf()
   coords <- ap |>
     st_coordinates()
   lon <- coords[,1L]

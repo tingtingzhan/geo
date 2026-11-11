@@ -9,6 +9,7 @@ S3method(plot,iata)
 S3method(plot,iatalist)
 S3method(print,iata)
 S3method(print,iatalist)
+S3method(sf::st_as_sf,iata)
 S3method(sf::st_as_sf,iatalist)
 export(as.iata)
 export(gen_psw)
@@ -62,6 +63,7 @@ importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
   "st_geometry<-",
+  st_as_sf,
   st_coordinates,
   st_geometry,
   st_multipoint,
