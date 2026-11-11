@@ -39,9 +39,3 @@ st_transform_all <- \(x, crs = 4326, ...) {
 
 
 
-
-#' @exportS3Method sf::st_as_sf
-st_as_sf.iatalist <- \(x, ...) {
-  airports_ip2location[unlist(x), , drop = FALSE]
-}
-

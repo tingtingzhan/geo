@@ -2,13 +2,18 @@
 % Please edit documentation in R/leaflet.R
 \name{leaflet_minimal}
 \alias{leaflet_minimal}
-\title{\code{\link[=leaflet_minimal]{leaflet_minimal()}}}
+\title{Minimal Map by \CRANpkg{leaflet}}
 \usage{
 leaflet_minimal(x)
 }
 \arguments{
 \item{x}{an \code{'sf'} object}
 }
-\description{
-\code{\link[=leaflet_minimal]{leaflet_minimal()}}
+\value{
+The function \code{\link[=leaflet_minimal]{leaflet_minimal()}} returns a \link[leaflet]{leaflet} object with \code{attr(.$x, which = 'leafletData')} being the input \code{'sf'} object.
 }
+\description{
+To create a minimal map by \CRANpkg{leaflet} containing an \code{'sf'} input.
+}
+\keyword{leaflet}
+\keyword{minimal-map}
