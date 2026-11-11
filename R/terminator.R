@@ -253,7 +253,7 @@ twilightPolygon <- \(
   if ((.Platform$OS.type == 'windows') || 
       (Sys.getenv('POSITRON') == '1')) {
     
-    # multi-core: correct way
+    # multi-core: POSITRON
     #cl <- makeCluster(mc.cores, type = 'PSOCK')
     #z <- lon |>
     #  parLapply(cl = cl, fun = unr_fn)

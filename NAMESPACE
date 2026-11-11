@@ -75,6 +75,7 @@ importFrom(sf,
   st_multipoint,
   st_point,
   st_polygon,
+  st_set_geometry,
   st_sf,
   st_sfc,
   st_transform

@@ -6,7 +6,7 @@
 #' 
 #' @param crs,... parameters of the function \link[sf]{st_transform}
 #' 
-#' @importFrom sf st_geometry<- st_transform
+#' @importFrom sf st_set_geometry st_geometry<- st_transform
 #' @export
 st_transform_all <- \(x, crs = 4326, ...) {
   
@@ -23,9 +23,9 @@ st_transform_all <- \(x, crs = 4326, ...) {
   } else {
     
     for (i in names(which(cls))) {
-      st_geometry(x) <- i
       x <- x |>
-        st_transform(x = _, crs = crs, ...)
+        st_set_geometry(value = i)
+        st_transform(crs = crs, ...)
     }
     
     st_geometry(x) <- geo_orig
