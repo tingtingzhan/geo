@@ -1,9 +1,9 @@
 
-expect_no_error(object = {
-  library(tigris)
-  library(leaflet)
-  options(tigris_use_cache = TRUE)
-})
+
+library(tigris)
+library(leaflet)
+options(tigris_use_cache = TRUE)
+
 
 
 expect_no_error(object = {

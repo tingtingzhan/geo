@@ -1,8 +1,8 @@
 
-expect_no_error(object = {
-  library(sf)
-  library(leaflet)
-})
+
+library(sf)
+library(leaflet)
+
     
 expect_no_error(object = {
   'EWR-PHL-JFK-IAD' |> 

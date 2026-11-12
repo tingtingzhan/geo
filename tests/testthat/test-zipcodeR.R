@@ -1,10 +1,10 @@
 
-expect_no_error(object = {
-  library(tigris)
-  library(zipcodeR)
-  library(leaflet)
-  options(tigris_use_cache = TRUE)
-})
+
+library(tigris)
+library(zipcodeR)
+library(leaflet)
+options(tigris_use_cache = TRUE)
+
 
 
 

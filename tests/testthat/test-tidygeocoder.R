@@ -1,30 +1,23 @@
 
-
-expect_no_error(
-  object = {
-    library(tidygeocoder)
-    library(leaflet)
-    library(sf)
-  }
-)
+library(tidygeocoder)
+library(leaflet)
+library(sf)
 
 
-expect_no_error(
-  object = {
-    tidygeocoder::louisville |>
-      geocode(
-        street = street, city = city, state = state,
-        postalcode = zip, method = 'census'
-      ) |>
-      st_as_sf(coords = c('longitude', 'latitude'), crs = 4326) |>
-      leaflet_minimal() |>
-      addMarkers(
-        popup = ~ street,
-        clusterOptions = markerClusterOptions()
-      ) |>
-      print()
-  }
-)
+expect_no_error(object = {
+  tidygeocoder::louisville |>
+    geocode(
+      street = street, city = city, state = state,
+      postalcode = zip, method = 'census'
+    ) |>
+    st_as_sf(coords = c('longitude', 'latitude'), crs = 4326) |>
+    leaflet_minimal() |>
+    addMarkers(
+      popup = ~ street,
+      clusterOptions = markerClusterOptions()
+    ) |>
+    print()
+})
 
 
 

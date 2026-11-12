@@ -1,8 +1,8 @@
 
-expect_no_error(object = {
-  library(geojsonsf)
-  library(leaflet)
-})
+
+library(geojsonsf)
+library(leaflet)
+
 
 
 expect_no_error(object = {
