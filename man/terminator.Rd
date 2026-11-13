@@ -65,13 +65,10 @@ The function \code{\link[=moonEmoji]{moonEmoji()}} finds the moon phase.
 
 The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitude and longitude of the borders of
 \describe{
-\item{Civil twilight}{when \eqn{\theta_z = \frac{90+6}{180}\cdot\pi}}
-\item{Nautical twilight}{when \eqn{\theta_z = \frac{90+12}{180}\cdot\pi}}
-\item{Astronomical twilight}{when \eqn{\theta_z = \frac{90+18}{180}\cdot\pi}}
+\item{\href{https://en.wikipedia.org/wiki/Twilight#Civil_twilight}{Civil twilight}}{when the solar zenith angle (SZA) \eqn{\theta_z \in (\frac{90}{180}\pi, \frac{90+6}{180}\pi)}, \emph{enough natural light remains so that artificial light in towns and cities is not needed to see adequately}}
+\item{\href{https://en.wikipedia.org/wiki/Twilight#Nautical_twilight}{Nautical twilight}}{when the solar zenith angle \eqn{\theta_z \in (\frac{90+6}{180}\pi, \frac{90+12}{180}\pi)}, \emph{the human eye finds it difficult, if not impossible, to discern traces of illumination near the sunset or sunrise point of the horizon (first light after nautical dawn but before civil dawn and nightfall after civil dusk but before nautical dusk)}}
+\item{\href{https://en.wikipedia.org/wiki/Twilight#Astronomical_twilight}{Astronomical twilight}}{when the solar zenith angle \eqn{\theta_z \in (\frac{90+12}{180}\pi, \frac{90+18}{180}\pi)}, \emph{the faintest stars detectable by the naked eye (those of approximately the sixth magnitude) will become visible in the evening at astronomical dusk, and become invisible at astronomical dawn}}
 }
-}
-\note{
-The function \code{\link[=twilightPolygon]{twilightPolygon()}}: is it worthwhile to vectorize the parameter \code{sza} and return an \link[sf]{st_multipolygon} object?
 }
 \examples{
 subSolarPoint()
