@@ -10,13 +10,13 @@
 #' 
 #' @returns 
 #' 
-#' The function [as.iata()] returns an object of S3 class `'iata'`, which is essentially a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
+#' The function [iata()] returns an object of S3 class `'iata'`, which is essentially a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
 #' 
 #' @examples 
-#' as.iata('NRT-HNL-YVR')
-#' as.iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
+#' iata('NRT-HNL-YVR')
+#' iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
 #' @export
-as.iata <- \(x) {
+iata <- \(x) {
   if (!is.character(x)) stop('only accepts airport names as character')
   ret <- x |>
     strsplit(split = ', ', fixed = TRUE) |>

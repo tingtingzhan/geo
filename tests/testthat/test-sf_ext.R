@@ -6,7 +6,7 @@ library(leaflet)
     
 expect_no_error(object = {
   'EWR-PHL-JFK-IAD' |> 
-    as.iata() |> 
+    iata() |> 
     st_as_sf() |>
     leaflet_minimal() |>
     addMarkers(popup = ~ shortnm) |>
@@ -16,7 +16,7 @@ expect_no_error(object = {
 
 expect_no_error(object = {
   'EWR-PHL-JFK-IAD, DFW-IAH' |> 
-    as.iata() |> 
+    iata() |> 
     st_as_sf() |>
     leaflet_minimal() |>
     addMarkers(popup = ~ shortnm) |>
