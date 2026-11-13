@@ -39,7 +39,7 @@ twilightPolygon(
 
 \item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)}
 
-\item{type}{\link[base]{character} scalar,}
+\item{type}{\link[base]{character} scalar}
 
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }

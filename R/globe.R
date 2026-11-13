@@ -36,8 +36,9 @@ globe_twilight <- \(time = Sys.time(), ...) {
   globe_sunmoon(time = time) |>
     add_polygons(
       data = twilight,
+      x = ~ lon, y = ~ lat, 
       line = list(width = 0), fillcolor = ~ fillcolor,
-      x = ~ lon, y = ~ lat, hoverinfo = 'none'
+      hoverinfo = 'none'
     )
   
 }
@@ -99,45 +100,6 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     )
   
 }
-
-
-if (FALSE) {
-  debug(globe_twilight_animation); globe_twilight_animation()
-}
-
-
-#' @importFrom plotly add_text
-globe_twilight_animation <- \(
-  time = Sys.time(), 
-  n = 11L,
-  ...
-) {
-  
-  # +/- 12hours
-  intv <- time + c(-1, 1) * 60*60*24/2
-  tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
-
-  subsolarlunar <- rbind.data.frame(
-    subSolarPoint(time = tm),
-    subLunarPoint(time = tm)
-  )
-  
-  # ignore terminator, for now
-  
-  # ask Google/Gemini 
-  # `R plotly plot_geo frame`
-  
-  globe_TropicPolar() |>
-    add_text(
-      data = subsolarlunar,
-      x = ~ lon, y = ~ lat, text = ~ text,
-      frame = ~ time,
-      hovertemplate = ~ hovertemplate_(label),
-      hoverlabel = ~ hoverlabel_(color)
-    )
-  
-}
-
 
 
 #' @rdname globe
