@@ -13,11 +13,14 @@
 #' @details
 #' The function [globe_twilight()] adds civil, nautical and astronomical twilight, on top of [globe_sunmoon()].
 #' 
-#' @note
-#' Twilight polygons (for the function [globe_twilight()]) are challenging for \link[plotly]{animation_opts}.
+# @note
+# Twilight polygons (for the function [globe_twilight()]) are challenging for \link[plotly]{animation_opts}. -- really?
 #' 
 #' @examples
 #' globe_twilight()
+#' 
+#' @seealso
+#' [twilightPolygon()]
 #' 
 #' @name globe
 # @importFrom crosstalk SharedData
@@ -78,6 +81,9 @@ hoverlabel_ <- \(x) {
 #' 
 #' @examples
 #' globe_sunmoon()
+#' 
+#' @seealso 
+#' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
 # @importFrom crosstalk SharedData
 #' @importFrom plotly add_text add_polygons

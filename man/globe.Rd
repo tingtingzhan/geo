@@ -42,9 +42,6 @@ The function \code{\link[=globe]{globe()}} is the default earth, with \code{land
 
 The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection).
 }
-\note{
-Twilight polygons (for the function \code{\link[=globe_twilight]{globe_twilight()}}) are challenging for \link[plotly]{animation_opts}.
-}
 \examples{
 globe_twilight()
 
@@ -61,4 +58,9 @@ globe_minimal()
 }
 \references{
 \url{https://plotly.com/r/reference/layout/geo/}
+}
+\seealso{
+\code{\link[=twilightPolygon]{twilightPolygon()}}
+
+\code{\link[=subSolarPoint]{subSolarPoint()}}, \code{\link[=subLunarPoint]{subLunarPoint()}}, \code{\link[=terminatorPolygon]{terminatorPolygon()}}
 }
