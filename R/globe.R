@@ -23,32 +23,15 @@
 #' [twilightPolygon()]
 #' 
 #' @name globe
-# @importFrom crosstalk SharedData
 #' @importFrom plotly add_polygons
 #' @export
 globe_twilight <- \(time = Sys.time(), ...) {
   
-  civil <- data.frame(
-    twilightPolygon(time = time, sza = (90+6)*pi/180),
-    fillcolor = 'rgba(0, 0, 0, .051)'
-  )
-    
-  nautical <- data.frame(
-    twilightPolygon(time = time, sza = (90+12)*pi/180),
-    fillcolor = 'rgba(0, 0, 0, .052)'
-  )
-    
-  astronomical <- data.frame(
-    twilightPolygon(time = time, sza = (90+18)*pi/180),
-    fillcolor = 'rgba(0, 0, 0, .053)'
-  )
-  
   twilight <- rbind.data.frame(
-    civil, 
-    nautical, 
-    astronomical
-  )# |>
-  #  SharedData$new()
+    twilightPolygon(time = time, type = 'civil'), 
+    twilightPolygon(time = time, type = 'nautical'), 
+    twilightPolygon(time = time, type = 'astronomical')
+  )
    
   globe_sunmoon(time = time) |>
     add_polygons(
@@ -85,7 +68,6 @@ hoverlabel_ <- \(x) {
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
-# @importFrom crosstalk SharedData
 #' @importFrom plotly add_text add_polygons
 #' @export
 globe_sunmoon <- \(time = Sys.time(), ...) {
@@ -95,14 +77,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
   subsolarlunar <- rbind.data.frame(
     subSolarPoint(time = time),
     subLunarPoint(time = time)
-  )# |>
-  #  SharedData$new()
-  
-  terminator <- data.frame(
-    terminatorPolygon(time = time),
-    fillcolor = 'rgba(0, 0, 0, .05)'
-  )# |>
-  #  SharedData$new()
+  )
   
   globe_TropicPolar() |>
     add_text(
@@ -113,7 +88,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
       hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_polygons(
-      data = terminator,
+      data = terminatorPolygon(time = time),
       x = ~ lon, y = ~ lat,
       line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'
@@ -127,12 +102,12 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 
 
 if (FALSE) {
-  debug(globe_sunmoon_path); globe_sunmoon_path()
+  debug(globe_twilight_animation); globe_twilight_animation()
 }
 
-# @importFrom crosstalk SharedData
-#' @importFrom plotly animation_opts
-globe_sunmoon_path <- \(
+
+#' @importFrom plotly add_text
+globe_twilight_animation <- \(
   time = Sys.time(), 
   n = 11L,
   ...
@@ -145,12 +120,11 @@ globe_sunmoon_path <- \(
   subsolarlunar <- rbind.data.frame(
     subSolarPoint(time = tm),
     subLunarPoint(time = tm)
-  )# |>
-  #  SharedData$new()
+  )
+  
   # ignore terminator, for now
   
   # ask Google/Gemini 
-  # `R plot_ly animation_opts`
   # `R plotly plot_geo frame`
   
   globe_TropicPolar() |>
@@ -160,15 +134,7 @@ globe_sunmoon_path <- \(
       frame = ~ time,
       hovertemplate = ~ hovertemplate_(label),
       hoverlabel = ~ hoverlabel_(color)
-    ) |>
-    animation_opts(
-      frame = 1000,
-      transition = 500,
-      easing = 'linear',
-      redraw = FALSE
     )
-  
-  # why sun and moon do no move...
   
 }
 

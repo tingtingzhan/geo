@@ -45,7 +45,6 @@ importFrom(plotly,
   add_polygons,
   add_segments,
   add_text,
-  animation_opts,
   layout,
   plot_geo,
   toRGB

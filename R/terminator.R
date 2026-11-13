@@ -87,6 +87,9 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' @export
 terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
+  time <- time |>
+    as.POSIXlt(tz = 'UTC')
+  
   ss <- time |>
     subSolarPoint()
   sslon <- ss$lon * pi / 180
@@ -100,8 +103,12 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
     lat = atan(-cos(lon - sslon) / tan(sslat))
   )  / pi * 180
   
-  rbind(z, z[1L, ]) |> # to close the polygon
+  ret <- rbind(z, z[1L, ]) |> # to close the polygon
     as.data.frame.matrix()
+  ret$time <- time |>
+    format(usetz = TRUE)
+  ret$fillcolor <- 'rgba(0, 0, 0, .05)'
+  return(ret)
   
 }
 
@@ -193,6 +200,8 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)
 #' 
+#' @param type \link[base]{character} scalar
+#' 
 #' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
 #' 
 #' @details
@@ -218,11 +227,17 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @export
 twilightPolygon <- \(
   time = Sys.time(), 
-  sza = stop('must provide `sza`'),
+  sza,
+  type = c('civil', 'nautical', 'astronomical'),
   n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 ) {
+  
+  if (missing(sza)) {
+    type <- match.arg(type)
+    sza <- (switch(type, civil = 6, nautical = 12, astronomical = 18) + 90) / 180 * pi
+  } else type <- NULL
   
   if (!is.double(sza) || length(sza) != 1L || is.na(sza)) stop('sza must be double scalar')
   
@@ -295,8 +310,21 @@ twilightPolygon <- \(
   
   z <- cbind(lon, lat) / pi * 180
   
-  rbind(z, z[1L, ]) |> # to close the polygon
+  ret <- rbind(z, z[1L, ]) |> # to close the polygon
     as.data.frame.matrix()
+  ret$time <- time |>
+    format(usetz = TRUE)
+  
+  if (length(type)) {
+    ret$fillcolor <- switch(
+      EXPR = type, 
+      civil = 'rgba(0, 0, 0, .051)',
+      nautical = 'rgba(0, 0, 0, .052)',
+      astronomical = 'rgba(0, 0, 0, .053)'
+    )
+  }
+  
+  return(ret)
   
 }
 
