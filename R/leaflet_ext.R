@@ -17,8 +17,12 @@
 #' @keywords minimal-map leaflet
 #' @export
 leaflet_minimal <- \(x) {
-  x |> # 
-    leaflet(data = _) |>
+  
+  z <- if (missing(x)) {
+    leaflet()
+  } else leaflet(data = x)
+  
+  z |>
     addTiles(
       group = 'OpenStreetMap'
     ) |>
@@ -30,6 +34,7 @@ leaflet_minimal <- \(x) {
       baseGroups = c('OpenStreetMap', 'Satellite'),
       options = layersControlOptions()
     )
+  
 }
 
 
