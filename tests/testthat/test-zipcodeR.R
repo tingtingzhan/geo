@@ -1,5 +1,6 @@
 
 
+library(sf)
 library(zipcodeR)
 library(leaflet)
 library(leaflet.tzh)
@@ -20,7 +21,7 @@ expect_no_error(object = {
       drop = TRUE
     ) |>
     zctas(starts_with = _) |>
-    st_transform_all() |>
+    st_transform(crs = 4326) |>
     leaflet_minimal() |>
     addPolygons(
       popup = ~ ZCTA5CE20,

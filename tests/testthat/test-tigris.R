@@ -2,6 +2,7 @@
 
 library(leaflet)
 library(leaflet.tzh)
+library(sf)
 library(tigris)
 options(tigris_use_cache = TRUE)
 
@@ -10,7 +11,7 @@ options(tigris_use_cache = TRUE)
 expect_no_error(object = {
   rails() |>
     subset(subset = (FULLNAME == 'Pennsylvania RR')) |>
-    st_transform_all() |>
+    st_transform(crs = 4326) |>
     leaflet_minimal() |>
     addPolylines() |>
     print()
@@ -20,7 +21,7 @@ expect_no_error(object = {
 expect_no_error(object = {
   landmarks(state = 'RI') |> 
     subset.data.frame(subset = !is.na(FULLNAME)) |>
-    st_transform_all() |>
+    st_transform(crs = 4326) |>
     leaflet_minimal() |>
     addMarkers(
       popup = ~ FULLNAME,
@@ -38,7 +39,7 @@ expect_no_error(object = {
       'GU', # Guam
       'MP' # Commonwealth of the Northern Mariana Islands
     )) |>
-    st_transform_all() |>
+    st_transform(crs = 4326) |>
     leaflet_minimal() |>
     addPolygons(
     popup = ~ NAME,
@@ -50,9 +51,9 @@ expect_no_error(object = {
 
 expect_no_error(object = {
   w1 = area_water(state = 'PA', county = 'Philadelphia') |>
-    st_transform_all()
+    st_transform(crs = 4326)
   w2 = linear_water(state = 'PA', county = 'Philadelphia') |>
-    st_transform_all()
+    st_transform(crs = 4326)
   w1 |> 
     leaflet_minimal() |>
     addPolylines(color = '#566CF2') |>
