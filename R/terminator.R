@@ -314,15 +314,15 @@ twilightPolygon <- \(
     as.data.frame.matrix()
   ret$time <- time |>
     format(usetz = TRUE)
-  
-  if (length(type)) {
-    ret$fillcolor <- switch(
+
+  ret$fillcolor <- if (length(type)) {
+    switch(
       EXPR = type, 
       civil = 'rgba(0, 0, 0, .051)',
       nautical = 'rgba(0, 0, 0, .052)',
       astronomical = 'rgba(0, 0, 0, .053)'
     )
-  }
+  } else 'rgba(0, 0, 0, .051)'
   
   return(ret)
   

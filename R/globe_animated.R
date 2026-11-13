@@ -8,11 +8,11 @@
 #' @param ... additional parameters, currently of no use
 #' 
 #' @examples
-#' globe_twilight_animated()
+#' globe_sunmoon_animated()
 #' 
 #' @importFrom plotly add_text add_polygons
 #' @export
-globe_twilight_animated <- \(
+globe_sunmoon_animated <- \(
   time = Sys.time(), 
   n = 11L,
   ...
