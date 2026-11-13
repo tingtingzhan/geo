@@ -2,6 +2,7 @@
 
 library(sf)
 library(leaflet)
+library(leaflet.tzh)
 
     
 expect_no_error(object = {

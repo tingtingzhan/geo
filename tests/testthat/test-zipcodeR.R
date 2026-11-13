@@ -1,8 +1,9 @@
 
 
-library(tigris)
 library(zipcodeR)
 library(leaflet)
+library(leaflet.tzh)
+library(tigris)
 options(tigris_use_cache = TRUE)
 
 

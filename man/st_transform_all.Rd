@@ -7,7 +7,7 @@
 st_transform_all(x, crs = 4326, ...)
 }
 \arguments{
-\item{x}{\code{'sf'}}
+\item{x}{an \link[sf]{sf} object}
 
 \item{crs, ...}{parameters of the function \link[sf]{st_transform}}
 }

@@ -19,7 +19,6 @@ export(globe_minimal)
 export(globe_sunmoon)
 export(globe_twilight)
 export(iata)
-export(leaflet_minimal)
 export(moonEmoji)
 export(moving_dist2gc)
 export(st_transform_all)
@@ -30,14 +29,6 @@ export(twilightPolygon)
 importFrom(geosphere,
   dist2gc,
   distGeo
-)
-importFrom(leaflet,
-  addLayersControl,
-  addProviderTiles,
-  addTiles,
-  layersControlOptions,
-  leaflet,
-  providers
 )
 importFrom(lunar,lunar.phase)
 importFrom(oce,

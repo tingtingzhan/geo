@@ -2,7 +2,7 @@
 
 #' @title Transform All Geometry Columns
 #' 
-#' @param x `'sf'`
+#' @param x an \link[sf]{sf} object
 #' 
 #' @param crs,... parameters of the function \link[sf]{st_transform}
 #' 
