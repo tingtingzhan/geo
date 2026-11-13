@@ -20,29 +20,38 @@
 #' globe_twilight()
 #' 
 #' @name globe
-#' @importFrom plotly add_text add_polygons
+# @importFrom crosstalk SharedData
+#' @importFrom plotly add_polygons
 #' @export
 globe_twilight <- \(time = Sys.time(), ...) {
   
-  civil <- twilightPolygon(time = time, sza = (90+6)*pi/180) |>
-    st_coordinates()
-  nautical <- twilightPolygon(time = time, sza = (90+12)*pi/180) |>
-    st_coordinates()
-  astronomical <- twilightPolygon(time = time, sza = (90+18)*pi/180) |>
-    st_coordinates()
+  civil <- data.frame(
+    twilightPolygon(time = time, sza = (90+6)*pi/180),
+    fillcolor = 'rgba(0, 0, 0, .051)'
+  )
+    
+  nautical <- data.frame(
+    twilightPolygon(time = time, sza = (90+12)*pi/180),
+    fillcolor = 'rgba(0, 0, 0, .052)'
+  )
+    
+  astronomical <- data.frame(
+    twilightPolygon(time = time, sza = (90+18)*pi/180),
+    fillcolor = 'rgba(0, 0, 0, .053)'
+  )
   
+  twilight <- rbind.data.frame(
+    civil, 
+    nautical, 
+    astronomical
+  )# |>
+  #  SharedData$new()
+   
   globe_sunmoon(time = time) |>
     add_polygons(
-      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .051)',
-      x = civil[,1L], y = civil[,2L], hoverinfo = 'none'
-    ) |>
-    add_polygons(
-      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .052)',
-      x = nautical[,1L], y = nautical[,2L], hoverinfo = 'none'
-    ) |>
-    add_polygons(
-      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .053)',
-      x = astronomical[,1L], y = astronomical[,2L], hoverinfo = 'none'
+      data = twilight,
+      line = list(width = 0), fillcolor = ~ fillcolor,
+      x = ~ lon, y = ~ lat, hoverinfo = 'none'
     )
   
 }
@@ -70,32 +79,38 @@ hoverlabel_ <- \(x) {
 #' @examples
 #' globe_sunmoon()
 #' 
+# @importFrom crosstalk SharedData
 #' @importFrom plotly add_text add_polygons
 #' @export
 globe_sunmoon <- \(time = Sys.time(), ...) {
   
-  subsolar <- subSolarPoint(time = time)
-  sublunar <- subLunarPoint(time = time)
-  terminator <- terminatorPolygon(time = time)[[1L]]
+  force(time)
+  
+  subsolarlunar <- rbind.data.frame(
+    subSolarPoint(time = time),
+    subLunarPoint(time = time)
+  )# |>
+  #  SharedData$new()
+  
+  terminator <- data.frame(
+    terminatorPolygon(time = time),
+    fillcolor = 'rgba(0, 0, 0, .05)'
+  )# |>
+  #  SharedData$new()
   
   globe_TropicPolar() |>
     add_text(
-      x = subsolar[1L], y = subsolar[2L], 
-      text = '\u2600\ufe0f',
+      data = subsolarlunar,
+      x = ~ lon, y = ~ lat, text = ~ text,
       textfont = list(size = 20),
-      hovertemplate = hovertemplate_('Sun'),
-      hoverlabel = hoverlabel_('darkorange')
+      hovertemplate = ~ hovertemplate_(label),
+      hoverlabel = ~ hoverlabel_(color)
     ) |>
-    add_text(
-      x = sublunar[1L], y = sublunar[2L], 
-      text = moonEmoji(time = time),
-      textfont = list(size = 18),
-      hovertemplate = hovertemplate_('Moon'),
-      hoverlabel = hoverlabel_('cornflowerblue')
-    ) |>    
     add_polygons(
-      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .05)',
-      x = terminator[,1L], y = terminator[,2L], hoverinfo = 'none'
+      data = terminator,
+      x = ~ lon, y = ~ lat,
+      line = list(width = 0), fillcolor = ~ fillcolor,
+      hoverinfo = 'none'
     ) |>
     layout(
       title = time |>
@@ -109,6 +124,7 @@ if (FALSE) {
   debug(globe_sunmoon_path); globe_sunmoon_path()
 }
 
+# @importFrom crosstalk SharedData
 #' @importFrom plotly animation_opts
 globe_sunmoon_path <- \(
   time = Sys.time(), 
@@ -119,11 +135,12 @@ globe_sunmoon_path <- \(
   # +/- 12hours
   intv <- time + c(-1, 1) * 60*60*24/2
   tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
-  tm_char <- tm |>
-    format.POSIXct(usetz = TRUE)
-  
-  subsolar <- subSolarPoint(time = tm)
-  sublunar <- subLunarPoint(time = tm)
+
+  subsolarlunar <- rbind.data.frame(
+    subSolarPoint(time = tm),
+    subLunarPoint(time = tm)
+  )# |>
+  #  SharedData$new()
   # ignore terminator, for now
   
   # ask Google/Gemini 
@@ -132,18 +149,11 @@ globe_sunmoon_path <- \(
   
   globe_TropicPolar() |>
     add_text(
-      x = subsolar[,1L], y = subsolar[,2L],
-      text = '\u2600\ufe0f',
-      frame = tm_char,
-      hovertemplate = hovertemplate_('Sun'),
-      hoverlabel = hoverlabel_('darkorange')
-    ) |>
-    add_text(
-      x = sublunar[,1L], y = sublunar[,2L],
-      text = moonEmoji(time = time),
-      frame = tm_char,
-      hovertemplate = hovertemplate_('Moon'),
-      hoverlabel = hoverlabel_('cornflowerblue')
+      data = subsolarlunar,
+      x = ~ lon, y = ~ lat, text = ~ text,
+      frame = ~ time,
+      hovertemplate = ~ hovertemplate_(label),
+      hoverlabel = ~ hoverlabel_(color)
     ) |>
     animation_opts(
       frame = 1000,

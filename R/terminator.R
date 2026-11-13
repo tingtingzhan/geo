@@ -15,7 +15,7 @@
 #' The function [subSolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
 #' @returns 
-#' The function [subSolarPoint()] returns a \link[sf]{st_point} object.
+#' The function [subSolarPoint()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
@@ -25,7 +25,6 @@
 #' subSolarPoint()
 #' 
 #' @name terminator
-#' @importFrom sf st_point st_multipoint
 #' @export
 subSolarPoint <- \(time = Sys.time(), ...) {
   
@@ -48,11 +47,16 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   # Keep within -180 to 180 degrees
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
-  if (length(time) == 1L) {
-    return(st_point(x = c(solar_lon, declination)))
-  }
-  
-  return(st_multipoint(x = cbind(solar_lon, declination)))
+  # \CRANpkg{crosstalk} as engine
+  return(data.frame(
+    lon = solar_lon,
+    lat = declination,
+    time = time |>
+      format(usetz = TRUE),
+    text = '\u2600\ufe0f', # sun emoji
+    label = 'Sun',
+    color = 'darkorange'
+  ))
   
 }
 
@@ -71,7 +75,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' The function [terminatorPolygon()] finds the latitude and longitude of the points on the day-night terminator.
 #' 
 #' @returns 
-#' The function [terminatorPolygon()] returns a \link[sf]{st_polygon} object.
+#' The function [terminatorPolygon()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
 #' 
 #' 
 #' @references
@@ -80,14 +84,13 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' @examples
 #' terminatorPolygon()
 #' 
-#' @importFrom sf st_polygon
 #' @export
 terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   ss <- time |>
     subSolarPoint()
-  sslon <- ss[1L] * pi / 180
-  sslat <- ss[2L] * pi / 180
+  sslon <- ss$lon * pi / 180
+  sslat <- ss$lat * pi / 180
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
   lon <- seq.int(from = pi, to = -pi, length.out = n) # terminator is a great circle!
@@ -98,8 +101,7 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   )  / pi * 180
   
   rbind(z, z[1L, ]) |> # to close the polygon
-    list() |>
-    st_polygon()
+    as.data.frame.matrix()
   
 }
 
@@ -111,7 +113,7 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 #' The function [subLunarPoint()] finds the latitude and longitude of the sublunar point. 
 #' 
 #' @returns 
-#' The function [subLunarPoint()] returns a \link[sf]{st_point} object.
+#' The function [subLunarPoint()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
 #' 
 #' @references
 #' \url{https://www.timeanddate.com/worldclock/sunearth.html}
@@ -120,7 +122,6 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 #' subLunarPoint()
 #' 
 #' @importFrom oce moonAngle siderealTime
-#' @importFrom sf st_point st_multipoint
 #' @export
 subLunarPoint <- \(time = Sys.time(), ...) {
   
@@ -148,18 +149,25 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   # Normalize longitude to the standard range of [-180, +180] degrees
   sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
   
-  if (length(time) == 1L) {
-    return(st_point(x = c(sublunar_lon, sublunar_lat)))
-  }
-  
-  return(st_multipoint(x = cbind(sublunar_lon, sublunar_lat)))
-  
+  # \CRANpkg{crosstalk} as engine
+  return(data.frame(
+    lon = sublunar_lon,
+    lat = sublunar_lat,
+    time = time |>
+      format(usetz = TRUE),
+    text = moonEmoji(time = time),
+    label = 'Moon',
+    color = 'cornflowerblue'
+  ))
+
 }
 
 #' @rdname terminator
 #' 
 #' @details
 #' The function [moonEmoji()] finds the moon phase.
+#' @returns 
+#' The function [moonEmoji()] returns a \link[base]{character} scalar or \link[base]{vector}.
 #' 
 #' @examples
 #' moonEmoji()
@@ -196,7 +204,7 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' }
 #' 
 #' @returns
-#' The function [twilightPolygon()] returns a \link[sf]{st_polygon} object.
+#' The function [twilightPolygon()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
 #' 
 #' @note
 #' The function [twilightPolygon()]: is it worthwhile to vectorize the parameter `sza` and return an \link[sf]{st_multipolygon} object?
@@ -207,7 +215,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @examples
 #' twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
 #' 
-#' @importFrom sf st_polygon
 #' @importFrom rootSolve uniroot.all
 #' @importFrom parallel mclapply detectCores 
 # @importFrom parallel makeCluster stopCluster parLapply
@@ -226,8 +233,8 @@ twilightPolygon <- \(
   
   ss <- time |>
     subSolarPoint()
-  sslon <- ss[1L] * pi / 180
-  sslat <- ss[2L] * pi / 180
+  sslon <- ss$lon * pi / 180
+  sslat <- ss$lat * pi / 180
   
   # twilight is **not** great circle!!
   # `lon` # \lambda in radius, \link[base]{vector}
@@ -292,8 +299,7 @@ twilightPolygon <- \(
   z <- cbind(lon, lat) / pi * 180
   
   rbind(z, z[1L, ]) |> # to close the polygon
-    list() |>
-    st_polygon()
+    as.data.frame.matrix()
   
 }
 

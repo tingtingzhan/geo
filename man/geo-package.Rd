@@ -6,7 +6,7 @@
 \alias{geo-package}
 \title{geo: Fun Projects with Earth}
 \description{
-Earth based on 'leaflet' and 'plotly::plot_geo()'.
+Earth rendered by 'leaflet' and 'plotly::plot_geo()'. Backend engines are 'sf' and 'crosstalk', respectively.
 }
 \references{
 Source of internal datasets are,
