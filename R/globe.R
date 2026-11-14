@@ -16,8 +16,6 @@
 #' @details
 #' The function [globe_twilight()] adds civil, nautical and astronomical twilight, on top of [globe_sunmoon()].
 #' 
-# @note
-# Twilight polygons (for the function [globe_twilight()]) are challenging for \link[plotly]{animation_opts}. -- really?
 #' 
 #' @examples
 #' '2026-04-14 21:30:00' |> # summer
