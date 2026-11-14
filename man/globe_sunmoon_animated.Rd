@@ -4,12 +4,16 @@
 \alias{globe_sunmoon_animated}
 \title{The Earth with Various Layers, Animated}
 \usage{
-globe_sunmoon_animated(time = Sys.time(), n = 11L, ...)
+globe_sunmoon_animated(
+  time = seq(from = Sys.time(), to = Sys.time() + 60 * 60 * 24, length.out = 11L),
+  map = globe_TropicPolar(),
+  ...
+)
 }
 \arguments{
-\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}}
+\item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is ten (10) equidistant timepoints in the next 24 hours.}
 
-\item{n}{\link[base]{integer} scalar, number of frames}
+\item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}}
 
 \item{...}{additional parameters, currently of no use}
 }

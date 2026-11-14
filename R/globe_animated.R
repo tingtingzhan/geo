@@ -1,9 +1,9 @@
 
 #' @title The Earth with Various Layers, Animated
 #' 
-#' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()]
+#' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is ten (10) equidistant timepoints in the next 24 hours.
 #' 
-#' @param n \link[base]{integer} scalar, number of frames
+#' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
@@ -13,26 +13,22 @@
 #' @importFrom plotly add_text add_polygons
 #' @export
 globe_sunmoon_animated <- \(
-  time = Sys.time(), 
-  n = 11L,
+  time = seq(from = Sys.time(), to = Sys.time() + 60*60*24, length.out = 11L), 
+  map = globe_TropicPolar(),
   ...
 ) {
   
-  # +/- 12hours
-  intv <- time + c(-1, 1) * 60*60*24/2
-  tm <- seq(from = intv[1L], to = intv[2L], length.out = n)
-  
   subsolarlunar <- rbind.data.frame(
-    subSolarPoint(time = tm),
-    subLunarPoint(time = tm)
+    subSolarPoint(time = time),
+    subLunarPoint(time = time)
   )
   
-  terminator <- tm |>
+  terminator <- time |>
     lapply(FUN = terminatorPolygon) |>
     do.call(what = 'rbind.data.frame', args = _)
   
   if (FALSE) {# computation burden!!
-    twilight <- tm |>
+    twilight <- time |>
       lapply(FUN = \(i) {
         rbind.data.frame(
           twilightPolygon(time = i, type = 'civil'), 
@@ -43,7 +39,7 @@ globe_sunmoon_animated <- \(
       do.call(what = 'rbind.data.frame', args = _)
   }
   
-  globe_TropicPolar() |>
+  map |>
     add_text(
       data = subsolarlunar,
       x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
