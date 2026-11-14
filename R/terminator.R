@@ -244,17 +244,19 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @export
 twilightPolygon <- \(
   time = Sys.time(), 
-  sza,
   type = c('civil', 'nautical', 'astronomical'),
+  sza = NULL,
   n = 1001L,
   mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
   ...
 ) {
   
-  if (missing(sza)) {
+  if (missing(sza) || !length(sza)) {
     type <- match.arg(type)
     sza <- (switch(type, civil = 6, nautical = 12, astronomical = 18) + 90) / 180 * pi
-  } else type <- NULL
+  } else {
+    type <- NULL
+  }
   
   if (!is.double(sza) || length(sza) != 1L || is.na(sza)) stop('sza must be double scalar')
   
@@ -348,4 +350,28 @@ twilightPolygon <- \(
   
 }
 
+
+
+
+twilightPolygons <- \(
+  time = Sys.time(),
+  type = c('civil', 'nautical', 'astronomical'),
+  sza = NULL,
+  ...
+) {
+  
+  force(time)
+  
+  z <- if (!missing(sza) && length(sza)) {
+    sza |>
+      lapply(FUN = \(i) twilightPolygon(time = time, sza = i)) 
+  } else {
+    type |>
+      lapply(FUN = \(i) twilightPolygon(time = time, type = i))
+  }
+  
+  z |>
+    do.call(what = 'rbind.data.frame', args = _)
+  
+}
 

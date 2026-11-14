@@ -5,6 +5,8 @@
 #' 
 #' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant timepoints in the next 24 hours.
 #' 
+#' @param type,sza see the function [globe_twilight()]
+#' 
 #' @param ... additional parameters, currently of no use
 #' 
 #' @note
@@ -17,7 +19,9 @@
 #' @export
 globe_twilight_animated <- \(
   map = globe_TropicPolar(),
-  time = seq(from = Sys.time(), to = Sys.time() + 60*60*24, length.out = 6L), 
+  time = Sys.time() + seq(from = 0, to = 60*60*24, length.out = 6L), 
+  type = c('civil', 'nautical', 'astronomical'),
+  sza,
   ...
 ) {
   
@@ -30,15 +34,9 @@ globe_twilight_animated <- \(
     lapply(FUN = terminatorPolygon) |>
     do.call(what = 'rbind.data.frame', args = _)
   
-  twilight <- if (length(time) <= 6L) { # FALSE && 
+  twilight <- if (length(time) <= 6L) {
     time |>
-      lapply(FUN = \(i) {
-        rbind.data.frame(
-          twilightPolygon(time = i, type = 'civil'), 
-          twilightPolygon(time = i, type = 'nautical'), 
-          twilightPolygon(time = i, type = 'astronomical')
-        )
-      }) |>
+      lapply(FUN = twilightPolygons, type = type, sza = sza) |>
       do.call(what = 'rbind.data.frame', args = _)
   } # else NULL
   

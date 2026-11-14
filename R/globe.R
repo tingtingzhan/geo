@@ -37,31 +37,25 @@ globe_twilight <- \(
   map = globe_sunmoon(time = time),
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
-  sza,
+  sza = NULL,
   ...
 ) {
   
   force(time)
   
-  twilight <- if (!missing(sza)) {
-    sza |>
-      lapply(FUN = \(i) twilightPolygon(time = time, sza = i)) |>
-      do.call(what = 'rbind.data.frame', args = _)
-  } else {
-    type |>
-      lapply(FUN = \(i) twilightPolygon(time = time, type = i)) |>
-      do.call(what = 'rbind.data.frame', args = _)
-  }
-  
   map |>
     add_polygons(
-      data = twilight,
+      data = twilightPolygons(time = time, type = type, sza = sza),
       x = ~ lon, y = ~ lat, 
       line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'
     )
   
 }
+
+
+
+
 
 
 

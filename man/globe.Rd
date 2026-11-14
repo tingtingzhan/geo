@@ -13,7 +13,7 @@ globe_twilight(
   map = globe_sunmoon(time = time),
   time = Sys.time(),
   type = c("civil", "nautical", "astronomical"),
-  sza,
+  sza = NULL,
   ...
 )
 

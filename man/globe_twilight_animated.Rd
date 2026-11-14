@@ -6,7 +6,9 @@
 \usage{
 globe_twilight_animated(
   map = globe_TropicPolar(),
-  time = seq(from = Sys.time(), to = Sys.time() + 60 * 60 * 24, length.out = 6L),
+  time = Sys.time() + seq(from = 0, to = 60 * 60 * 24, length.out = 6L),
+  type = c("civil", "nautical", "astronomical"),
+  sza,
   ...
 )
 }
@@ -14,6 +16,8 @@ globe_twilight_animated(
 \item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function \code{\link[=globe_TropicPolar]{globe_TropicPolar()}}}
 
 \item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (\code{6L}) equidistant timepoints in the next 24 hours.}
+
+\item{type, sza}{see the function \code{\link[=globe_twilight]{globe_twilight()}}}
 
 \item{...}{additional parameters, currently of no use}
 }
