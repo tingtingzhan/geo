@@ -30,6 +30,7 @@ importFrom(geosphere,
   distGeo
 )
 importFrom(lunar,lunar.phase)
+importFrom(lutz,tz_lookup_coords)
 importFrom(oce,
   moonAngle,
   siderealTime

@@ -30,7 +30,8 @@ iata <- \(x) {
 }
 
 
-
+#' @importFrom lutz tz_lookup_coords
+#' @importFrom sf st_coordinates
 iata_int <- \(x) {
   if (!is.character(x)) stop('input airport codes must be character')
   if (anyNA(x) || !all(nzchar(x))) stop('illegal input airport codes')
@@ -42,6 +43,12 @@ iata_int <- \(x) {
   if (anyNA(id)) stop('must use IATA code')
   
   z <- airports_ip2location[id, , drop = FALSE]
+  coords <- z |>
+    st_coordinates()
+  z$tz <- tz_lookup_coords(
+    lon = coords[,1L], lat = coords[,2L],
+    method = 'accurate' # too slow for the whole of `airports_ip2location`
+  )
   class(z) <- c('iata', class(z))
   return(z)
 }
