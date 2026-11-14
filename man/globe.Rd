@@ -10,23 +10,26 @@
 \title{The Earth with Various Layers}
 \usage{
 globe_twilight(
+  map = globe_sunmoon(time = time),
   time = Sys.time(),
   type = c("civil", "nautical", "astronomical"),
   sza,
   ...
 )
 
-globe_sunmoon(time = Sys.time(), ...)
+globe_sunmoon(map = globe_TropicPolar(), time = Sys.time(), ...)
 
-globe_TropicPolar()
+globe_TropicPolar(map = globe_meridian())
 
-globe_meridian()
+globe_meridian(map = globe())
 
 globe()
 
 globe_minimal()
 }
 \arguments{
+\item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}}
+
 \item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}}
 
 \item{type}{\link[base]{character} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
@@ -54,17 +57,17 @@ The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum 
 \examples{
 '2026-04-14 21:30:00' |> # summer
   as.POSIXct() |> 
-  globe_twilight()
+  globe_twilight(time = _)
 '2026-11-14 21:30:00' |> # winter
   as.POSIXct() |> 
-  globe_twilight()
+  globe_twilight(time = _)
 
 '2026-04-14 21:30:00' |> # summer
   as.POSIXct() |> 
-  globe_sunmoon()
+  globe_sunmoon(time = _)
 '2026-11-14 21:30:00' |> # winter
   as.POSIXct() |> 
-  globe_sunmoon()
+  globe_sunmoon(time = _)
 
 globe_TropicPolar()
 

@@ -5,6 +5,8 @@
 #' @description
 #' The Earth with various layers.
 #' 
+#' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}
+#' 
 #' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()]
 #' 
 #' @param type \link[base]{character} \link[base]{vector}, see the function [twilightPolygon()]
@@ -20,10 +22,10 @@
 #' @examples
 #' '2026-04-14 21:30:00' |> # summer
 #'   as.POSIXct() |> 
-#'   globe_twilight()
+#'   globe_twilight(time = _)
 #' '2026-11-14 21:30:00' |> # winter
 #'   as.POSIXct() |> 
-#'   globe_twilight()
+#'   globe_twilight(time = _)
 #' 
 #' @seealso
 #' [twilightPolygon()]
@@ -32,6 +34,7 @@
 #' @importFrom plotly add_polygons
 #' @export
 globe_twilight <- \(
+  map = globe_sunmoon(time = time),
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
   sza,
@@ -50,7 +53,7 @@ globe_twilight <- \(
       do.call(what = 'rbind.data.frame', args = _)
   }
   
-  globe_sunmoon(time = time) |>
+  map |>
     add_polygons(
       data = twilight,
       x = ~ lon, y = ~ lat, 
@@ -83,17 +86,21 @@ hoverlabel_ <- \(x) {
 #' @examples
 #' '2026-04-14 21:30:00' |> # summer
 #'   as.POSIXct() |> 
-#'   globe_sunmoon()
+#'   globe_sunmoon(time = _)
 #' '2026-11-14 21:30:00' |> # winter
 #'   as.POSIXct() |> 
-#'   globe_sunmoon()
+#'   globe_sunmoon(time = _)
 #' 
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
 #' @importFrom plotly add_text add_polygons
 #' @export
-globe_sunmoon <- \(time = Sys.time(), ...) {
+globe_sunmoon <- \(
+  map = globe_TropicPolar(),
+  time = Sys.time(), 
+  ...
+) {
   
   force(time)
   
@@ -102,7 +109,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     subLunarPoint(time = time)
   )
   
-  globe_TropicPolar() |>
+  map |>
     add_text(
       data = subsolarlunar,
       x = ~ lon, y = ~ lat, text = ~ text,
@@ -133,12 +140,14 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
 #' 
 #' @importFrom plotly add_paths
 #' @export
-globe_TropicPolar <- \() {
+globe_TropicPolar <- \(
+  map = globe_meridian()
+) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
   
-  globe_meridian() |>
+  map |>
     add_paths(
       x = lon, y = 66.56, 
       line = path_line, hoverinfo = 'none'
@@ -173,12 +182,14 @@ globe_TropicPolar <- \() {
 #' 
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
-globe_meridian <- \() {
+globe_meridian <- \(
+  map = globe()
+) {
   
   lat <- seq(from = -90, to = 90, length.out = 3L)
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
   
-  globe() |>
+  map |>
     add_paths(
       x = 0, y = lat, 
       line = path_line, hoverinfo = 'none'

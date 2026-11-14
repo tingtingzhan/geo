@@ -1,9 +1,9 @@
 
 #' @title The Earth with Various Layers, Animated
 #' 
-#' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant timepoints in the next 24 hours.
-#' 
 #' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function [globe_TropicPolar()]
+#' 
+#' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant timepoints in the next 24 hours.
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
@@ -16,8 +16,8 @@
 #' @importFrom plotly add_text add_polygons
 #' @export
 globe_twilight_animated <- \(
-  time = seq(from = Sys.time(), to = Sys.time() + 60*60*24, length.out = 6L), 
   map = globe_TropicPolar(),
+  time = seq(from = Sys.time(), to = Sys.time() + 60*60*24, length.out = 6L), 
   ...
 ) {
   

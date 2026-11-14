@@ -5,15 +5,15 @@
 \title{The Earth with Various Layers, Animated}
 \usage{
 globe_twilight_animated(
-  time = seq(from = Sys.time(), to = Sys.time() + 60 * 60 * 24, length.out = 6L),
   map = globe_TropicPolar(),
+  time = seq(from = Sys.time(), to = Sys.time() + 60 * 60 * 24, length.out = 6L),
   ...
 )
 }
 \arguments{
-\item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (\code{6L}) equidistant timepoints in the next 24 hours.}
-
 \item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function \code{\link[=globe_TropicPolar]{globe_TropicPolar()}}}
+
+\item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (\code{6L}) equidistant timepoints in the next 24 hours.}
 
 \item{...}{additional parameters, currently of no use}
 }

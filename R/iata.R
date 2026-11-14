@@ -222,10 +222,10 @@ plot.iatalist <- \(
 plot.iata <- \(x, ...) {
   
   if (all(c('departure', 'arrival') %notin% names(x))) {
-    return(plot_iata_int(x, ...))
+    return(add_iata(x = x, ...))
   }
   
-  plot_iata_animated(x, ...)
+  add_iata_animated(x = x, ...)
   
 }
 
@@ -271,15 +271,16 @@ iata_animated_data <- \(x) {
 
 
 #' @importFrom plotly add_text
-plot_iata_animated <- \(
-  x, 
+add_iata_animated <- \(
   map = globe_twilight_animated(time = d[['tm']]),
+  x, 
   ...
 ) {
   
   d <- iata_animated_data(x)
   
-  plot_iata_int(x, map = map, ...) |>
+  map |>
+    add_iata(x = x, ...) |>
     add_text(
       data = d,
       x = ~ jitter(lon), y = ~ jitter(lat), 
@@ -294,9 +295,9 @@ plot_iata_animated <- \(
 #' @importFrom plotly add_markers add_segments
 #' @importFrom sf st_coordinates
 #' @importFrom scales pal_hue
-plot_iata_int <- \(
-  x,
+add_iata <- \(
   map = globe_twilight(),
+  x,
   col = pal_hue()(n = 1L),
   ...
 ) {
