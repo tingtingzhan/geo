@@ -138,7 +138,6 @@ format.distGeo <- \(x, ...) {
 
 
 
-#' @importFrom sf st_as_sf
 #' @export
 print.iata <- \(x, ...) {
   
@@ -191,7 +190,7 @@ print.iatalist <- \(x, ...) {
 
 
 
-
+#' @importFrom scales pal_hue
 #' @export
 plot.iatalist <- \(
     x, 
@@ -219,9 +218,6 @@ plot.iatalist <- \(
 # @param col \link[base]{character} scalar
 # @references 
 # \url{https://plotly.com/r/lines-on-maps/}
-#' @importFrom plotly add_markers add_segments
-#' @importFrom scales pal_hue
-#' @importFrom sf st_coordinates st_as_sf
 #' @export
 plot.iata <- \(x, ...) {
   
@@ -233,12 +229,8 @@ plot.iata <- \(x, ...) {
   
 }
 
-
-#' @importFrom plotly add_text
-plot_iata_animated <- \(
-  x, 
-  ...
-) {
+#' @importFrom sf st_coordinates
+iata_animated_data <- \(x) {
   
   tm1 <- x[['arrival']] |>
     as.POSIXlt(tz = 'UTC')
@@ -264,37 +256,49 @@ plot_iata_animated <- \(
     rep(each = 2L)
   lat <- coords[,2L] |>
     rep(each = 2L)
-
-  airplane_dat <- data.frame(
+  
+  data.frame(
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
+    tm = tm,
     time = tm |>
       as.POSIXlt(tz = 'UTC') |>
       format(usetz = TRUE)
   )
   
-  plot_iata_int(
-    x, 
-    map = globe_sunmoon_animated(time = tm),
-    ...
-  ) |>
+}
+
+
+
+#' @importFrom plotly add_text
+plot_iata_animated <- \(
+  x, 
+  map = globe_sunmoon_animated(time = d[['tm']]),
+  ...
+) {
+  
+  d <- iata_animated_data(x)
+  
+  plot_iata_int(x, map = map, ...) |>
     add_text(
-      data = airplane_dat,
-      x = ~ lon, y = ~ lat, text = ~ text,
-      frame = ~ time,
-      textfont = list(size = 20)
+      data = d,
+      x = ~ jitter(lon), y = ~ jitter(lat), 
+      text = ~ text, frame = ~ time,
+      textfont = list(size = 20),
+      hoverinfo = 'none'
     )
 
 }
 
 
-
-
+#' @importFrom plotly add_markers add_segments
+#' @importFrom sf st_coordinates
+#' @importFrom scales pal_hue
 plot_iata_int <- \(
   x,
-  ..., 
   map = globe_twilight(),
-  col = pal_hue()(n = 1L)
+  col = pal_hue()(n = 1L),
+  ...
 ) {
   
   coords <- x |>
