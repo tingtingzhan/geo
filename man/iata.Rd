@@ -10,7 +10,9 @@ iata(x)
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
 }
 \value{
-The function \code{\link[=iata]{iata()}} returns an object of S3 class \code{'iata'}, which is essentially a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
+The function \code{\link[=iata]{iata()}} returns a \link[base]{list} of \code{'iata'} objects.
+
+The \code{S3} class \code{'iata'} \link[base]{inherits} from the \code{S3} class \link[sf]{sf}.
 }
 \description{
 One or more air travel trips using International Air Transport Association (IATA) airport codes.

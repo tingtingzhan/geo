@@ -10,7 +10,9 @@
 #' 
 #' @returns 
 #' 
-#' The function [iata()] returns an object of S3 class `'iata'`, which is essentially a \link[base]{list} of \link[base]{integer} \link[base]{vector}s.
+#' The function [iata()] returns a \link[base]{list} of `'iata'` objects.   
+#' 
+#' The `S3` class `'iata'` \link[base]{inherits} from the `S3` class \link[sf]{sf}.
 #' 
 #' @examples 
 #' iata('NRT-HNL-YVR')
@@ -22,21 +24,27 @@ iata <- \(x) {
     strsplit(split = ', ', fixed = TRUE) |>
     unlist(use.names = FALSE) |> 
     strsplit(split = '-', fixed = TRUE) |>
-    lapply(FUN = \(x) {
-      if (!is.character(x) || length(x) < 2L || anyNA(x) || !all(nzchar(x))) {
-        stop('a trip must have >=2 airports')
-      } 
-      id <- x |>
-        toupper() |>
-        match(table = airports_ip2location$iata, nomatch = NA_integer_)
-      if (anyNA(id)) stop('must use IATA code')
-      class(id) <- 'iata'
-      return(id)
-    })
+    lapply(FUN = iata_int)
   class(ret) <- 'iatalist'
   return(ret)
 }
 
+
+
+iata_int <- \(x) {
+  if (!is.character(x)) stop('input airport codes must be character')
+  if (anyNA(x) || !all(nzchar(x))) stop('illegal input airport codes')
+  if (length(x) < 2L) stop('a trip must have >=2 airports')
+  
+  id <- x |>
+    toupper() |>
+    match(table = airports_ip2location$iata, nomatch = NA_integer_)
+  if (anyNA(id)) stop('must use IATA code')
+  
+  z <- airports_ip2location[id, , drop = FALSE]
+  class(z) <- c('iata', class(z))
+  return(z)
+}
 
 
 
@@ -81,7 +89,6 @@ format.distGeo <- \(x, ...) {
 #' @export
 print.iata <- \(x, ...) {
   m_ <- x |>
-    st_as_sf() |>
     distGeo_(nm = ~ iata)
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
@@ -98,15 +105,15 @@ print.iata <- \(x, ...) {
 
 
 
-#' @exportS3Method sf::st_as_sf
-st_as_sf.iatalist <- \(x, ...) {
-  airports_ip2location[unlist(x), , drop = FALSE]
-}
+# @exportS3Method sf::st_as_sf
+#st_as_sf.iatalist <- \(x, ...) {
+#  airports_ip2location[unlist(x), , drop = FALSE]
+#}
 
-#' @exportS3Method sf::st_as_sf
-st_as_sf.iata <- \(x, ...) {
-  airports_ip2location[x, , drop = FALSE]
-}
+# @exportS3Method sf::st_as_sf
+#st_as_sf.iata <- \(x, ...) {
+#  airports_ip2location[x, , drop = FALSE]
+#}
 
 
 
@@ -173,9 +180,7 @@ plot.iata <- \(
     col = pal_hue()(n = 1L)
 ) {
   
-  ap <- x |>
-    st_as_sf()
-  coords <- ap |>
+  coords <- x |>
     st_coordinates()
   lon <- coords[,1L]
   lat <- coords[,2L]
@@ -185,9 +190,9 @@ plot.iata <- \(
   sq1 <- seq_len(n-1L)
   sq2 <- seq_len(n)[-1L]
   
-  marker_text <- distGeo_(sf = ap, nm = ~ iata) |>
+  marker_text <- distGeo_(sf = x, nm = ~ iata) |>
     format.distGeo() |>
-    sprintf(fmt = '%s\n%s', ap$shortnm, . = _)
+    sprintf(fmt = '%s\n%s', x$shortnm, . = _)
   
   map |>
     add_segments(
