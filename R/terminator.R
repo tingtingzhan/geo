@@ -95,8 +95,7 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   sslon <- ss$lon * pi / 180
   sslat <- ss$lat * pi / 180
   
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons !!!
-  lon <- seq.int(from = pi, to = -pi, length.out = n) # terminator is a great circle!
+  lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
   
   z <- cbind(
     lon = lon,
@@ -111,6 +110,24 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   return(ret)
   
 }
+
+
+lon_seq <- \(sslon, sslat, ...) {
+  
+  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
+  lon <- if (sslat > 0) {
+    # in summer 
+    seq(from = sslon, to = sslon + 2*pi, ...)
+  } else {
+    # in winter
+    seq(from = sslon, to = sslon - 2*pi, ...)
+  }
+  
+  # Normalize longitude to (-pi, pi)
+  ((lon + pi) %% (2*pi)) - pi
+  
+}
+
 
 
 
@@ -249,11 +266,7 @@ twilightPolygon <- \(
   sslat <- ss$lat * pi / 180
   
   # twilight is **not** great circle!!
-  # `lon` # \lambda in radius, \link[base]{vector}
-  # must start with `sslon`, otherwise polygon may be messed up!
-  lon <- seq(from = sslon, to = sslon - 2*pi, length.out = n)
-  # Normalize longitude to (-pi, pi)
-  lon <- ((lon + pi) %% (2*pi)) - pi
+  lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
   
   fn <- \(x, lon) {
     (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)

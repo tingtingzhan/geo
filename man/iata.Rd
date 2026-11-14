@@ -2,9 +2,15 @@
 % Please edit documentation in R/iata.R
 \name{iata}
 \alias{iata}
+\alias{iata.data.frame}
+\alias{iata.character}
 \title{One or More Air Travel Trips using IATA codes}
 \usage{
 iata(x)
+
+\method{iata}{data.frame}(x)
+
+\method{iata}{character}(x)
 }
 \arguments{
 \item{x}{\link[base]{character} scalar or \link[base]{vector}}
@@ -20,4 +26,12 @@ One or more air travel trips using International Air Transport Association (IATA
 \examples{
 iata('NRT-HNL-YVR')
 iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
+
+data.frame(
+ iata = c('JFK', 'LAX', 'PPT'),
+ departure = c('2027-04-14 17:30', '2027-04-14 23:00', NA),
+ arrival = c(NA, '2027-04-14 20:55', '2027-04-15 4:10')
+) |>
+ iata()
+
 }

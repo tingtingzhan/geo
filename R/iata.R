@@ -17,9 +17,53 @@
 #' @examples 
 #' iata('NRT-HNL-YVR')
 #' iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM')
+#' 
+#' data.frame(
+#'  iata = c('JFK', 'LAX', 'PPT'),
+#'  departure = c('2027-04-14 17:30', '2027-04-14 23:00', NA),
+#'  arrival = c(NA, '2027-04-14 20:55', '2027-04-15 4:10')
+#' ) |>
+#'  iata()
+#' 
+#' @name iata
 #' @export
-iata <- \(x) {
-  if (!is.character(x)) stop('only accepts airport names as character')
+iata <- \(x) UseMethod(generic = 'iata')
+
+#' @rdname iata
+#' @method iata data.frame
+#' @export
+iata.data.frame <- \(x) {
+  
+  if (any(c('iata', 'departure', 'arrival') %notin% names(x))) stop()
+  
+  if (any(c('tz') %in% names(x))) stop()
+  
+  z <- x[['iata']] |>
+    iata_int() |>
+    merge(y = x, by = 'iata') # sf:::merge.sf
+  
+  z$departure <- mapply(
+    FUN = as.POSIXct.default, SIMPLIFY = TRUE,
+    #FUN = as.POSIXlt.character,
+    x = z$departure, tz = z$tz
+  )# |> 
+  #  vapply(FUN = as.POSIXct.POSIXlt, FUN.VALUE = NA_real_, USE.NAMES = TRUE) # verified correct
+
+  z$arrival <- mapply(
+    FUN = as.POSIXct.default, SIMPLIFY = TRUE,
+    x = z$arrival, tz = z$tz
+  )
+  
+  class(z) <- c('iata', class(z))
+  return(z)
+  
+}
+
+
+
+#' @rdname iata
+#' @export
+iata.character <- \(x) {
   ret <- x |>
     strsplit(split = ', ', fixed = TRUE) |>
     unlist(use.names = FALSE) |> 
@@ -33,6 +77,7 @@ iata <- \(x) {
 #' @importFrom lutz tz_lookup_coords
 #' @importFrom sf st_coordinates
 iata_int <- \(x) {
+  
   if (!is.character(x)) stop('input airport codes must be character')
   if (anyNA(x) || !all(nzchar(x))) stop('illegal input airport codes')
   if (length(x) < 2L) stop('a trip must have >=2 airports')
@@ -51,6 +96,7 @@ iata_int <- \(x) {
   )
   class(z) <- c('iata', class(z))
   return(z)
+  
 }
 
 
@@ -95,6 +141,7 @@ format.distGeo <- \(x, ...) {
 #' @importFrom sf st_as_sf
 #' @export
 print.iata <- \(x, ...) {
+  
   m_ <- x |>
     distGeo_(nm = ~ iata)
   ret = cbind(
@@ -105,7 +152,15 @@ print.iata <- \(x, ...) {
   ret[] <- sprintf(fmt = '%.1f', ret)
   print(ret, quote = FALSE, right = TRUE)
   cat('\n')
+  
+  if (all(c('departure', 'arrival') %in% names(x))) {
+    x |>
+      plot.iata() |>
+      print()
+  }
+  
   return(invisible(sum(m_ / 1609.34)))
+  
 }
 
 
@@ -168,11 +223,78 @@ plot.iatalist <- \(
 #' @importFrom scales pal_hue
 #' @importFrom sf st_coordinates st_as_sf
 #' @export
-plot.iata <- \(
-    x,
-    ..., 
-    map = globe_twilight(),
-    col = pal_hue()(n = 1L)
+plot.iata <- \(x, ...) {
+  
+  if (all(c('departure', 'arrival') %notin% names(x))) {
+    return(plot_iata_int(x, ...))
+  }
+  
+  plot_iata_animated(x, ...)
+  
+}
+
+
+#' @importFrom plotly add_text
+plot_iata_animated <- \(
+  x, 
+  ...
+) {
+  
+  tm1 <- x[['arrival']] |>
+    as.POSIXlt(tz = 'UTC')
+  tm2 <- x[['departure']] |>
+    as.POSIXlt(tz = 'UTC')
+  tm <- list(tm1, tm2) |>
+    c(list(f = c)) |>
+    do.call(what = Map, args = ) |>
+    do.call(what = c, args = _) |>
+    na.omit.POSIXlt()
+  
+  id <- attr(tm, which = 'na.action', exact = TRUE)
+  
+  airplane <- c(
+    '\U1f6ec', # Airplane Arrival
+    '\U1f6eb' # Airplane Departure
+  ) |>
+    rep(times = nrow(x))
+  
+  coords <- x |>
+    st_coordinates()
+  lon <- coords[,1L] |>
+    rep(each = 2L)
+  lat <- coords[,2L] |>
+    rep(each = 2L)
+
+  airplane_dat <- data.frame(
+    lon = lon[-id], lat = lat[-id], 
+    text = airplane[-id],
+    time = tm |>
+      as.POSIXlt(tz = 'UTC') |>
+      format(usetz = TRUE)
+  )
+  
+  plot_iata_int(
+    x, 
+    map = globe_sunmoon_animated(time = tm),
+    ...
+  ) |>
+    add_text(
+      data = airplane_dat,
+      x = ~ lon, y = ~ lat, text = ~ text,
+      frame = ~ time,
+      textfont = list(size = 20)
+    )
+
+}
+
+
+
+
+plot_iata_int <- \(
+  x,
+  ..., 
+  map = globe_twilight(),
+  col = pal_hue()(n = 1L)
 ) {
   
   coords <- x |>
@@ -208,5 +330,7 @@ plot.iata <- \(
     )
   
 }
+
+
 
 

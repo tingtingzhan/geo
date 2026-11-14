@@ -96,7 +96,7 @@ globe_sunmoon <- \(time = Sys.time(), ...) {
     ) |>
     layout(
       title = time |>
-        format.POSIXct(usetz = TRUE)
+        format(usetz = TRUE)
     )
   
 }
