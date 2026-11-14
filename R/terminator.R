@@ -364,10 +364,10 @@ twilightPolygons <- \(
   
   z <- if (!missing(sza) && length(sza)) {
     sza |>
-      lapply(FUN = \(i) twilightPolygon(time = time, sza = i)) 
+      lapply(FUN = \(i) twilightPolygon(time = time, sza = i, ...)) 
   } else {
     type |>
-      lapply(FUN = \(i) twilightPolygon(time = time, type = i))
+      lapply(FUN = \(i) twilightPolygon(time = time, type = i, ...))
   }
   
   z |>

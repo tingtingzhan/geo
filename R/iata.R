@@ -229,6 +229,9 @@ plot.iata <- \(x, ...) {
   
 }
 
+
+
+
 #' @importFrom sf st_coordinates
 iata_animated_data <- \(x) {
   
@@ -238,8 +241,8 @@ iata_animated_data <- \(x) {
     as.POSIXlt(tz = 'UTC')
   tm <- list(tm1, tm2) |>
     c(list(f = c)) |>
-    do.call(what = Map, args = ) |>
-    do.call(what = c, args = _) |>
+    do.call(what = 'Map', args = ) |>
+    do.call(what = 'c', args = _) |>
     na.omit.POSIXlt()
   
   id <- attr(tm, which = 'na.action', exact = TRUE)
