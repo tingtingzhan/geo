@@ -5,8 +5,11 @@
 #' @description
 #' The Earth with various layers.
 #' 
-#' 
 #' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()]
+#' 
+#' @param type \link[base]{character} \link[base]{vector}, see the function [twilightPolygon()]
+#' 
+#' @param sza \link[base]{numeric} \link[base]{vector}, see the function [twilightPolygon()]
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
@@ -17,7 +20,12 @@
 # Twilight polygons (for the function [globe_twilight()]) are challenging for \link[plotly]{animation_opts}. -- really?
 #' 
 #' @examples
-#' globe_twilight()
+#' '2026-04-14 21:30:00' |> # summer
+#'   as.POSIXct() |> 
+#'   globe_twilight()
+#' '2026-11-14 21:30:00' |> # winter
+#'   as.POSIXct() |> 
+#'   globe_twilight()
 #' 
 #' @seealso
 #' [twilightPolygon()]
@@ -25,14 +33,25 @@
 #' @name globe
 #' @importFrom plotly add_polygons
 #' @export
-globe_twilight <- \(time = Sys.time(), ...) {
+globe_twilight <- \(
+  time = Sys.time(), 
+  type = c('civil', 'nautical', 'astronomical'),
+  sza,
+  ...
+) {
   
-  twilight <- rbind.data.frame(
-    twilightPolygon(time = time, type = 'civil'), 
-    twilightPolygon(time = time, type = 'nautical'), 
-    twilightPolygon(time = time, type = 'astronomical')
-  )
-   
+  force(time)
+  
+  twilight <- if (!missing(sza)) {
+    sza |>
+      lapply(FUN = \(i) twilightPolygon(time = time, sza = i)) |>
+      do.call(what = 'rbind.data.frame', args = _)
+  } else {
+    type |>
+      lapply(FUN = \(i) twilightPolygon(time = time, type = i)) |>
+      do.call(what = 'rbind.data.frame', args = _)
+  }
+  
   globe_sunmoon(time = time) |>
     add_polygons(
       data = twilight,
@@ -64,7 +83,12 @@ hoverlabel_ <- \(x) {
 #' The function [globe_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [globe_TropicPolar()].
 #' 
 #' @examples
-#' globe_sunmoon()
+#' '2026-04-14 21:30:00' |> # summer
+#'   as.POSIXct() |> 
+#'   globe_sunmoon()
+#' '2026-11-14 21:30:00' |> # winter
+#'   as.POSIXct() |> 
+#'   globe_sunmoon()
 #' 
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]

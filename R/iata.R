@@ -273,7 +273,7 @@ iata_animated_data <- \(x) {
 #' @importFrom plotly add_text
 plot_iata_animated <- \(
   x, 
-  map = globe_sunmoon_animated(time = d[['tm']]),
+  map = globe_twilight_animated(time = d[['tm']]),
   ...
 ) {
   

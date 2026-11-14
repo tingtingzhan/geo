@@ -309,7 +309,7 @@ twilightPolygon <- \(
   
   if (all(nz == 1L)) { # hew!!
     # do nothing!!
-  } else {
+  } else { # when (sslat < 0)
     id <- (nz > 0L)
     lon <- c(lon[id], rev.default(lon[id]))
     lat <- c(
@@ -319,6 +319,12 @@ twilightPolygon <- \(
         rev.default() |>
         vapply(FUN = \(i) i[length(i)], FUN.VALUE = NA_real_)
     )
+    if (sslat > 0) {
+      # summer time
+      # hah! tzh does not know why!!!
+      lon <- rev.default(lon)
+      lat <- rev.default(lat)
+    }
   }
   
   z <- cbind(lon, lat) / pi * 180
@@ -326,6 +332,7 @@ twilightPolygon <- \(
   ret <- rbind(z, z[1L, ]) |> # to close the polygon
     as.data.frame.matrix()
   ret$time <- time |>
+    as.POSIXlt(tz = 'UTC') |>
     format(usetz = TRUE)
 
   ret$fillcolor <- if (length(type)) {

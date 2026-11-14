@@ -9,7 +9,12 @@
 \alias{globe_minimal}
 \title{The Earth with Various Layers}
 \usage{
-globe_twilight(time = Sys.time(), ...)
+globe_twilight(
+  time = Sys.time(),
+  type = c("civil", "nautical", "astronomical"),
+  sza,
+  ...
+)
 
 globe_sunmoon(time = Sys.time(), ...)
 
@@ -23,6 +28,10 @@ globe_minimal()
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}}
+
+\item{type}{\link[base]{character} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
+
+\item{sza}{\link[base]{numeric} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
 
 \item{...}{additional parameters, currently of no use}
 }
@@ -43,9 +52,19 @@ The function \code{\link[=globe]{globe()}} is the default earth, with \code{land
 The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection).
 }
 \examples{
-globe_twilight()
+'2026-04-14 21:30:00' |> # summer
+  as.POSIXct() |> 
+  globe_twilight()
+'2026-11-14 21:30:00' |> # winter
+  as.POSIXct() |> 
+  globe_twilight()
 
-globe_sunmoon()
+'2026-04-14 21:30:00' |> # summer
+  as.POSIXct() |> 
+  globe_sunmoon()
+'2026-11-14 21:30:00' |> # winter
+  as.POSIXct() |> 
+  globe_sunmoon()
 
 globe_TropicPolar()
 
