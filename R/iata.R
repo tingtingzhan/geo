@@ -105,18 +105,6 @@ print.iata <- \(x, ...) {
 
 
 
-# @exportS3Method sf::st_as_sf
-#st_as_sf.iatalist <- \(x, ...) {
-#  airports_ip2location[unlist(x), , drop = FALSE]
-#}
-
-# @exportS3Method sf::st_as_sf
-#st_as_sf.iata <- \(x, ...) {
-#  airports_ip2location[x, , drop = FALSE]
-#}
-
-
-
 
 
 
