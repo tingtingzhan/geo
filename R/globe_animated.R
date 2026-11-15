@@ -25,10 +25,12 @@ globe_twilight_animated <- \(
   ...
 ) {
   
-  subsolarlunar <- rbind.data.frame(
-    subSolarPoint(time = time),
-    subLunarPoint(time = time)
-  )
+  force(time)
+  
+  #subsolarlunar <- rbind.data.frame(
+  #  subSolarPoint(time = time),
+  #  subLunarPoint(time = time)
+  #) # maybe \CRANpkg{plotly} will fix this bug someday..
   
   terminator <- time |>
     lapply(FUN = terminatorPolygon) |>
@@ -41,8 +43,20 @@ globe_twilight_animated <- \(
   } # else NULL
   
   map |>
+    #add_text(
+    #  data = subsolarlunar,
+    #  x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
+    #  hovertemplate = ~ hovertemplate_(label), # fine
+    #  hoverlabel = ~ hoverlabel_(color) # \CRANpkg{plotly} messes up!!!
+    #) |>
     add_text(
-      data = subsolarlunar,
+      data = subSolarPoint(time = time),
+      x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
+      hovertemplate = ~ hovertemplate_(label),
+      hoverlabel = ~ hoverlabel_(color)
+    ) |>
+    add_text(
+      data = subLunarPoint(time = time),
       x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
       hovertemplate = ~ hovertemplate_(label),
       hoverlabel = ~ hoverlabel_(color)
