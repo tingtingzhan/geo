@@ -36,22 +36,28 @@ iata.data.frame <- \(x) {
   
   if (any(c('iata', 'departure', 'arrival') %notin% names(x))) stop()
   
-  if (any(c('tz') %in% names(x))) stop()
-  
   z <- x[['iata']] |>
     iata_int() |>
     merge(y = x, by = 'iata') # sf:::merge.sf
+
+  fmt_tz <- \(x, tz) {
+    as.POSIXlt.character(x = x, tz = tz) |>
+      format.POSIXlt(usetz = TRUE)
+  }
+    
+  z$departure_text <- mapply(FUN = fmt_tz, x = z[['departure']], tz = z[['tz']], SIMPLIFY = TRUE)
+  z$arrival_text <- mapply(FUN = fmt_tz, x = z[['arrival']], tz = z[['tz']], SIMPLIFY = TRUE)
   
   z$departure <- mapply(
     FUN = as.POSIXct.default, SIMPLIFY = TRUE,
     #FUN = as.POSIXlt.character,
-    x = z$departure, tz = z$tz
+    x = z[['departure']], tz = z[['tz']]
   )# |> 
   #  vapply(FUN = as.POSIXct.POSIXlt, FUN.VALUE = NA_real_, USE.NAMES = TRUE) # verified correct
 
   z$arrival <- mapply(
     FUN = as.POSIXct.default, SIMPLIFY = TRUE,
-    x = z$arrival, tz = z$tz
+    x = z[['arrival']], tz = z[['tz']]
   )
   
   class(z) <- c('iata', class(z))
@@ -74,7 +80,6 @@ iata.character <- \(x) {
 }
 
 
-#' @importFrom lutz tz_lookup_coords
 #' @importFrom sf st_coordinates
 iata_int <- \(x) {
   
@@ -88,12 +93,6 @@ iata_int <- \(x) {
   if (anyNA(id)) stop('must use IATA code')
   
   z <- airports_ip2location[id, , drop = FALSE]
-  coords <- z |>
-    st_coordinates()
-  z$tz <- tz_lookup_coords(
-    lon = coords[,1L], lat = coords[,2L],
-    method = 'accurate' # too slow for the whole of `airports_ip2location`
-  )
   class(z) <- c('iata', class(z))
   return(z)
   
@@ -235,17 +234,21 @@ plot.iata <- \(x, ...) {
 #' @importFrom sf st_coordinates
 iata_animated_data <- \(x) {
   
-  tm1 <- x[['arrival']] |>
-    as.POSIXlt(tz = 'UTC')
-  tm2 <- x[['departure']] |>
-    as.POSIXlt(tz = 'UTC')
-  tm <- list(tm1, tm2) |>
+  tm <- list(x[['arrival']], x[['departure']]) |>
+    lapply(FUN = as.POSIXlt.POSIXct, tz = 'UTC') |>
     c(list(f = c)) |>
     do.call(what = 'Map', args = ) |>
     do.call(what = 'c', args = _) |>
     na.omit.POSIXlt()
   
   id <- attr(tm, which = 'na.action', exact = TRUE)
+  
+  hovertext <- list(x[['arrival_text']], x[['departure_text']]) |>
+    c(list(f = c)) |>
+    do.call(what = 'Map', args = ) |>
+    unname() |> # friendlier to human eyes
+    do.call(what = 'c', args = _) |>
+    na.omit()
   
   airplane <- c(
     '\U1f6ec', # Airplane Arrival
@@ -263,10 +266,10 @@ iata_animated_data <- \(x) {
   data.frame(
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
-    tm = tm,
+    hovertext = hovertext,
+    tm = tm, # 'POSIXlt' in UTC, for [globe_twilight_animated()]
     time = tm |>
-      as.POSIXlt(tz = 'UTC') |>
-      format(usetz = TRUE)
+      format(usetz = TRUE) # to match [subSolarPoint()], etc.
   )
   
 }
@@ -289,7 +292,13 @@ add_iata_animated <- \(
       x = ~ jitter(lon), y = ~ jitter(lat), 
       text = ~ text, frame = ~ time,
       textfont = list(size = 20),
-      hoverinfo = 'none'
+      hovertext = ~ hovertext,
+      hoverinfo = 'text', 
+      hoverlabel = list(
+        bgcolor = 'white', font = 'royalblue', 
+        bordercolor = 'royalblue'
+        # to match the color of '\U1f6ec' and '\U1f6eb'
+      )
     )
 
 }

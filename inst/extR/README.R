@@ -3,6 +3,8 @@
 
 # Shift+Command+S to source
 
+packageDate('lutz') # 2023-10-17
+
 rm(list = ls(all.names = TRUE))
 
 source('./inst/extR/datahub.R')

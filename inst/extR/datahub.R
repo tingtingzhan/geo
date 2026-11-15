@@ -29,6 +29,11 @@ airports_datahub = 'https://raw.githubusercontent.com/datasets/airport-codes/mas
       iata
     )
     stopifnot(!anyDuplicated(shortnm))
+    tz = lutz::tz_lookup_coords(
+      lon = longitude, lat = latitude,
+      method = 'accurate' # not slow at all!!
+    ) |> 
+      suppressWarnings() # Some points are in areas with more than one time zone defined. These are often disputed areas and should be treated with care.
   }) |>
   sf::st_as_sf(coords = c('longitude', 'latitude'), crs = 4326) 
 dim(airports_datahub) # 4358
