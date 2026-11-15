@@ -28,8 +28,6 @@
 #' @export
 subSolarPoint <- \(time = Sys.time(), ...) {
   
-  # already vectorized!!
-  
   time <- time |>
     as.POSIXlt(tz = 'UTC')
   
@@ -44,7 +42,6 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   # Greenwich Hour Angle / Subsolar Longitude
   # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
   solar_lon <- (12 - hour) * 15
-  # Keep within -180 to 180 degrees
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
   # \CRANpkg{crosstalk} as engine
@@ -149,28 +146,19 @@ lon_seq <- \(sslon, sslat, ...) {
 #' @export
 subLunarPoint <- \(time = Sys.time(), ...) {
   
-  # already vectorized!!
-  
-  # 1. Parse the target timestamp in strict UTC time
   time <- time |>
     as.POSIXct(tz = 'UTC')
   
-  # 2. Extract geocentric Right Ascension and Declination 
-  # Using long = 0, lat = 0 gives us the unprimed Greenwich baseline coordinates
   lunar_data <- moonAngle(t = time, longitude = 0, latitude = 0)
+  # (lon = 0, lat = 0): unprimed Greenwich baseline coords
   
-  # Latitude of the sublunar point matches the declination exactly
   sublunar_lat <- lunar_data$declination
   
-  # 3. Calculate Greenwich Sidereal Time (GST) using the updated standalone function
-  # Note: oce::siderealTime returns time in decimal hours (0 to 24)
-  gst_hours <- siderealTime(time)
-  gst_degrees <- gst_hours * 15 # Convert hours to degrees (360 degrees / 24 hours)
+  # Greenwich Sidereal Time (GST)
+  gst_hours <- siderealTime(time) # time in decimal hours (0 to 24)
+  gst_degrees <- gst_hours / 24 * 360 # hours to degrees
   
-  # 4. Longitude is the Moon's Right Ascension minus Greenwich Sidereal Time
   sublunar_lon <- lunar_data$rightAscension - gst_degrees
-  
-  # Normalize longitude to the standard range of [-180, +180] degrees
   sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
   
   # \CRANpkg{crosstalk} as engine
