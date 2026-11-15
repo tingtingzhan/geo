@@ -16,16 +16,16 @@
 #' @param ... additional parameters, currently of no use
 #' 
 #' @details
-#' The function [globe_twilight()] adds civil, nautical and astronomical twilight, on top of [globe_sunmoon()].
+#' The function [add_twilight()] adds civil, nautical and astronomical twilight, on top of [add_sunmoon()].
 #' 
 #' 
 #' @examples
 #' '2026-04-14 21:30:00' |> # summer
 #'   as.POSIXct() |> 
-#'   globe_twilight(time = _)
+#'   add_twilight(time = _)
 #' '2026-11-14 21:30:00' |> # winter
 #'   as.POSIXct() |> 
-#'   globe_twilight(time = _)
+#'   add_twilight(time = _)
 #' 
 #' @seealso
 #' [twilightPolygon()]
@@ -33,8 +33,8 @@
 #' @name globe
 #' @importFrom plotly add_polygons
 #' @export
-globe_twilight <- \(
-  map = globe_sunmoon(time = time),
+add_twilight <- \(
+  map = add_sunmoon(time = time),
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
   sza = NULL,
@@ -75,23 +75,23 @@ hoverlabel_ <- \(x) {
 
 #' @rdname globe
 #' @details
-#' The function [globe_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [globe_TropicPolar()].
+#' The function [add_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [add_TropicPolar()].
 #' 
 #' @examples
 #' '2026-04-14 21:30:00' |> # summer
 #'   as.POSIXct() |> 
-#'   globe_sunmoon(time = _)
+#'   add_sunmoon(time = _)
 #' '2026-11-14 21:30:00' |> # winter
 #'   as.POSIXct() |> 
-#'   globe_sunmoon(time = _)
+#'   add_sunmoon(time = _)
 #' 
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
 #' @importFrom plotly add_text add_polygons
 #' @export
-globe_sunmoon <- \(
-  map = globe_TropicPolar(),
+add_sunmoon <- \(
+  map = add_TropicPolar(),
   time = Sys.time(), 
   ...
 ) {
@@ -127,15 +127,15 @@ globe_sunmoon <- \(
 
 #' @rdname globe
 #' @details
-#' The function [globe_TropicPolar()] adds the equatorial, the tropics, and the polar circles, on top of [globe_meridian()].
+#' The function [add_TropicPolar()] adds the equatorial, the tropics, and the polar circles, on top of [add_meridian()].
 #' 
 #' @examples
-#' globe_TropicPolar()
+#' add_TropicPolar()
 #' 
 #' @importFrom plotly add_paths
 #' @export
-globe_TropicPolar <- \(
-  map = globe_meridian()
+add_TropicPolar <- \(
+  map = add_meridian()
 ) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L)
@@ -169,14 +169,14 @@ globe_TropicPolar <- \(
 
 #' @rdname globe
 #' @details
-#' The function [globe_meridian()] adds the meridian and antimeridian on top of [globe()].
+#' The function [add_meridian()] adds the meridian and antimeridian on top of [globe()].
 #' 
 #' @examples
-#' globe_meridian()
+#' add_meridian()
 #' 
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
-globe_meridian <- \(
+add_meridian <- \(
   map = globe()
 ) {
   

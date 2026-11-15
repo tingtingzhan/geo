@@ -194,7 +194,7 @@ print.iatalist <- \(x, ...) {
 plot.iatalist <- \(
     x, 
     ..., 
-    map = globe_twilight()
+    map = add_twilight()
 ) {
   
   n <- x |> 
@@ -267,7 +267,7 @@ iata_animated_data <- \(x) {
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
     hovertext = hovertext,
-    tm = tm, # 'POSIXlt' in UTC, for [globe_twilight_animated()]
+    tm = tm, # 'POSIXlt' in UTC, for [add_twilight_animated()]
     time = tm |>
       format(usetz = TRUE) # to match [subSolarPoint()], etc.
   )
@@ -278,7 +278,7 @@ iata_animated_data <- \(x) {
 
 #' @importFrom plotly add_text
 add_iata_animated <- \(
-  map = globe_twilight_animated(time = d[['tm']]),
+  map = add_twilight_animated(time = d[['tm']]),
   x, 
   ...
 ) {
@@ -308,7 +308,7 @@ add_iata_animated <- \(
 #' @importFrom sf st_coordinates
 #' @importFrom scales pal_hue
 add_iata <- \(
-  map = globe_twilight(),
+  map = add_twilight(),
   x,
   col = pal_hue()(n = 1L),
   ...

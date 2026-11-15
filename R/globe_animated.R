@@ -1,24 +1,24 @@
 
 #' @title The Earth with Various Layers, Animated
 #' 
-#' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function [globe_TropicPolar()]
+#' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function [add_TropicPolar()]
 #' 
 #' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant timepoints in the next 24 hours.
 #' 
-#' @param type,sza see the function [globe_twilight()]
+#' @param type,sza see the function [add_twilight()]
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
 #' @note
-#' The function [globe_twilight_animated()] does **not** print twilight polygons, which is compute extensive, for more than six `time` points.
+#' The function [add_twilight_animated()] does **not** print twilight polygons, which is compute extensive, for more than six `time` points.
 #' 
 #' @examples
-#' globe_twilight_animated()
+#' add_twilight_animated()
 #' 
 #' @importFrom plotly add_text add_polygons
 #' @export
-globe_twilight_animated <- \(
-  map = globe_TropicPolar(),
+add_twilight_animated <- \(
+  map = add_TropicPolar(),
   time = Sys.time() + seq(from = 0, to = 60*60*24, length.out = 6L), 
   type = c('civil', 'nautical', 'astronomical'),
   sza,

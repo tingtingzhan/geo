@@ -2,26 +2,26 @@
 % Please edit documentation in R/globe.R
 \name{globe}
 \alias{globe}
-\alias{globe_twilight}
-\alias{globe_sunmoon}
-\alias{globe_TropicPolar}
-\alias{globe_meridian}
+\alias{add_twilight}
+\alias{add_sunmoon}
+\alias{add_TropicPolar}
+\alias{add_meridian}
 \alias{globe_minimal}
 \title{The Earth with Various Layers}
 \usage{
-globe_twilight(
-  map = globe_sunmoon(time = time),
+add_twilight(
+  map = add_sunmoon(time = time),
   time = Sys.time(),
   type = c("civil", "nautical", "astronomical"),
   sza = NULL,
   ...
 )
 
-globe_sunmoon(map = globe_TropicPolar(), time = Sys.time(), ...)
+add_sunmoon(map = add_TropicPolar(), time = Sys.time(), ...)
 
-globe_TropicPolar(map = globe_meridian())
+add_TropicPolar(map = add_meridian())
 
-globe_meridian(map = globe())
+add_meridian(map = globe())
 
 globe()
 
@@ -42,13 +42,13 @@ globe_minimal()
 The Earth with various layers.
 }
 \details{
-The function \code{\link[=globe_twilight]{globe_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=globe_sunmoon]{globe_sunmoon()}}.
+The function \code{\link[=add_twilight]{add_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=add_sunmoon]{add_sunmoon()}}.
 
-The function \code{\link[=globe_sunmoon]{globe_sunmoon()}} adds the subsolar point, the sublunar point and the terminator, on top of \code{\link[=globe_TropicPolar]{globe_TropicPolar()}}.
+The function \code{\link[=add_sunmoon]{add_sunmoon()}} adds the subsolar point, the sublunar point and the terminator, on top of \code{\link[=add_TropicPolar]{add_TropicPolar()}}.
 
-The function \code{\link[=globe_TropicPolar]{globe_TropicPolar()}} adds the equatorial, the tropics, and the polar circles, on top of \code{\link[=globe_meridian]{globe_meridian()}}.
+The function \code{\link[=add_TropicPolar]{add_TropicPolar()}} adds the equatorial, the tropics, and the polar circles, on top of \code{\link[=add_meridian]{add_meridian()}}.
 
-The function \code{\link[=globe_meridian]{globe_meridian()}} adds the meridian and antimeridian on top of \code{\link[=globe]{globe()}}.
+The function \code{\link[=add_meridian]{add_meridian()}} adds the meridian and antimeridian on top of \code{\link[=globe]{globe()}}.
 
 The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, and USA facing the user.
 
@@ -57,21 +57,21 @@ The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum 
 \examples{
 '2026-04-14 21:30:00' |> # summer
   as.POSIXct() |> 
-  globe_twilight(time = _)
+  add_twilight(time = _)
 '2026-11-14 21:30:00' |> # winter
   as.POSIXct() |> 
-  globe_twilight(time = _)
+  add_twilight(time = _)
 
 '2026-04-14 21:30:00' |> # summer
   as.POSIXct() |> 
-  globe_sunmoon(time = _)
+  add_sunmoon(time = _)
 '2026-11-14 21:30:00' |> # winter
   as.POSIXct() |> 
-  globe_sunmoon(time = _)
+  add_sunmoon(time = _)
 
-globe_TropicPolar()
+add_TropicPolar()
 
-globe_meridian()
+add_meridian()
 
 globe()
 
