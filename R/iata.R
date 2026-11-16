@@ -102,14 +102,14 @@ iata_int <- \(x) {
 
 #' @importFrom geosphere distGeo
 #' @importFrom sf st_coordinates
-distGeo_ <- \(sf, nm) {
-  n <- nrow(sf)
+distGeo_ <- \(x, nm) {
+  n <- nrow(x)
   sq1 <- seq_len(n-1L)
   sq2 <- seq_len(n)[-1L]
-  coords <- sf |>
+  coords <- x |>
     st_coordinates()
   ret <- distGeo(p1 = coords[sq1,], p2 = coords[sq2,]) # in meters
-  nm <- eval(nm[[2L]], envir = sf) # `nm` must be one-sided formula
+  nm <- eval(nm[[2L]], envir = x) # `nm` must be one-sided formula
   names(ret) <- sprintf(fmt = '%s \u2708 %s', nm[sq1], nm[sq2])
   class(ret) <- 'distGeo'
   return(ret)
@@ -119,15 +119,16 @@ distGeo_ <- \(sf, nm) {
 #' @export
 format.distGeo <- \(x, ...) {
   n <- length(x) + 1L
+  x <- x / 1609.34 # in miles
   z <- character(length = n)
-  z[1L] <- sprintf(fmt = '%s: %.0f miles', names(x[1L]), x[1L]/1609.34)
-  z[n] <- sprintf(fmt = '%s: %.0f miles', names(x[n-1L]), x[n-1L]/1609.34)
+  z[1L] <- sprintf(fmt = '%s: %.0f miles', names(x[1L]), x[1L])
+  z[n] <- sprintf(fmt = '%s: %.0f miles', names(x[n-1L]), x[n-1L])
   if (n > 2L) {
     for (i in 2:(n-1L)) {
       z[i] <- sprintf(
         fmt = '%s: %.0f miles\n%s: %.0f miles', 
-        names(x[i-1L]), x[i-1L]/1609.34,
-        names(x[i]), x[i]/1609.34
+        names(x[i-1L]), x[i-1L],
+        names(x[i]), x[i]
       )
     }
   }
@@ -136,19 +137,26 @@ format.distGeo <- \(x, ...) {
 
 
 
-
 #' @export
-print.iata <- \(x, ...) {
-  
+format.iata <- \(x, fmt = '%.1f', ...) {
   m_ <- x |>
     distGeo_(nm = ~ iata)
   ret = cbind(
     Miles = m_ / 1609.34, # ?grid::convertUnit does not have meter/miles conversion
-    Kilometer = m_ / 1e3#,
-    #Hour = (m_ / 1609.34) / 550 # average cruising speed, mile per hour
+    Kilometer = m_ / 1e3
   )
-  ret[] <- sprintf(fmt = '%.1f', ret)
-  print(ret, quote = FALSE, right = TRUE)
+  ret[] <- sprintf(fmt = fmt, ret)
+  ret |> 
+    noquote(right = TRUE)
+}
+
+
+#' @export
+print.iata <- \(x, ...) {
+  
+  x |>
+    format.iata() |>
+    print()
   cat('\n')
   
   if (all(c('departure', 'arrival') %in% names(x))) {
@@ -157,7 +165,7 @@ print.iata <- \(x, ...) {
       print()
   }
   
-  return(invisible(sum(m_ / 1609.34)))
+  return(invisible())
   
 }
 
@@ -172,7 +180,15 @@ print.iata <- \(x, ...) {
 print.iatalist <- \(x, ...) {
   
   x |>
-    vapply(FUN = print.iata, ..., FUN.VALUE = NA_real_) |>
+    lapply(FUN = print.iata, ...)
+  
+  x |>
+    vapply(FUN = \(i) {
+      z <- i |>
+        distGeo_(nm = ~ iata) |>
+        sum()
+      z / 1609.34
+    }, FUN.VALUE = NA_real_) |>
     sum() |> 
     sprintf(fmt = 'Total Mileage: %.1f') |> 
     cat()
@@ -194,16 +210,12 @@ print.iatalist <- \(x, ...) {
 plot.iatalist <- \(
     x, 
     ..., 
+    col = pal_hue()(n = length(x)),
     map = add_twilight()
 ) {
   
-  n <- x |> 
-    length()
-  col <- n |> 
-    pal_hue()()
-  
   p <- map
-  for (i in seq_len(n)) {
+  for (i in seq_along(x)) {
     p <- plot.iata(x = x[[i]], map = p, col = col[i], ...)
   }
   return(p)
@@ -220,11 +232,11 @@ plot.iatalist <- \(
 #' @export
 plot.iata <- \(x, ...) {
   
-  if (all(c('departure', 'arrival') %notin% names(x))) {
-    return(add_iata(x = x, ...))
+  if (all(c('departure', 'arrival') %in% names(x))) {
+    return(add_iata_animated(x = x, ...))
   }
   
-  add_iata_animated(x = x, ...)
+  return(add_iata(x = x, ...))
   
 }
 
@@ -267,9 +279,9 @@ iata_animated_data <- \(x) {
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
     hovertext = hovertext,
-    tm = tm, # 'POSIXlt' in UTC, for [add_twilight_animated()]
+    tm = tm, # 'POSIXlt' in UTC, to be aligned with [add_twilight_animated()]
     time = tm |>
-      format(usetz = TRUE) # to match [subSolarPoint()], etc.
+      format(usetz = TRUE) # to be aligned with [subSolarPoint()], etc.
   )
   
 }
@@ -324,7 +336,8 @@ add_iata <- \(
   sq1 <- seq_len(n-1L)
   sq2 <- seq_len(n)[-1L]
   
-  marker_text <- distGeo_(sf = x, nm = ~ iata) |>
+  marker_text <- x |>
+    distGeo_(nm = ~ iata) |>
     format.distGeo() |>
     sprintf(fmt = '%s\n%s', x$shortnm, . = _)
   
@@ -332,16 +345,15 @@ add_iata <- \(
     add_segments(
       x = lon[sq1], xend = lon[sq2],
       y = lat[sq1], yend = lat[sq2],
-      line = list(color = col, width = 2)
+      line = list(color = col)
     ) |> 
     add_markers(
       x = lon, y = lat, text = marker_text,
       marker = list(color = col),
       hoverinfo = 'text', 
       hoverlabel = list(
-        #font = list(color = 'white'), # also not bad
-        bgcolor = 'white', font = col, # prettier
-        align = 'center', # seems not working consistently..
+        align = 'center',
+        bgcolor = 'white', font = col,
         bordercolor = col # default 'black' 
       )
     )
