@@ -54,21 +54,26 @@ add_twilight <- \(
 }
 
 
-# by Gemini!
-js_userLoc <- \() "
-    function(el, x) {
-      navigator.geolocation.getCurrentPosition(function(pos) {
-        Plotly.addTraces(el, {
-          type: 'scattergeo',
-          mode: 'markers',
-          lat: [pos.coords.latitude],
-          lon: [pos.coords.longitude],
-          name: 'You'
-        });
-      });
-    }
-  "
 
+#js_userLoc <- \() "
+#    function(el, x) {
+#      navigator.geolocation.getCurrentPosition(function(pos) {
+#        Plotly.addTraces(el, {
+#          type: 'scattergeo',
+#          mode: 'markers',
+#          lat: [pos.coords.latitude],
+#          lon: [pos.coords.longitude],
+#          name: 'You'
+#        });
+#      });
+#    }
+#  "
+
+if (FALSE) {
+  system.file('extjs', 'userLoc.js', package = 'geo') |>
+    readLines() |>
+    paste(collapse = '\n')
+}
 
 
 
@@ -248,7 +253,12 @@ globe <- \() {
         )
       )
     ) |>
-    onRender(jsCode = js_userLoc())
+    #onRender(jsCode = js_userLoc())
+    onRender(
+      jsCode = system.file('extjs', 'userLoc.js', package = 'geo') |> # by Gemini!
+        readLines() |>
+        paste(collapse = '\n')
+    )
 }
 
 
@@ -279,7 +289,12 @@ globe_minimal <- \() {
         )
       )
     ) |>
-    onRender(jsCode = js_userLoc())
+    #onRender(jsCode = js_userLoc())
+    onRender(
+      jsCode = system.file('extjs', 'userLoc.js', package = 'geo') |> # by Gemini!
+        readLines() |>
+        paste(collapse = '\n')
+    )
 }
 
 
