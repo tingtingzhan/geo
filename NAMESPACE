@@ -33,6 +33,7 @@ importFrom(geosphere,
   dist2gc,
   distGeo
 )
+importFrom(htmlwidgets,onRender)
 importFrom(lunar,lunar.phase)
 importFrom(oce,
   moonAngle,

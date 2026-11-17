@@ -54,6 +54,20 @@ add_twilight <- \(
 }
 
 
+# by Gemini!
+js_userLoc <- \() "
+    function(el, x) {
+      navigator.geolocation.getCurrentPosition(function(pos) {
+        Plotly.addTraces(el, {
+          type: 'scattergeo',
+          mode: 'markers',
+          lat: [pos.coords.latitude],
+          lon: [pos.coords.longitude],
+          name: 'You'
+        });
+      });
+    }
+  "
 
 
 
@@ -192,6 +206,7 @@ add_meridian <- \(
       x = 180, y = lat, 
       line = path_line, hoverinfo = 'none'
     )
+  
 }
 
 
@@ -204,6 +219,7 @@ add_meridian <- \(
 #' @examples
 #' globe()
 #' 
+# @importFrom htmlwidgets onRender
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
 globe <- \() {
@@ -231,7 +247,8 @@ globe <- \() {
           )
         )
       )
-    )
+    ) |>
+    onRender(jsCode = js_userLoc())
 }
 
 
@@ -249,6 +266,7 @@ globe <- \() {
 #' @references
 #' \url{https://plotly.com/r/reference/layout/geo/}
 #' 
+#' @importFrom htmlwidgets onRender
 #' @importFrom plotly plot_geo layout
 #' @export
 globe_minimal <- \() {
@@ -260,7 +278,8 @@ globe_minimal <- \() {
           #type = 'equirectangular'
         )
       )
-    )
+    ) |>
+    onRender(jsCode = js_userLoc())
 }
 
 
