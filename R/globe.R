@@ -7,7 +7,7 @@
 #' 
 #' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}
 #' 
-#' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()]
+#' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()], etc.
 #' 
 #' @param type \link[base]{character} \link[base]{vector}, see the function [twilightPolygon()]
 #' 
@@ -51,28 +51,6 @@ add_twilight <- \(
       hoverinfo = 'none'
     )
   
-}
-
-
-
-#js_userLoc <- \() "
-#    function(el, x) {
-#      navigator.geolocation.getCurrentPosition(function(pos) {
-#        Plotly.addTraces(el, {
-#          type: 'scattergeo',
-#          mode: 'markers',
-#          lat: [pos.coords.latitude],
-#          lon: [pos.coords.longitude],
-#          name: 'You'
-#        });
-#      });
-#    }
-#  "
-
-if (FALSE) {
-  system.file('extjs', 'userLoc.js', package = 'geo') |>
-    readLines() |>
-    paste(collapse = '\n')
 }
 
 
@@ -219,16 +197,17 @@ add_meridian <- \(
 
 #' @rdname globe
 #' @details
-#' The function [globe()] is the default earth, with `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user.
+#' The function [globe()] is the default earth, that adds `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user, on top of [globe_minimal()].
 #' 
 #' @examples
 #' globe()
 #' 
-# @importFrom htmlwidgets onRender
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
-globe <- \() {
-  plot_geo() |>
+globe <- \(
+  map = globe_minimal()
+) {
+  map |>
     layout(
       showlegend = FALSE,
       geo = list( # https://plotly.com/r/reference/layout/geo/
@@ -252,12 +231,6 @@ globe <- \() {
           )
         )
       )
-    ) |>
-    #onRender(jsCode = js_userLoc())
-    onRender(
-      jsCode = system.file('extjs', 'userLoc.js', package = 'geo') |> # by Gemini!
-        readLines() |>
-        paste(collapse = '\n')
     )
 }
 
@@ -268,7 +241,12 @@ globe <- \() {
 
 #' @rdname globe
 #' @details
-#' The function [globe_minimal()] contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an `'orthographic'` projection).
+#' The function [globe_minimal()] contains the minimum code to create the earth, calling only 
+#' \itemize{
+#' \item{the function \link[plotly]{plot_geo} with an `'orthographic'` projection;}
+#' \item{the function \link[htmlwidgets]{onRender} to obtain user coordinates from the browser.}
+#' }
+#' 
 #' 
 #' @examples
 #' globe_minimal()
@@ -289,7 +267,6 @@ globe_minimal <- \() {
         )
       )
     ) |>
-    #onRender(jsCode = js_userLoc())
     onRender(
       jsCode = system.file('extjs', 'userLoc.js', package = 'geo') |> # by Gemini!
         readLines() |>

@@ -23,14 +23,14 @@ add_TropicPolar(map = add_meridian())
 
 add_meridian(map = globe())
 
-globe()
+globe(map = globe_minimal())
 
 globe_minimal()
 }
 \arguments{
 \item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}}
 
-\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}}
+\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}, etc.}
 
 \item{type}{\link[base]{character} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
 
@@ -50,9 +50,13 @@ The function \code{\link[=add_TropicPolar]{add_TropicPolar()}} adds the equatori
 
 The function \code{\link[=add_meridian]{add_meridian()}} adds the meridian and antimeridian on top of \code{\link[=globe]{globe()}}.
 
-The function \code{\link[=globe]{globe()}} is the default earth, with \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, and USA facing the user.
+The function \code{\link[=globe]{globe()}} is the default earth, that adds \code{land}, \code{ocean}, \code{lakes}, \code{rivers}, \code{countries}, longitude/latitude axes, and USA facing the user, on top of \code{\link[=globe_minimal]{globe_minimal()}}.
 
-The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth (calling only the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection).
+The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum code to create the earth, calling only
+\itemize{
+\item{the function \link[plotly]{plot_geo} with an \code{'orthographic'} projection;}
+\item{the function \link[htmlwidgets]{onRender} to obtain user coordinates from the browser.}
+}
 }
 \examples{
 '2026-04-14 21:30:00' |> # summer
