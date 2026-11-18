@@ -18,7 +18,6 @@
 #' The function [subSolarPoint()] returns a \link[base]{data.frame}.
 #' 
 #' @references
-#' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
 #' @examples
@@ -91,11 +90,11 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
   
-  lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
+  ha <- hour_angle_seq(sslat = sslat, length.out = n)
   
   z <- cbind(
-    lon = lon,
-    lat = atan(-cos(lon - sslon) / tan(sslat))
+    lon = ((ha + sslon + pi) %% (2*pi)) - pi,
+    lat = atan(-cos(ha) / tan(sslat))
   )  / pi * 180
   
   ret <- rbind(z, z[1L, ]) |> # to close the polygon
@@ -108,20 +107,22 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 }
 
 
-lon_seq <- \(sslon, sslat, ...) {
+
+
+hour_angle_seq <- \(sslat, ...) {
   
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  lon <- if (sslat > 0) {
-    # in summer 
-    seq(from = sslon, to = sslon + 2*pi, ...)
-  } else {
-    # in winter
-    seq(from = sslon, to = sslon - 2*pi, ...)
-  }
   
-  # Normalize longitude to (-pi, pi)
-  ((lon + pi) %% (2*pi)) - pi
-  
+  seq(
+    from = 0, 
+    to = ifelse(
+      test = sslat > 0,
+      yes = 2*pi, # summer of Northern Hemisphere
+      no = - 2*pi # winter of Northern Hemisphere
+    ) , 
+    ...
+  )
+
 }
 
 
@@ -252,19 +253,22 @@ twilightPolygon <- \(
     subSolarPoint()
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
+  sin_sslat <- sin(sslat) # constant!
+  cos_sslat <- cos(sslat)
   
   # twilight is **not** great circle!!
-  lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
-  
+  ha <- hour_angle_seq(sslat = sslat, length.out = n)
+
   unr_fn <- \(i) {
     uniroot.all( # already super fast!!!
-      f = \(x, lon) {
-        (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)
+      f = \(x, ha) {
+        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos(sza)  
+      # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
         # does **not** have analytical solution
         # is not monotone, i.e., can**not** use ?stats::uniroot
         # may have multiple local minimum, i.e., can**not** use ?base::optimize
       }, 
-      lon = i,
+      ha = i,
       lower = -pi/2, upper = pi/2
     )
   }
@@ -280,12 +284,12 @@ twilightPolygon <- \(
     # end of multi-core
     
     # not using multi-core is actually faster
-    z <- lon |>
+    z <- ha |>
       lapply(FUN = unr_fn)
     
   } else {
     # does improve speed in RStudio!
-    z <- lon |>
+    z <- ha |>
       mclapply(FUN = unr_fn, mc.cores = mc.cores)
   }
   
@@ -298,7 +302,7 @@ twilightPolygon <- \(
     # do nothing!!
   } else { # when (sslat < 0)
     id <- (nz > 0L)
-    lon <- c(lon[id], rev.default(lon[id]))
+    ha <- c(ha[id], rev.default(ha[id]))
     lat <- c(
       z[id] |> 
         vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
@@ -309,12 +313,15 @@ twilightPolygon <- \(
     if (sslat > 0) {
       # summer time
       # hah! tzh does not know why!!!
-      lon <- rev.default(lon)
+      ha <- rev.default(ha)
       lat <- rev.default(lat)
     }
   }
   
-  z <- cbind(lon, lat) / pi * 180
+  z <- cbind(
+    lon = ((ha + sslon + pi) %% (2*pi)) - pi,
+    lat = lat
+  ) / pi * 180
   
   ret <- rbind(z, z[1L, ]) |> # to close the polygon
     as.data.frame.matrix()
