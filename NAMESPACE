@@ -4,7 +4,6 @@ S3method(format,distGeo)
 S3method(format,iata)
 S3method(iata,character)
 S3method(iata,data.frame)
-S3method(moving_dist2gc,iata)
 S3method(moving_dist2gc,iatalist)
 S3method(moving_dist2gc,matrix)
 S3method(moving_dist2gc,sf)
@@ -57,7 +56,6 @@ importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
   "st_geometry<-",
-  st_as_sf,
   st_coordinates,
   st_geometry,
   st_set_geometry,

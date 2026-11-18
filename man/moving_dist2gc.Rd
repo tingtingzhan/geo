@@ -2,15 +2,12 @@
 % Please edit documentation in R/moving_dist2gc.R
 \name{moving_dist2gc}
 \alias{moving_dist2gc}
-\alias{moving_dist2gc.iata}
 \alias{moving_dist2gc.iatalist}
 \alias{moving_dist2gc.sf}
 \alias{moving_dist2gc.matrix}
 \title{Moving Cross Track Distance}
 \usage{
 moving_dist2gc(x, ...)
-
-\method{moving_dist2gc}{iata}(x, ...)
 
 \method{moving_dist2gc}{iatalist}(x, ...)
 

@@ -11,19 +11,12 @@
 moving_dist2gc <- \(x, ...) UseMethod(generic = 'moving_dist2gc')
 
 
-#' @rdname moving_dist2gc
-#' @importFrom sf st_as_sf
-#' @export
-moving_dist2gc.iata <- \(x, ...) {
-  x |>
-    st_as_sf() |>
-    moving_dist2gc.sf(...)
-}
 
 #' @rdname moving_dist2gc
 #' @export
 moving_dist2gc.iatalist <- \(x, ...) {
-  lapply(x, FUN = moving_dist2gc.iata, ...)
+  x |>
+    lapply(FUN = moving_dist2gc, ...) # [moving_dist2gc.sf()]
 }
 
 
