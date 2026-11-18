@@ -129,13 +129,13 @@ add_sunmoon <- \(
 #' @examples
 #' add_TropicPolar()
 #' 
-#' @importFrom plotly add_paths
+#' @importFrom plotly add_paths toRGB
 #' @export
 add_TropicPolar <- \(
   map = add_meridian()
 ) {
   
-  lon <- seq(from = -180, to = 180, length.out = 501L)
+  lon <- seq(from = -180, to = 180, length.out = 501L) # not great circle!!
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
   
   map |>
@@ -202,7 +202,7 @@ add_meridian <- \(
 #' @examples
 #' globe()
 #' 
-#' @importFrom plotly plot_geo add_paths toRGB layout
+#' @importFrom plotly plot_geo add_paths layout
 #' @export
 globe <- \(
   map = globe_minimal()
