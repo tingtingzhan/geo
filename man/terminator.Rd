@@ -22,7 +22,7 @@ twilightPolygon(
   type = c("civil", "nautical", "astronomical"),
   sza = NULL,
   n = 1001L,
-  mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
+  mc.cores = detectCores(),
   ...
 )
 }

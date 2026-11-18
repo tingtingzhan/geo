@@ -11,3 +11,10 @@
 
 
 
+.onLoad <- \(libname, pkgname) {
+  
+  if (.Platform$OS.type != 'unix') {
+    stop('Package \'geo\' is tested on Unix-like systems only!')
+  }
+  
+}

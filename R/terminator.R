@@ -234,7 +234,7 @@ twilightPolygon <- \(
   type = c('civil', 'nautical', 'astronomical'),
   sza = NULL,
   n = 1001L,
-  mc.cores = switch(.Platform$OS.type, unix = detectCores(), 1L),
+  mc.cores = detectCores(),
   ...
 ) {
   
@@ -277,8 +277,7 @@ twilightPolygon <- \(
       sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
   }
 
-  if ((.Platform$OS.type == 'windows') || 
-      (Sys.getenv('POSITRON') == '1')) {
+  if (Sys.getenv('POSITRON') == '1') {
     
     # multi-core: POSITRON
     #cl <- makeCluster(mc.cores, type = 'PSOCK')
