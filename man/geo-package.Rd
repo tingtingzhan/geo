@@ -8,12 +8,8 @@
 \description{
 Earth rendered by 'plotly::plot_geo()'.
 }
-\references{
-Source of internal datasets are,
-\describe{
-\item{\code{airports_ip2location}}{\url{https://github.com/ip2location/ip2location-iata-icao}}
-\item{\code{airports_datahub}}{\url{https://github.com/datasets/airport-codes}}
-}
+\note{
+This package is tested on Unix-like systems only!
 }
 \author{
 \strong{Maintainer}: Tingting Zhan \email{tingtingzhan@gmail.com}

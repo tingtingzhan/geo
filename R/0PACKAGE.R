@@ -1,11 +1,7 @@
 
 
-#' @references
-#' Source of internal datasets are, 
-#' \describe{
-#' \item{`airports_ip2location`}{\url{https://github.com/ip2location/ip2location-iata-icao}}
-#' \item{`airports_datahub`}{\url{https://github.com/datasets/airport-codes}}
-#' }
+#' @note
+#' This package is tested on Unix-like systems only!
 #' 
 '_PACKAGE'
 
@@ -14,7 +10,10 @@
 .onLoad <- \(libname, pkgname) {
   
   if (.Platform$OS.type != 'unix') {
-    stop('Package \'geo\' is tested on Unix-like systems only!')
+    pkgname |>
+      sQuote() |>
+      sprintf(fmt = 'Package %s is tested on Unix-like systems only!') |>
+      stop()
   }
   
 }
