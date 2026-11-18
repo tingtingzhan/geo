@@ -95,16 +95,13 @@ add_sunmoon <- \(
   
   force(time)
   
-  subsolarlunar <- rbind.data.frame(
-    subSolarPoint(time = time),
-    subLunarPoint(time = time)
-  )
+  subsolar <- subSolarPoint(time = time)
+  sublunar <- subLunarPoint(time = time)
   
   map |>
     add_text(
-      data = subsolarlunar,
+      data = rbind.data.frame(subsolar, sublunar),
       x = ~ lon, y = ~ lat, text = ~ text,
-      textfont = list(size = 20),
       hovertemplate = ~ hovertemplate_(label),
       hoverlabel = ~ hoverlabel_(color)
     ) |>

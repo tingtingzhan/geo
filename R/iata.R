@@ -45,8 +45,10 @@ iata.data.frame <- \(x) {
       format.POSIXlt(usetz = TRUE)
   }
     
-  z$departure_text <- mapply(FUN = fmt_tz, x = z[['departure']], tz = z[['tz']], SIMPLIFY = TRUE)
-  z$arrival_text <- mapply(FUN = fmt_tz, x = z[['arrival']], tz = z[['tz']], SIMPLIFY = TRUE)
+  z$departure_text <- mapply(FUN = fmt_tz, x = z[['departure']], tz = z[['tz']], SIMPLIFY = TRUE) |>
+    sprintf(fmt = 'Departure %s')
+  z$arrival_text <- mapply(FUN = fmt_tz, x = z[['arrival']], tz = z[['tz']], SIMPLIFY = TRUE) |>
+    sprintf(fmt = 'Arrival %s')
   
   z$departure <- mapply(
     FUN = as.POSIXct.default, SIMPLIFY = TRUE,
@@ -259,8 +261,8 @@ iata_animated_data <- \(x) {
     c(list(f = c)) |>
     do.call(what = 'Map', args = ) |>
     unname() |> # friendlier to human eyes
-    do.call(what = 'c', args = _) |>
-    na.omit()
+    do.call(what = 'c', args = _)# |>
+    #na.omit()
   
   airplane <- c(
     '\U1f6ec', # Airplane Arrival
@@ -278,7 +280,7 @@ iata_animated_data <- \(x) {
   data.frame(
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
-    hovertext = hovertext,
+    hovertext = hovertext[-id],
     tm = tm, # 'POSIXlt' in UTC, to be aligned with [add_twilight_animated()]
     time = tm |>
       format(usetz = TRUE) # to be aligned with [subSolarPoint()], etc.
@@ -303,7 +305,6 @@ add_iata_animated <- \(
       data = d,
       x = ~ jitter(lon), y = ~ jitter(lat), 
       text = ~ text, frame = ~ time,
-      textfont = list(size = 20),
       hovertext = ~ hovertext,
       hoverinfo = 'text', 
       hoverlabel = list(

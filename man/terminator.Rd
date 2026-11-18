@@ -44,15 +44,15 @@ twilightPolygon(
 \item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
 \value{
-The function \code{\link[=subSolarPoint]{subSolarPoint()}} returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+The function \code{\link[=subSolarPoint]{subSolarPoint()}} returns a \link[base]{data.frame}.
 
-The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} returns a \link[base]{data.frame}.
 
-The function \code{\link[=subLunarPoint]{subLunarPoint()}} returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+The function \code{\link[=subLunarPoint]{subLunarPoint()}} returns a \link[base]{data.frame}.
 
 The function \code{\link[=moonEmoji]{moonEmoji()}} returns a \link[base]{character} scalar or \link[base]{vector}.
 
-The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[base]{data.frame}.
 }
 \description{
 To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
@@ -82,7 +82,7 @@ subLunarPoint()
 
 moonEmoji()
 
-twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
+twilightPolygon(sza = (90+12)/180*pi, n = 201L)
 
 }
 \references{

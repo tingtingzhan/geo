@@ -15,7 +15,7 @@
 #' The function [subSolarPoint()] finds the latitude and longitude of the subsolar point. 
 #' 
 #' @returns 
-#' The function [subSolarPoint()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+#' The function [subSolarPoint()] returns a \link[base]{data.frame}.
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
@@ -44,7 +44,6 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   solar_lon <- (12 - hour) * 15
   solar_lon <- ((solar_lon + 180) %% 360) - 180
   
-  # \CRANpkg{crosstalk} as engine
   return(data.frame(
     lon = solar_lon,
     lat = declination,
@@ -72,7 +71,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' The function [terminatorPolygon()] finds the latitude and longitude of the points on the day-night terminator.
 #' 
 #' @returns 
-#' The function [terminatorPolygon()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+#' The function [terminatorPolygon()] returns a \link[base]{data.frame}.
 #' 
 #' 
 #' @references
@@ -89,8 +88,8 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   ss <- time |>
     subSolarPoint()
-  sslon <- ss$lon * pi / 180
-  sslat <- ss$lat * pi / 180
+  sslon <- ss$lon/180*pi
+  sslat <- ss$lat/180*pi
   
   lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
   
@@ -134,7 +133,7 @@ lon_seq <- \(sslon, sslat, ...) {
 #' The function [subLunarPoint()] finds the latitude and longitude of the sublunar point. 
 #' 
 #' @returns 
-#' The function [subLunarPoint()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+#' The function [subLunarPoint()] returns a \link[base]{data.frame}.
 #' 
 #' @references
 #' \url{https://www.timeanddate.com/worldclock/sunearth.html}
@@ -161,7 +160,6 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   sublunar_lon <- lunar_data$rightAscension - gst_degrees
   sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
   
-  # \CRANpkg{crosstalk} as engine
   return(data.frame(
     lon = sublunar_lon,
     lat = sublunar_lat,
@@ -218,13 +216,13 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' }
 #' 
 #' @returns
-#' The function [twilightPolygon()] returns a \link[base]{data.frame} (may be converted to \link[crosstalk]{SharedData}).
+#' The function [twilightPolygon()] returns a \link[base]{data.frame}.
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Twilight}
 #' 
 #' @examples
-#' twilightPolygon(sza = (90+12) * pi / 180, n = 201L)
+#' twilightPolygon(sza = (90+12)/180*pi, n = 201L)
 #' 
 #' @importFrom rootSolve uniroot.all
 #' @importFrom parallel mclapply detectCores 
@@ -252,22 +250,21 @@ twilightPolygon <- \(
   
   ss <- time |>
     subSolarPoint()
-  sslon <- ss$lon * pi / 180
-  sslat <- ss$lat * pi / 180
+  sslon <- ss$lon/180*pi
+  sslat <- ss$lat/180*pi
   
   # twilight is **not** great circle!!
   lon <- lon_seq(sslon = sslon, sslat = sslat, length.out = n)
   
-  fn <- \(x, lon) {
-    (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)
-  } 
-  # `fn` does not have analytical solution
-  # `fn` is not monotone, i.e., **not** ?stats::uniroot
-  # `fn` may have multiple local minimum, i.e., **not** ?base::optimize
-  
   unr_fn <- \(i) {
     uniroot.all( # already super fast!!!
-      f = fn, lon = i,
+      f = \(x, lon) {
+        (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(lon - sslon)) - cos(sza)
+        # does **not** have analytical solution
+        # is not monotone, i.e., can**not** use ?stats::uniroot
+        # may have multiple local minimum, i.e., can**not** use ?base::optimize
+      }, 
+      lon = i,
       lower = -pi/2, upper = pi/2
     )
   }
