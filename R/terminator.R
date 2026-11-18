@@ -253,24 +253,28 @@ twilightPolygon <- \(
     subSolarPoint()
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
-  sin_sslat <- sin(sslat) # constant!
+  
+  # constants!
+  sin_sslat <- sin(sslat)
   cos_sslat <- cos(sslat)
+  cos_sza <- cos(sza)
   
   # twilight is **not** great circle!!
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
 
   unr_fn <- \(i) {
-    uniroot.all( # already super fast!!!
+    uniroot.all( # look inside!
       f = \(x, ha) {
-        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos(sza)  
-      # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
+        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos_sza  
+        # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
         # does **not** have analytical solution
-        # is not monotone, i.e., can**not** use ?stats::uniroot
-        # may have multiple local minimum, i.e., can**not** use ?base::optimize
+        # is not monotone, i.e., can **not** use ?stats::uniroot
+        # may have multiple local minimum, i.e., can **not** use ?base::optimize
       }, 
       ha = i,
       lower = -pi/2, upper = pi/2
-    )
+    ) |>
+      sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
   }
 
   if ((.Platform$OS.type == 'windows') || 
