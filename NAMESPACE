@@ -23,7 +23,6 @@ export(globe_minimal)
 export(iata)
 export(moonEmoji)
 export(moving_dist2gc)
-export(st_transform_all)
 export(subLunarPoint)
 export(subSolarPoint)
 export(terminatorPolygon)
@@ -55,10 +54,7 @@ importFrom(plotly,
 importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
-  "st_geometry<-",
   st_coordinates,
-  st_geometry,
-  st_set_geometry,
-  st_transform
+  st_geometry
 )
 importFrom(stats,na.omit)
