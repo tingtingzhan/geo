@@ -77,7 +77,7 @@ iata.character <- \(x) {
     unlist(use.names = FALSE) |> 
     strsplit(split = '-', fixed = TRUE) |>
     lapply(FUN = iata_int)
-  class(ret) <- 'iatalist'
+  class(ret) <- c('iatalist', 'listof', 'list')
   return(ret)
 }
 

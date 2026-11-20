@@ -2,14 +2,14 @@
 % Please edit documentation in R/moving_dist2gc.R
 \name{moving_dist2gc}
 \alias{moving_dist2gc}
-\alias{moving_dist2gc.iatalist}
+\alias{moving_dist2gc.listof}
 \alias{moving_dist2gc.sf}
 \alias{moving_dist2gc.matrix}
 \title{Moving Cross Track Distance}
 \usage{
 moving_dist2gc(x, ...)
 
-\method{moving_dist2gc}{iatalist}(x, ...)
+\method{moving_dist2gc}{listof}(x, ...)
 
 \method{moving_dist2gc}{sf}(x, ...)
 
@@ -22,4 +22,12 @@ moving_dist2gc(x, ...)
 }
 \description{
 Moving Cross Track Distance
+}
+\examples{
+iata('NRT-HNL-YVR')[[1L]] |>
+ moving_dist2gc()
+
+iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM') |>
+ lapply(FUN = moving_dist2gc)
+
 }

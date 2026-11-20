@@ -6,6 +6,13 @@
 #' 
 #' @param ... additional parameters of the function \link[geosphere]{dist2gc}
 #' 
+#' @examples
+#' iata('NRT-HNL-YVR')[[1L]] |>
+#'  moving_dist2gc()
+#' 
+#' iata('CTU-PEK-ICN-JFK, EWR-IAH-LIM') |>
+#'  lapply(FUN = moving_dist2gc)
+#' 
 #' @name moving_dist2gc
 #' @export
 moving_dist2gc <- \(x, ...) UseMethod(generic = 'moving_dist2gc')
@@ -14,7 +21,7 @@ moving_dist2gc <- \(x, ...) UseMethod(generic = 'moving_dist2gc')
 
 #' @rdname moving_dist2gc
 #' @export
-moving_dist2gc.iatalist <- \(x, ...) {
+moving_dist2gc.listof <- \(x, ...) {
   x |>
     lapply(FUN = moving_dist2gc, ...) # [moving_dist2gc.sf()]
 }
