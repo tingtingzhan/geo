@@ -58,30 +58,6 @@ The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum 
 \item{the function \link[htmlwidgets]{onRender} to obtain user coordinates from the browser.}
 }
 }
-\examples{
-'2026-04-14 21:30:00' |> # summer
-  as.POSIXct() |> 
-  add_twilight(time = _)
-'2026-11-14 21:30:00' |> # winter
-  as.POSIXct() |> 
-  add_twilight(time = _)
-
-'2026-04-14 21:30:00' |> # summer
-  as.POSIXct() |> 
-  add_sunmoon(time = _)
-'2026-11-14 21:30:00' |> # winter
-  as.POSIXct() |> 
-  add_sunmoon(time = _)
-
-add_TropicPolar()
-
-add_meridian()
-
-globe()
-
-globe_minimal()
-
-}
 \references{
 \url{https://plotly.com/r/reference/layout/geo/}
 }

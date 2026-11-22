@@ -73,18 +73,6 @@ The function \code{\link[=twilightPolygon]{twilightPolygon()}} finds the latitud
 \item{\href{https://en.wikipedia.org/wiki/Twilight#Astronomical_twilight}{Astronomical twilight}}{when the solar zenith angle \eqn{\theta_z \in (\frac{90+12}{180}\pi, \frac{90+18}{180}\pi)}, \emph{the faintest stars detectable by the naked eye (those of approximately the sixth magnitude) will become visible in the evening at astronomical dusk, and become invisible at astronomical dawn}}
 }
 }
-\examples{
-subSolarPoint()
-
-terminatorPolygon()
-
-subLunarPoint()
-
-moonEmoji()
-
-twilightPolygon(sza = (90+12)/180*pi, n = 201L)
-
-}
 \references{
 \url{https://en.wikipedia.org/wiki/Subsolar_point}
 

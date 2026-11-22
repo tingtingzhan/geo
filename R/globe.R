@@ -18,15 +18,6 @@
 #' @details
 #' The function [add_twilight()] adds civil, nautical and astronomical twilight, on top of [add_sunmoon()].
 #' 
-#' 
-#' @examples
-#' '2026-04-14 21:30:00' |> # summer
-#'   as.POSIXct() |> 
-#'   add_twilight(time = _)
-#' '2026-11-14 21:30:00' |> # winter
-#'   as.POSIXct() |> 
-#'   add_twilight(time = _)
-#' 
 #' @seealso
 #' [twilightPolygon()]
 #' 
@@ -74,14 +65,6 @@ hoverlabel_ <- \(x) {
 #' @details
 #' The function [add_sunmoon()] adds the subsolar point, the sublunar point and the terminator, on top of [add_TropicPolar()].
 #' 
-#' @examples
-#' '2026-04-14 21:30:00' |> # summer
-#'   as.POSIXct() |> 
-#'   add_sunmoon(time = _)
-#' '2026-11-14 21:30:00' |> # winter
-#'   as.POSIXct() |> 
-#'   add_sunmoon(time = _)
-#' 
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
@@ -123,9 +106,6 @@ add_sunmoon <- \(
 #' @details
 #' The function [add_TropicPolar()] adds the equatorial, the tropics, and the polar circles, on top of [add_meridian()].
 #' 
-#' @examples
-#' add_TropicPolar()
-#' 
 #' @importFrom plotly add_paths toRGB
 #' @export
 add_TropicPolar <- \(
@@ -165,9 +145,6 @@ add_TropicPolar <- \(
 #' @details
 #' The function [add_meridian()] adds the meridian and antimeridian on top of [globe()].
 #' 
-#' @examples
-#' add_meridian()
-#' 
 #' @importFrom plotly plot_geo add_paths toRGB layout
 #' @export
 add_meridian <- \(
@@ -195,9 +172,6 @@ add_meridian <- \(
 #' @rdname globe
 #' @details
 #' The function [globe()] is the default earth, that adds `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user, on top of [globe_minimal()].
-#' 
-#' @examples
-#' globe()
 #' 
 #' @importFrom plotly plot_geo add_paths layout
 #' @export
@@ -244,9 +218,6 @@ globe <- \(
 #' \item{the function \link[htmlwidgets]{onRender} to obtain user coordinates from the browser.}
 #' }
 #' 
-#' 
-#' @examples
-#' globe_minimal()
 #' 
 #' @references
 #' \url{https://plotly.com/r/reference/layout/geo/}

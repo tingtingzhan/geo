@@ -20,9 +20,6 @@
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Subsolar_point}
 #' 
-#' @examples
-#' subSolarPoint()
-#' 
 #' @name terminator
 #' @export
 subSolarPoint <- \(time = Sys.time(), ...) {
@@ -76,9 +73,6 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
 #' 
-#' @examples
-#' terminatorPolygon()
-#' 
 #' @export
 terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
@@ -110,19 +104,13 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 
 
 hour_angle_seq <- \(sslat, ...) {
-  
   # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  
-  seq(
-    from = 0, 
-    to = ifelse(
-      test = sslat > 0,
-      yes = 2*pi, # summer of Northern Hemisphere
-      no = - 2*pi # winter of Northern Hemisphere
-    ) , 
-    ...
-  )
-
+  ifelse(
+    test = sslat > 0,
+    yes = 2*pi, # summer of Northern Hemisphere
+    no = - 2*pi # winter of Northern Hemisphere
+  )  |>
+    seq(from = 0, to = _, ...)
 }
 
 
@@ -138,9 +126,6 @@ hour_angle_seq <- \(sslat, ...) {
 #' 
 #' @references
 #' \url{https://www.timeanddate.com/worldclock/sunearth.html}
-#' 
-#' @examples
-#' subLunarPoint()
 #' 
 #' @importFrom oce moonAngle siderealTime
 #' @export
@@ -180,9 +165,6 @@ subLunarPoint <- \(time = Sys.time(), ...) {
 #' @returns 
 #' The function [moonEmoji()] returns a \link[base]{character} scalar or \link[base]{vector}.
 #' 
-#' @examples
-#' moonEmoji()
-#' 
 #' @importFrom lunar lunar.phase
 #' @export
 moonEmoji <- \(time = Sys.time(), ...) {
@@ -221,9 +203,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Twilight}
-#' 
-#' @examples
-#' twilightPolygon(sza = (90+12)/180*pi, n = 201L)
 #' 
 #' @importFrom rootSolve uniroot.all
 #' @importFrom parallel mclapply detectCores 
