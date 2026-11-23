@@ -236,7 +236,7 @@ globe_minimal <- \() {
       )
     ) |>
     onRender(
-      jsCode = system.file('extjs', 'userLoc.js', package = 'geo') |> # by Gemini!
+      jsCode = system.file('js', 'userLoc.js', package = 'geo') |> # by Gemini!
         readLines() |>
         paste(collapse = '\n')
     )
