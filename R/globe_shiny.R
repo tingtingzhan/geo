@@ -1,25 +1,4 @@
 
-#' @importFrom htmltools HTML tags
-#' @importFrom plotly plotlyOutput
-#' @importFrom shiny fluidPage
-globe_ui <- \() {
-  
-  fluidPage(
-    
-    system.file('extjs', 'shiny_userTime.js', package = 'geo') |>
-      readLines() |>
-      paste(collapse = '\n') |>
-      sprintf(fmt = "$(document).on(\'shiny:connected\', %s);") |>
-      HTML() |>
-      tags$script(),
-    
-    #verbatimTextOutput(outputId = 'userTime'),
-    plotlyOutput(outputId = 'globe')
-    
-  )
-
-}
-
 
 #' @importFrom shiny req
 #' @importFrom plotly renderPlotly

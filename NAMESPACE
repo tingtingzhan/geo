@@ -31,10 +31,6 @@ importFrom(geosphere,
   dist2gc,
   distGeo
 )
-importFrom(htmltools,
-  HTML,
-  tags
-)
 importFrom(htmlwidgets,onRender)
 importFrom(lunar,lunar.phase)
 importFrom(oce,
@@ -53,7 +49,6 @@ importFrom(plotly,
   add_text,
   layout,
   plot_geo,
-  plotlyOutput,
   renderPlotly,
   toRGB
 )
@@ -63,8 +58,5 @@ importFrom(sf,
   st_coordinates,
   st_geometry
 )
-importFrom(shiny,
-  fluidPage,
-  req
-)
+importFrom(shiny,req)
 importFrom(stats,na.omit)
