@@ -1,10 +1,6 @@
 
 library(shiny)
 
-# @importFrom htmltools HTML tags
-# @importFrom plotly plotlyOutput
-# @importFrom shiny fluidPage
-
 fluidPage(
   
   system.file('js', 'shiny_userTime.js', package = 'geo') |>
