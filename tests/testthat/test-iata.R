@@ -1,7 +1,5 @@
 
 library(leaflet)
-library(leaflet.tzh)
-
 
 
 expect_no_error(object = {
@@ -28,7 +26,8 @@ expect_no_error(object = {
 
 expect_no_error(object = {
   iata('JFK-EWR-PHL-BWI-IAD')[[1L]] |> 
-    leaflet_minimal() |>
+    leaflet() |>
+    addTiles() |>
     addMarkers(popup = ~ shortnm)
 })
 

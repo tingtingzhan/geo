@@ -7,7 +7,7 @@
 \alias{subLunarPoint}
 \alias{moonEmoji}
 \alias{twilightPolygon}
-\title{Subsolar/Sublunar Point, Terminator and  Twilight Zones}
+\title{Subsolar/Sublunar Point, Terminator and Twilight Zones}
 \usage{
 subSolarPoint(time = Sys.time(), ...)
 

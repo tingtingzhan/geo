@@ -1,7 +1,7 @@
 
 
 
-#' @title Subsolar/Sublunar Point, Terminator and  Twilight Zones
+#' @title Subsolar/Sublunar Point, Terminator and Twilight Zones
 #' 
 #' @description
 #' To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
@@ -103,19 +103,6 @@ terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
 
 
 
-hour_angle_seq <- \(sslat, ...) {
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  ifelse(
-    test = sslat > 0,
-    yes = 2*pi, # summer of Northern Hemisphere
-    no = - 2*pi # winter of Northern Hemisphere
-  )  |>
-    seq(from = 0, to = _, ...)
-}
-
-
-
-
 #' @rdname terminator
 #' 
 #' @details
@@ -212,7 +199,7 @@ twilightPolygon <- \(
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
   sza = NULL,
-  n = 1001L,
+  n = 1001L, # twilight is **not** great circle!!
   mc.cores = detectCores(),
   ...
 ) {
@@ -238,7 +225,6 @@ twilightPolygon <- \(
   cos_sslat <- cos(sslat)
   cos_sza <- cos(sza)
   
-  # twilight is **not** great circle!!
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
 
   unr_fn <- \(i) {
@@ -347,5 +333,17 @@ twilightPolygons <- \(
   z |>
     do.call(what = 'rbind.data.frame', args = _)
   
+}
+
+
+
+hour_angle_seq <- \(sslat, ...) {
+  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
+  ifelse(
+    test = sslat > 0,
+    yes = 2*pi, # summer of Northern Hemisphere
+    no = - 2*pi # winter of Northern Hemisphere
+  )  |>
+    seq(from = 0, to = _, ...)
 }
 
