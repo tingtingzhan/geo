@@ -5,7 +5,8 @@ function(el, x) {
       mode: 'markers',
       lat: [pos.coords.latitude],
       lon: [pos.coords.longitude],
-      name: 'You'
+      name: 'You',
+      hovertemplate: '(%{lat:.3f}\u00b0, %{lon:.3f}\u00b0)'
     });
   });
 }

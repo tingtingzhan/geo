@@ -45,14 +45,6 @@ add_twilight <- \(
 }
 
 
-
-
-hovertemplate_ <- \(x) {
-  x |>
-    sprintf(fmt = '<b>%s</b> (%%{lon:.3f}, %%{lat:.3f})<extra></extra>')
-  # Adding <extra></extra> at the end of `hovertemplate` explicitly hides the secondary trace name box
-}
-
 hoverlabel_ <- \(x) {
   list(
     bgcolor = 'white', font = x, bordercolor = x
@@ -82,10 +74,28 @@ add_sunmoon <- \(
   sublunar <- subLunarPoint(time = time)
   
   map |>
+    #add_text(
+    #  data = rbind.data.frame(subsolar, sublunar),
+    #  x = ~ lon, y = ~ lat, text = ~ text,
+    #  name = ~ label,
+    #  hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
+    #  hoverlabel = ~ hoverlabel_(color) # \CRANpkg{plotly} messes up!!!
+    #) |>
     add_text(
-      data = rbind.data.frame(subsolar, sublunar),
+    #add_markers( # nah..
+      data = subsolar,
       x = ~ lon, y = ~ lat, text = ~ text,
-      hovertemplate = ~ hovertemplate_(label),
+      #name = ~ sprintf(fmt = '<b>%s</b>', label),
+      name = ~ label,
+      #marker = ~ list(color = color), # trace-name color, but triggers screen output: "A marker object has been specified, but markers is not in the mode.  Adding markers to the mode..."
+      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
+      hoverlabel = ~ hoverlabel_(color)
+    ) |>
+    add_text(
+      data = sublunar,
+      x = ~ lon, y = ~ lat, text = ~ text,
+      name = ~ label,
+      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_polygons(

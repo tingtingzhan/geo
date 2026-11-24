@@ -44,19 +44,22 @@ add_twilight_animated <- \(
     #add_text(
     #  data = rbind.data.frame(subsolar, sublunar),
     #  x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
-    #  hovertemplate = ~ hovertemplate_(label), # fine
+    #  name = ~ label,
+    #  hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)', # fine
     #  hoverlabel = ~ hoverlabel_(color) # \CRANpkg{plotly} messes up!!!
     #) |>
     add_text(
       data = subsolar,
       x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
-      hovertemplate = ~ hovertemplate_(label),
+      name = 'Sun', # why not working?
+      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_text(
       data = sublunar,
       x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
-      hovertemplate = ~ hovertemplate_(label),
+      name = 'Moon', # why not working?
+      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_polygons(
