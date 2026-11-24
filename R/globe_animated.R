@@ -52,6 +52,7 @@ add_twilight_animated <- \(
       data = subsolar,
       x = ~ lon, y = ~ lat, text = ~ text, frame = ~ time,
       name = 'Sun', # why not working?
+      # name = ~ label, # why not working either?
       hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
