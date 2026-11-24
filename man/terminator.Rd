@@ -7,6 +7,7 @@
 \alias{subLunarPoint}
 \alias{moonEmoji}
 \alias{twilightPolygon}
+\alias{eclipticPolygon}
 \title{Subsolar/Sublunar Point, Terminator and Twilight Zones}
 \usage{
 subSolarPoint(time = Sys.time(), ...)
@@ -25,6 +26,8 @@ twilightPolygon(
   mc.cores = detectCores(),
   ...
 )
+
+eclipticPolygon(time = Sys.time(), n = 4L, ...)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current date and time on user's computer from the function \link[base]{Sys.time}}
@@ -33,7 +36,7 @@ twilightPolygon(
 
 \item{n}{\link[base]{integer} scalar.
 \itemize{
-\item{Number of points in \code{\link[=terminatorPolygon]{terminatorPolygon()}}, default value is \code{4L}.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+\item{Number of points in \code{\link[=terminatorPolygon]{terminatorPolygon()}} and \code{\link[=eclipticPolygon]{eclipticPolygon()}}, default value is \code{4L}.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
 \item{Maximum fineness for \code{\link[=twilightPolygon]{twilightPolygon()}}, default value is \code{1001L}.  Twilight zone borders are \strong{not} great circles!}
 }}
 

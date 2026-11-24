@@ -59,7 +59,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' 
 #' @param n \link[base]{integer} scalar.
 #' \itemize{
-#' \item{Number of points in [terminatorPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+#' \item{Number of points in [terminatorPolygon()] and [eclipticPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
 #' \item{Maximum fineness for [twilightPolygon()], default value is `1001L`.  Twilight zone borders are **not** great circles!}
 #' }
 #' 
@@ -309,6 +309,119 @@ twilightPolygon <- \(
   return(ret)
   
 }
+
+
+
+
+
+
+
+
+#' @rdname terminator
+#' @export
+eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
+  
+  # by Gemini!
+  
+  time <- time |>
+    as.POSIXlt(tz = 'UTC')
+  
+  # 1. Get current UTC time and convert to Julian Date (JD)
+  jd <- as.numeric(time) / 86400 + 2440587.5
+  
+  # 2. Calculate Greenwich Mean Sidereal Time (GMST) in degrees
+  D <- jd - 2451545.0
+  gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
+  # `gmst_deg` should be identical to `gst_degrees` in [subLunarPoint()]
+  
+  # 3. Calculate Obliquity of the Ecliptic (in radians)
+  T_cen <- D / 36525
+  eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
+  
+  # 4. Generate Ecliptic Coordinates
+  lambda_deg <- seq.int(from = 0, to = 360, length.out = n) # from Greenwich
+  lambda <- lambda_deg * pi / 180
+  
+  lat <- asin(sin(eps) * sin(lambda)) * 180 / pi
+  ra_deg <- atan2(cos(eps) * sin(lambda), cos(lambda)) * 180 / pi
+  
+  # Subtract GMST to align celestial Right Ascension with Earth's current rotation
+  lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
+  
+  return(data.frame(
+    lon = lon,
+    lat = lat,
+    color = 'darkorange'
+  ))
+  
+}
+
+
+
+#' @rdname terminator
+#' @export
+LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
+  
+  # by Gemini!
+  
+  time <- time |>
+    as.POSIXlt(tz = 'UTC')
+  
+  # 1. Current UTC Time, Julian Date (JD), & GMST
+  jd <- as.numeric(time) / 86400 + 2440587.5
+  D <- jd - 2451545.0
+  T_cen <- D / 36525
+  
+  gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
+  eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
+  
+  # Helper function: Ecliptic (lambda, beta) -> Geographic (lon, lat)
+  ecliptic_to_geo <- \(lambda_rad, beta_rad, eps_rad, gmst_deg) {
+    # Equatorial Declination (Latitude)
+    lat <- asin(sin(beta_rad) * cos(eps_rad) + cos(beta_rad) * sin(eps_rad) * sin(lambda_rad)) * 180 / pi
+    
+    # Equatorial Right Ascension
+    ra_rad <- atan2(
+      sin(lambda_rad) * cos(eps_rad) - tan(beta_rad) * sin(eps_rad),
+      cos(lambda_rad)
+    )
+    ra_deg <- ra_rad * 180 / pi
+    
+    # Geographic Lo{ngitude
+    lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
+    data.frame(lon = lon, lat = lat)
+  }
+  
+  # 2. Calculate Lunar Orbital Parameters at Sys.time()
+  i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic (~5.145°)
+  # Mean Longitude of the Ascending Node (Omega)
+  omega_deg <- (125.04452 - 1934.136261 * T_cen + 0.0020708 * T_cen^2) %% 360
+  omega_rad <- omega_deg * pi / 180
+  
+  # Argument of latitude u (0° = Ascending Node, 180° = Descending Node)
+  u_deg <- seq.int(from = 0, to = 360, length.out = n)
+  u_rad <- u_deg * pi / 180
+  
+  # Lunar orbit in ecliptic coordinates
+  moon_beta <- asin(sin(i_moon) * sin(u_rad))
+  moon_lambda <- omega_rad + atan2(cos(i_moon) * sin(u_rad), cos(u_rad))
+  
+  moon_geo <- ecliptic_to_geo(moon_lambda, moon_beta, eps, gmst_deg)
+  moon_df <- cbind(moon_geo, u = u_deg)
+  
+  # Label Ascending & Descending Nodes along the lunar path
+  # (not feasible with `n=4L`)
+  #moon_df$label <- ""
+  #moon_df$label[moon_df$u == 0]   <- "☊ Ascending Node"
+  #moon_df$label[moon_df$u == 180] <- "☋ Descending Node"
+  
+  moon_df$color <- 'cornflowerblue'
+  
+  return(moon_df)
+  
+}
+
+
 
 
 

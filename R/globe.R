@@ -98,6 +98,18 @@ add_sunmoon <- \(
       hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
+    add_paths(
+      data = eclipticPolygon(),
+      x = ~ lon, y = ~ lat,
+      line = ~ list(color = color, dash = 'dot', width = .4),
+      hoverinfo = 'none'
+    ) |>
+    add_paths(
+      data = LunarOrbitalPolygon(),
+      x = ~ lon, y = ~ lat,
+      line = ~ list(color = color, dash = 'dot', width = .4),
+      hoverinfo = 'none'
+    ) |>
     add_polygons(
       data = terminatorPolygon(time = time),
       x = ~ lon, y = ~ lat,
@@ -135,11 +147,11 @@ add_TropicPolar <- \(
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
-      x = lon, y = 23.44, 
+      x = lon, y = 23.43928, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
-      x = lon, y = -23.44, 
+      x = lon, y = -23.43928, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
