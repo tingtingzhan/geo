@@ -339,9 +339,7 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
   eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
   
   # 4. Generate Ecliptic Coordinates
-  lambda_deg <- seq.int(from = 0, to = 360, length.out = n) # from Greenwich
-  lambda <- lambda_deg * pi / 180
-  
+  lambda <- seq.int(from = 0, to = 2*pi, length.out = n)
   lat <- asin(sin(eps) * sin(lambda)) * 180 / pi
   ra_deg <- atan2(cos(eps) * sin(lambda), cos(lambda)) * 180 / pi
   
