@@ -8,6 +8,7 @@
 \alias{moonEmoji}
 \alias{twilightPolygon}
 \alias{eclipticPolygon}
+\alias{LunarOrbitalPolygon}
 \title{Subsolar/Sublunar Point, Terminator and Twilight Zones}
 \usage{
 subSolarPoint(time = Sys.time(), ...)
@@ -28,6 +29,8 @@ twilightPolygon(
 )
 
 eclipticPolygon(time = Sys.time(), n = 4L, ...)
+
+LunarOrbitalPolygon(time = Sys.time(), n = 4L, ...)
 }
 \arguments{
 \item{time}{a \link[base]{POSIXct} object, default value is the current date and time on user's computer from the function \link[base]{Sys.time}}

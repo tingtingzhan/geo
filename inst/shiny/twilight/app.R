@@ -52,10 +52,22 @@ fluidPage(
             href = 'https://zh.wikipedia.org/zh-hans/太阳直射点', 
             '太阳直射点'
           ),
+          ') and the ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Ecliptic',
+            'ecliptic'
+          ),
+          ' plane (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/zh-hans/黃道面',
+            '黄道面'
+          ),
           ')'
         ),
         tags$li(
-          'Where the Moon is directly overhead (the sublunar point, 月下点) and the current ',
+          'Where the Moon is directly overhead (the sublunar point, 月下点), the current ',
           tags$a(
             .noWS = c('before', 'after'),
             href = 'https://science.nasa.gov/moon/moon-phases/', 
@@ -66,6 +78,18 @@ fluidPage(
             .noWS = c('before', 'after'),
             href = 'https://zh.wikipedia.org/zh-hans/月相', 
             '月相'
+          ),
+          ') and the ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Orbit_of_the_Moon',
+            'Moon\'s orbital plane'
+          ),
+          ' (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/zh-cn/白道面',
+            '白道面'
           ),
           ')'
         ),
