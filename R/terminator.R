@@ -313,18 +313,11 @@ twilightPolygon <- \(
 
 
 
-
-
-
-
-#' @rdname terminator
-#' @export
-eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
+foo <- \(time, ...) {
   
   # by Gemini!
   
-  time <- time |>
-    as.POSIXlt(tz = 'UTC')
+  # `time` is UTC \link[base]{POSIXlt}
   
   # 1. Get current UTC time and convert to Julian Date (JD)
   jd <- as.numeric(time) / 86400 + 2440587.5
@@ -338,13 +331,29 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
   T_cen <- D / 36525
   eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
   
-  # 4. Generate Ecliptic Coordinates
-  lambda <- seq.int(from = 0, to = 2*pi, length.out = n)
+  return(list(
+    gmst_deg = gmst_deg,
+    T_cen = T_cen,
+    eps = eps
+  ))
+  
+}
+
+
+
+#' @rdname terminator
+#' @export
+eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
+  
+  time <- time |>
+    as.POSIXlt(tz = 'UTC')
+  
+  tmp <- foo(time)
   
   z <- ecliptic2geo(
-    lambda = lambda,
-    eps = eps,
-    gmst_deg = gmst_deg
+    lambda = seq.int(from = 0, to = 2*pi, length.out = n),
+    eps = tmp$eps,
+    gmst_deg = tmp$gmst_deg
   )
   z$color <- 'darkorange'
   return(z)
@@ -362,19 +371,12 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   time <- time |>
     as.POSIXlt(tz = 'UTC')
   
-  # 1. Current UTC Time, Julian Date (JD), & GMST
-  jd <- as.numeric(time) / 86400 + 2440587.5
-  D <- jd - 2451545.0
-  T_cen <- D / 36525
-  
-  gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
-  eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
-  
+  tmp <- foo(time)
   
   # 2. Calculate Lunar Orbital Parameters at Sys.time()
-  i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic (~5.145°)
+  i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic
   # Mean Longitude of the Ascending Node (Omega)
-  omega_deg <- (125.04452 - 1934.136261 * T_cen + 0.0020708 * T_cen^2) %% 360
+  omega_deg <- (125.04452 - 1934.136261 * tmp$T_cen + 0.0020708 * tmp$T_cen^2) %% 360
   omega_rad <- omega_deg * pi / 180
   
   # Argument of latitude u (0° = Ascending Node, 180° = Descending Node)
@@ -388,8 +390,8 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   moon_geo <- ecliptic2geo(
     lambda = moon_lambda, 
     beta = moon_beta, 
-    eps = eps, 
-    gmst_deg = gmst_deg)
+    eps = tmp$eps, 
+    gmst_deg = tmp$gmst_deg)
   
   moon_df <- cbind(moon_geo, u = u_deg)
   
