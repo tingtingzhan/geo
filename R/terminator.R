@@ -340,17 +340,14 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   # 4. Generate Ecliptic Coordinates
   lambda <- seq.int(from = 0, to = 2*pi, length.out = n)
-  lat <- asin(sin(eps) * sin(lambda)) * 180 / pi
-  ra_deg <- atan2(cos(eps) * sin(lambda), cos(lambda)) * 180 / pi
   
-  # Subtract GMST to align celestial Right Ascension with Earth's current rotation
-  lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
-  
-  return(data.frame(
-    lon = lon,
-    lat = lat,
-    color = 'darkorange'
-  ))
+  z <- ecliptic2geo(
+    lambda = lambda,
+    eps = eps,
+    gmst_deg = gmst_deg
+  )
+  z$color <- 'darkorange'
+  return(z)
   
 }
 
@@ -373,22 +370,6 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
   eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
   
-  # Helper function: Ecliptic (lambda, beta) -> Geographic (lon, lat)
-  ecliptic_to_geo <- \(lambda_rad, beta_rad, eps_rad, gmst_deg) {
-    # Equatorial Declination (Latitude)
-    lat <- asin(sin(beta_rad) * cos(eps_rad) + cos(beta_rad) * sin(eps_rad) * sin(lambda_rad)) * 180 / pi
-    
-    # Equatorial Right Ascension
-    ra_rad <- atan2(
-      sin(lambda_rad) * cos(eps_rad) - tan(beta_rad) * sin(eps_rad),
-      cos(lambda_rad)
-    )
-    ra_deg <- ra_rad * 180 / pi
-    
-    # Geographic Lo{ngitude
-    lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
-    data.frame(lon = lon, lat = lat)
-  }
   
   # 2. Calculate Lunar Orbital Parameters at Sys.time()
   i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic (~5.145°)
@@ -404,7 +385,12 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   moon_beta <- asin(sin(i_moon) * sin(u_rad))
   moon_lambda <- omega_rad + atan2(cos(i_moon) * sin(u_rad), cos(u_rad))
   
-  moon_geo <- ecliptic_to_geo(moon_lambda, moon_beta, eps, gmst_deg)
+  moon_geo <- ecliptic2geo(
+    lambda = moon_lambda, 
+    beta = moon_beta, 
+    eps = eps, 
+    gmst_deg = gmst_deg)
+  
   moon_df <- cbind(moon_geo, u = u_deg)
   
   # Label Ascending & Descending Nodes along the lunar path
@@ -457,4 +443,35 @@ hour_angle_seq <- \(sslat, ...) {
   )  |>
     seq(from = 0, to = _, ...)
 }
+
+
+
+# Ecliptic (lambda, beta) -> Geographic (lon, lat)
+ecliptic2geo <- \(
+  lambda, # radius
+  beta = 0, # radius
+  eps, # radius
+  gmst_deg
+) {
+  
+  # Equatorial Declination (Latitude)
+  lat <- asin(sin(beta) * cos(eps) + cos(beta) * sin(eps) * sin(lambda)) * 180 / pi
+  
+  # Equatorial Right Ascension
+  ra_deg <- atan2(
+    sin(lambda) * cos(eps) - tan(beta) * sin(eps),
+    cos(lambda)
+  ) * 180 / pi
+  
+  # Geographic Longitude
+  # Subtract GMST to align celestial Right Ascension with Earth's current rotation
+  lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
+  
+  return(data.frame(
+    lon = lon, 
+    lat = lat
+  ))
+}
+
+
 
