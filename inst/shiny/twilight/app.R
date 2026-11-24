@@ -91,7 +91,13 @@ fluidPage(
             href = 'https://en.wikipedia.org/wiki/Twilight', 
             'twilight'
           ),
-          ': ',
+          ' (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/wiki/曙暮光', 
+            '曙暮光'
+          ),
+          '): ',
           tags$a(
             .noWS = c('before', 'after'),
             href = 'https://en.wikipedia.org/wiki/Twilight#Civil_twilight',
