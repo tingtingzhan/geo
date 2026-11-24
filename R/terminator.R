@@ -312,29 +312,33 @@ twilightPolygon <- \(
 
 
 
-
+# think of a better name!!
 foo <- \(time, ...) {
   
   # by Gemini!
   
   # `time` is UTC \link[base]{POSIXlt}
   
-  # 1. Get current UTC time and convert to Julian Date (JD)
+  # 1. current UTC time to Julian Date (JD)
   jd <- as.numeric(time) / 86400 + 2440587.5
   
-  # 2. Calculate Greenwich Mean Sidereal Time (GMST) in degrees
+  # 2. Greenwich Mean Sidereal Time (GMST) in degrees
   D <- jd - 2451545.0
   gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
   # `gmst_deg` should be identical to `gst_degrees` in [subLunarPoint()]
   
-  # 3. Calculate Obliquity of the Ecliptic (in radians)
+  # 3. Obliquity of the Ecliptic
   T_cen <- D / 36525
   eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
+  
+  # Mean Longitude of the Ascending Node (Omega)
+  omega <- ((125.04452 - 1934.136261 * T_cen + 0.0020708 * T_cen^2) %% 360) / 180 * pi
   
   return(list(
     gmst_deg = gmst_deg,
     T_cen = T_cen,
-    eps = eps
+    eps = eps,
+    omega = omega
   ))
   
 }
@@ -373,11 +377,8 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   tmp <- foo(time)
   
-  # 2. Calculate Lunar Orbital Parameters at Sys.time()
+  # 2. Lunar Orbital Parameters
   i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic
-  # Mean Longitude of the Ascending Node (Omega)
-  omega_deg <- (125.04452 - 1934.136261 * tmp$T_cen + 0.0020708 * tmp$T_cen^2) %% 360
-  omega_rad <- omega_deg * pi / 180
   
   # Argument of latitude u (0° = Ascending Node, 180° = Descending Node)
   u_deg <- seq.int(from = 0, to = 360, length.out = n)
@@ -385,7 +386,7 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   # Lunar orbit in ecliptic coordinates
   moon_beta <- asin(sin(i_moon) * sin(u_rad))
-  moon_lambda <- omega_rad + atan2(cos(i_moon) * sin(u_rad), cos(u_rad))
+  moon_lambda <- tmp$omega + atan2(cos(i_moon) * sin(u_rad), cos(u_rad))
   
   moon_geo <- ecliptic2geo(
     lambda = moon_lambda, 
@@ -398,8 +399,8 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   # Label Ascending & Descending Nodes along the lunar path
   # (not feasible with `n=4L`)
   #moon_df$label <- ""
-  #moon_df$label[moon_df$u == 0]   <- "☊ Ascending Node"
-  #moon_df$label[moon_df$u == 180] <- "☋ Descending Node"
+  #moon_df$label[moon_df$u == 0]   <- "\u260a Ascending Node"
+  #moon_df$label[moon_df$u == 180] <- "\u260b Descending Node"
   
   moon_df$color <- 'cornflowerblue'
   
