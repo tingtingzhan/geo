@@ -18,7 +18,27 @@ fluidPage(
       width = 5,
       h4('This Interactive Globe Shows'),
       tags$ul(
-        tags$li('Your current local time and time zone'),
+        tags$li(
+          'Your current ', 
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Local_time', 
+            'local time'
+          ),
+          ' (当地时间) and ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Time_zone', 
+            'time zone'
+          ),
+          ' (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/zh-hans/时区列表', 
+            '时区'
+          ),
+          ')'
+        ),
         tags$li(
           'Where the Sun is directly overhead (the ',
           tags$a(
