@@ -39,10 +39,6 @@ importFrom(oce,
   moonAngle,
   siderealTime
 )
-importFrom(parallel,
-  detectCores,
-  mclapply
-)
 importFrom(plotly,
   add_markers,
   add_paths,
@@ -54,7 +50,6 @@ importFrom(plotly,
   renderPlotly,
   toRGB
 )
-importFrom(rootSolve,uniroot.all)
 importFrom(scales,pal_hue)
 importFrom(sf,
   st_coordinates,

@@ -173,8 +173,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @param type \link[base]{character} scalar
 #' 
-#' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
-#' 
 #' @details
 #' The function [twilightPolygon()] finds the latitude and longitude of the borders of
 #' \describe{
@@ -189,16 +187,12 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' @references
 #' \url{https://en.wikipedia.org/wiki/Twilight}
 #' 
-#' @importFrom rootSolve uniroot.all
-#' @importFrom parallel mclapply detectCores 
-# @importFrom parallel makeCluster stopCluster parLapply
 #' @export
 twilightPolygon <- \(
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
   sza = NULL,
   n = 1001L, # twilight is **not** great circle!!
-  mc.cores = detectCores(),
   ...
 ) {
   
@@ -225,54 +219,43 @@ twilightPolygon <- \(
   
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
 
-  unr_fn <- \(i) {
-    uniroot.all( # look inside!
-      f = \(x, ha) {
-        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos_sza  
-        # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
-        # does **not** have analytical solution
-        # is not monotone, i.e., can **not** use ?stats::uniroot
-        # may have multiple local minimum, i.e., can **not** use ?base::optimize
-      }, 
-      ha = i,
-      lower = -pi/2, upper = pi/2
-    ) |>
-      sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
-  }
-
-  if (Sys.getenv('POSITRON') == '1') {
-    
-    # multi-core: POSITRON
-    #cl <- makeCluster(mc.cores, type = 'PSOCK')
-    #z <- lon |>
-    #  parLapply(cl = cl, fun = unr_fn)
-    #stopCluster(cl)
-    # end of multi-core
-    
-    # not using multi-core is actually faster
-    z <- ha |>
-      lapply(FUN = unr_fn)
-    
-  } else {
-    # does improve speed in RStudio!
-    z <- ha |>
-      mclapply(FUN = unr_fn, mc.cores = mc.cores)
-  }
+  #f = \(x, ha) {
+  #  (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos_sza  
+  # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
+  # has analytical solution !!!
+  # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
+  #}
   
-  nz <- lengths(z)
+  phi <- ha |>
+    lapply(FUN = \(i) {
+      R <- sqrt(sin_sslat^2 + cos_sslat^2 * cos(i)^2)
+      if (abs(cos_sza) > R) return(numeric())
+      z <- atan2(
+        y = sin_sslat, 
+        x = cos_sslat*cos(i)
+      ) + c(-1, 1) * acos(cos_sza / R) 
+      # ?base::acos 'principal value range' is (0, pi)
+      if (length(z) == 1L) return(z)
+      if (z[1L] < -pi/2) return(z[2L])
+      if (z[2L] > pi/2) return(z[1L])
+      return(z)
+    })
   
-  lat <- z |>
+  
+  n_phi <- lengths(phi)
+  
+  lat <- phi |>
     unlist(use.names = FALSE) # whatever!!!
   
-  if (all(nz == 1L)) { # hew!!
+  if (all(n_phi == 1L)) { # hew!!
     # do nothing!!
   } else { # when (sslat < 0)
-    id <- (nz > 0L)
+    id <- (n_phi > 0L)
     ha <- c(ha[id], rev.default(ha[id]))
     lat <- c(
-      z[id] |> 
+      phi[id] |> 
         vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
-      z[id] |> 
+      phi[id] |> 
         rev.default() |>
         vapply(FUN = \(i) i[length(i)], FUN.VALUE = NA_real_)
     )
