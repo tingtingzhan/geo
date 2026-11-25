@@ -228,14 +228,13 @@ twilightPolygon <- \(
   
   unr_fn <- \(i) {
     uniroot.all( # look inside!
-      f = \(x, ha) {
-        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos(ha)) - cos_sza  
+      f = \(x, cos_ha) {
+        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos_ha) - cos_sza
         # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
-        # does **not** have analytical solution
-        # is not monotone, i.e., can **not** use ?stats::uniroot
-        # may have multiple local minimum, i.e., can **not** use ?base::optimize
+        # does have analytical solution!!
+        # but tzh have problem writing the analytical solution in R!!!!
       }, 
-      ha = i,
+      cos_ha = i,
       lower = -pi/2, upper = pi/2
     ) |>
       sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
@@ -252,11 +251,13 @@ twilightPolygon <- \(
     
     # not using multi-core is actually faster
     z <- ha |>
+      cos() |>
       lapply(FUN = unr_fn)
     
   } else {
     # does improve speed in RStudio!
     z <- ha |>
+      cos() |>
       mclapply(FUN = unr_fn, mc.cores = mc.cores)
   }
   
