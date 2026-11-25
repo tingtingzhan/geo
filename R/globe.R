@@ -72,7 +72,11 @@ add_sunmoon <- \(
   
   subsolar <- subSolarPoint(time = time)
   sublunar <- subLunarPoint(time = time)
-  
+  equator_incl <- rbind.data.frame(
+    eclipticEquator_lon(time = time),
+    LunarEquator_lon(time = time)
+  )
+
   map |>
     #add_text(
     #  data = rbind.data.frame(subsolar, sublunar),
@@ -103,6 +107,14 @@ add_sunmoon <- \(
       x = ~ lon, y = ~ lat,
       line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
+    ) |>
+    add_markers(
+      data = equator_incl,
+      x = ~ lon, y = 0, text = ~ text,
+      customdata = ~ incl,
+      marker = ~ list(color = color),
+      hovertemplate = '%{text}\nLon: %{lon:.3f}\u00b0\n%{customdata}<extra></extra>',
+      hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_paths( # lunar orbit
       data = LunarOrbitalPolygon(),

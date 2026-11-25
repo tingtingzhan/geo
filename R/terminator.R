@@ -37,8 +37,8 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   
   # Greenwich Hour Angle / Subsolar Longitude
   # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
-  solar_lon <- (12 - hour) * 15
-  solar_lon <- ((solar_lon + 180) %% 360) - 180
+  solar_lon <- ((12 - hour) * 15) |>
+    wrap180()
   
   return(data.frame(
     lon = solar_lon,
@@ -127,7 +127,8 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   
   sublunar_lon <- celestialDegree(time) |> 
     with(expr = {
-      ((mA$rightAscension - gmst + 180) %% 360) - 180
+      (mA$rightAscension - gmst) |>
+        wrap180()
     })
   
   return(data.frame(
@@ -424,6 +425,10 @@ hour_angle_seq <- \(sslat, ...) {
 
 
 
+wrap180 <- \(x) {
+  ((x + 180) %% 360) - 180
+}
+
 # Ecliptic (lambda, beta) -> Geographic (lon, lat)
 ecliptic2geo <- \(
   lambda, # radius
@@ -442,7 +447,8 @@ ecliptic2geo <- \(
   )
   
   return(data.frame(
-    lon = ((ra / pi * 180 - gmst + 180) %% 360) - 180, 
+    lon = (ra / pi * 180 - gmst) |>
+      wrap180(), 
     lat = declination / pi * 180
   ))
 }
@@ -486,9 +492,102 @@ celestialDegree <- \(time = Sys.time(), ...) {
     gmst = gmst %% 360,
     obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
     omega = omega %% 360,
+    L = L,
     i_moon = i_moon
   ))
   
 }
+
+
+
+eclipticEquator_lon <- \(time = Sys.time()) {
+  
+  z <- celestialDegree(time) |>
+    with(expr = {
+      d_psi <- (-17.20 * sin(omega) - 1.32 * sin(2 * L)) / 3600 # Nutation in longitude (deg)
+      gast <- (gmst + d_psi * cos(obliquity / 180 * pi)) %% 360
+      list(
+        gast = gast,
+        obliquity = obliquity
+      )
+    })
+  
+  return(data.frame(
+    time = time |>
+      as.POSIXlt(tz = 'UTC') |>
+      format(usetz = TRUE),
+    lon = c(
+      - z$gast, # Ascending node (March Equinox / 0° Aries)
+      - z$gast + 180 # Descending node (September Equinox)
+    ) |>
+      wrap180(), 
+    color = 'darkorange',
+    incl = z$obliquity |>
+      sprintf(fmt = '\u9ec4\u8d64\u4ea4\u89d2 %.3f\u00b0'),
+    text = c('Ascending', 'Descending')
+  ))
+}
+
+
+
+LunarEquator_lon <- \(time = Sys.time()) {
+  
+  z <- celestialDegree(time) |>
+    with(expr = {
+      
+      omega_r <- omega * pi / 180
+      eps_r   <- obliquity * pi / 180
+      i_r     <- i_moon * pi / 180
+      
+      d_psi <- (-17.20 * sin(omega_r) - 1.32 * sin(2 * L)) / 3600
+      gast  <- (gmst + d_psi * cos(eps_r)) %% 360
+      
+      #y <- sin(omega_r) * cos(eps_r) - tan(i_r) * sin(eps_r)
+      #x <- cos(omega_r)
+      #ra_moon_asc_deg <- (atan2(y, x) * 180 / pi) %% 360
+      
+      # 黄道坐标系下的白道法向量 n_ecl
+      nx_ecl <-  sin(i_r) * sin(omega_r)
+      ny_ecl <- -sin(i_r) * cos(omega_r)
+      nz_ecl <-  cos(i_r)
+      
+      # 绕 X 轴旋转 eps_r 转换到地心赤道坐标系下的白道法向量 n_eq
+      nx <- nx_ecl
+      ny <- ny_ecl * cos(eps_r) - nz_ecl * sin(eps_r)
+      nz <- ny_ecl * sin(eps_r) + nz_ecl * cos(eps_r)
+      
+      # 赤道面法向量为 (0, 0, 1)
+      # 白道在赤道面上的升交点向量 = (0, 0, 1) × (nx, ny, nz) = (-ny, nx, 0)
+      ra_moon_asc_deg <- (atan2(nx, -ny) * 180 / pi) %% 360
+      
+      lon <- c(
+        ra_moon_asc_deg - gast, # Lunar Ascending Node on Equator
+        ra_moon_asc_deg - gast + 180  # Lunar Descending Node on Equator
+      ) |>
+        wrap180()
+      
+      # Inclination of the Moon's orbit directly to Earth's equator (ranges ~18.3° to ~28.6°)
+      lunarEquator_incl <- acos(cos(eps_r) * cos(i_r) - sin(eps_r) * sin(i_r) * cos(omega_r)) * 180 / pi
+      
+      list(
+        lon = lon,
+        lunarEquator_incl = lunarEquator_incl
+      )
+      
+    })
+  
+  return(data.frame(
+    time = time |>
+      as.POSIXlt(tz = 'UTC') |>
+      format(usetz = TRUE),
+    lon = z$lon,
+    color = 'cornflowerblue',
+    incl = z$lunarEquator_incl |>
+      sprintf(fmt = '\u767d\u8d64\u4ea4\u89d2 %.3f\u00b0'),
+    text = c('Ascending', 'Descending')
+  ))
+
+}
+
 
 

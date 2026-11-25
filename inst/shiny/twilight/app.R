@@ -52,7 +52,7 @@ fluidPage(
             href = 'https://zh.wikipedia.org/zh-hans/太阳直射点', 
             '太阳直射点'
           ),
-          ') and the ',
+          '), the ',
           tags$a(
             .noWS = c('before', 'after'),
             href = 'https://en.wikipedia.org/wiki/Ecliptic',
@@ -63,6 +63,18 @@ fluidPage(
             .noWS = c('before', 'after'),
             href = 'https://zh.wikipedia.org/zh-hans/黃道面',
             '黄道面'
+          ),
+          '), and the ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Obliquity_of_the_ecliptic',
+            'obliquity of the ecliptic'
+          ),
+          ' (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/zh-cn/轉軸傾角',
+            '黄赤交角'
           ),
           ')'
         ),
@@ -79,11 +91,11 @@ fluidPage(
             href = 'https://zh.wikipedia.org/zh-hans/月相', 
             '月相'
           ),
-          ') and the ',
+          '), the ',
           tags$a(
             .noWS = c('before', 'after'),
             href = 'https://en.wikipedia.org/wiki/Orbit_of_the_Moon',
-            'Moon\'s orbital plane'
+            'lunar orbital plane'
           ),
           ' (',
           tags$a(
@@ -91,7 +103,7 @@ fluidPage(
             href = 'https://zh.wikipedia.org/zh-cn/白道面',
             '白道面'
           ),
-          ')'
+          ') and the inclination of the lunar orbit to the equator (白赤交角)'
         ),
         tags$li(
           'The line separating day from night (the ', 
