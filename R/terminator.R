@@ -449,18 +449,18 @@ ecliptic2geo <- \(
 
 celestialDegree <- \(time, ...) {
   
-  # by Gemini!
-  
   time <- time |>
     as.POSIXlt(tz = 'UTC')
   
   # https://www.omnicalculator.com/everyday-life/sidereal-time
+  # Greenwich Mean Sidereal Time (GMST): IAU 1982 standard
   
-  D <- as.numeric(time) / (60*60*24) + jd_1970010100 - jd_2000010112
+  D <- as.numeric(time) / (60*60*24) + 
+    jd_1970010100 - 
+    jd_2000010112
   
   T_cen <- D / (1e2 * c_Julian_yr) # the fraction of the century elapsed
   
-  # Greenwich Mean Sidereal Time (GMST): IAU 1982 standard
   gmst <- c_gmst2000 + 
     c_siderealRotationDay * D + 
     .000387933 * T_cen^2 - 
@@ -475,7 +475,7 @@ celestialDegree <- \(time, ...) {
   
   return(list( # all in degree (not radius)
     gmst = gmst %% 360,
-    obliquity = c_obliquity2000 - c_precessionSecular * T_cen, # at `time`
+    obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
     omega = omega %% 360
   ))
   
