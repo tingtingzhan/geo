@@ -56,7 +56,7 @@ The function \code{\link[=terminatorPolygon]{terminatorPolygon()}} returns a \li
 
 The function \code{\link[=subLunarPoint]{subLunarPoint()}} returns a \link[base]{data.frame}.
 
-The function \code{\link[=moonEmoji]{moonEmoji()}} returns a \link[base]{character} scalar or \link[base]{vector}.
+The function \code{\link[=moonEmoji]{moonEmoji()}} returns a \link[base]{factor}.
 
 The function \code{\link[=twilightPolygon]{twilightPolygon()}} returns a \link[base]{data.frame}.
 }

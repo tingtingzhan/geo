@@ -147,7 +147,7 @@ subLunarPoint <- \(time = Sys.time(), ...) {
 #' @details
 #' The function [moonEmoji()] finds the moon phase.
 #' @returns 
-#' The function [moonEmoji()] returns a \link[base]{character} scalar or \link[base]{vector}.
+#' The function [moonEmoji()] returns a \link[base]{factor}.
 #' 
 #' @importFrom lunar lunar.phase
 #' @export
@@ -157,7 +157,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
     as.Date() |>
     lunar.phase(...) |> # next: find the hour `shift`
     cut.default(
-      #breaks = c(0, pi/2, pi, 3*pi/2, 2*pi), # ?lunar::lunar.phase
       breaks = seq.int(from = 0, to = 2*pi, length.out = 10L), # for the 9 emoji's
       labels = c('\U1f311', '\U1f312', '\U1f313', '\U1f314', '\U1f315', '\U1f316', '\U1f317', '\U1f318', '\U1f311'),
       include.lowest = TRUE, right = TRUE
