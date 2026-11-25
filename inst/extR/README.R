@@ -13,6 +13,8 @@ source('./inst/extR/plotly.R')
 source('./inst/extR/tayljordan.R')
 # EPSG:4326 is the standard authority code for the WGS84 (World Geodetic System 1984)
 
+source('./inst/extR/IAU.R')
+
 if (FALSE) {
   object.size(airports_datahub)
   object.size(airports_ip2location)

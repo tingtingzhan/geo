@@ -312,36 +312,8 @@ twilightPolygon <- \(
 
 
 
-# think of a better name!!
-foo <- \(time, ...) {
-  
-  # by Gemini!
-  
-  # `time` is UTC \link[base]{POSIXlt}
-  
-  # 1. current UTC time to Julian Date (JD)
-  jd <- as.numeric(time) / 86400 + 2440587.5
-  
-  # 2. Greenwich Mean Sidereal Time (GMST) in degrees
-  D <- jd - 2451545.0
-  gmst_deg <- (280.46061837 + 360.98564736629 * D) %% 360
-  # `gmst_deg` should be identical to `gst_degrees` in [subLunarPoint()]
-  
-  # 3. Obliquity of the Ecliptic
-  T_cen <- D / 36525
-  eps <- (23.439291 - 0.0130042 * T_cen) * pi / 180
-  
-  # Mean Longitude of the Ascending Node (Omega)
-  omega <- ((125.04452 - 1934.136261 * T_cen + 0.0020708 * T_cen^2) %% 360) / 180 * pi
-  
-  return(list(
-    gmst_deg = gmst_deg,
-    T_cen = T_cen,
-    eps = eps,
-    omega = omega
-  ))
-  
-}
+
+
 
 
 
@@ -349,16 +321,15 @@ foo <- \(time, ...) {
 #' @export
 eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
-  time <- time |>
-    as.POSIXlt(tz = 'UTC')
+  z <- celestialConstant(time) |>
+    with(expr = {
+      ecliptic2geo(
+        lambda = seq.int(from = 0, to = 2*pi, length.out = n),
+        eps = obliquity / 180 * pi,
+        gmst = gmst
+      )
+    })
   
-  tmp <- foo(time)
-  
-  z <- ecliptic2geo(
-    lambda = seq.int(from = 0, to = 2*pi, length.out = n),
-    eps = tmp$eps,
-    gmst_deg = tmp$gmst_deg
-  )
   z$color <- 'darkorange'
   return(z)
   
@@ -370,41 +341,38 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
 #' @export
 LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
-  # by Gemini!
-  
-  time <- time |>
-    as.POSIXlt(tz = 'UTC')
-  
-  tmp <- foo(time)
-  
-  # 2. Lunar Orbital Parameters
-  i_moon <- 5.145396 * pi / 180 # Inclination to ecliptic
-  
   # Argument of latitude u (0° = Ascending Node, 180° = Descending Node)
   u_deg <- seq.int(from = 0, to = 360, length.out = n)
-  u_rad <- u_deg * pi / 180
+  u_rad <- u_deg / 180 * pi
   
   # Lunar orbit in ecliptic coordinates
-  moon_beta <- asin(sin(i_moon) * sin(u_rad))
-  moon_lambda <- tmp$omega + atan2(cos(i_moon) * sin(u_rad), cos(u_rad))
+  moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u_rad))
   
-  moon_geo <- ecliptic2geo(
-    lambda = moon_lambda, 
-    beta = moon_beta, 
-    eps = tmp$eps, 
-    gmst_deg = tmp$gmst_deg)
+  z <- celestialConstant(time) |>
+    with(expr = {
+      moon_lambda <- omega / 180 * pi + 
+        atan2(
+          cos(i_moon / 180 * pi) * sin(u_rad), 
+          cos(u_rad)
+        )
+      ecliptic2geo(
+        lambda = moon_lambda, 
+        beta = moon_beta, 
+        eps = obliquity / 180 * pi, 
+        gmst = gmst)
+    })
   
-  moon_df <- cbind(moon_geo, u = u_deg)
+  z$u <- u_deg
   
   # Label Ascending & Descending Nodes along the lunar path
   # (not feasible with `n=4L`)
-  #moon_df$label <- ""
-  #moon_df$label[moon_df$u == 0]   <- "\u260a Ascending Node"
-  #moon_df$label[moon_df$u == 180] <- "\u260b Descending Node"
+  #z$label <- ""
+  #z$label[z$u == 0]   <- "\u260a Ascending Node"
+  #z$label[z$u == 180] <- "\u260b Descending Node"
   
-  moon_df$color <- 'cornflowerblue'
+  z$color <- 'cornflowerblue'
   
-  return(moon_df)
+  return(z)
   
 }
 
@@ -454,27 +422,58 @@ ecliptic2geo <- \(
   lambda, # radius
   beta = 0, # radius
   eps, # radius
-  gmst_deg
+  gmst
 ) {
   
   # Equatorial Declination (Latitude)
-  lat <- asin(sin(beta) * cos(eps) + cos(beta) * sin(eps) * sin(lambda)) * 180 / pi
+  declination <- asin(sin(beta) * cos(eps) + cos(beta) * sin(eps) * sin(lambda))
   
   # Equatorial Right Ascension
-  ra_deg <- atan2(
+  ra <- atan2(
     sin(lambda) * cos(eps) - tan(beta) * sin(eps),
     cos(lambda)
-  ) * 180 / pi
-  
-  # Geographic Longitude
-  # Subtract GMST to align celestial Right Ascension with Earth's current rotation
-  lon <- ((ra_deg - gmst_deg + 180) %% 360) - 180
+  )
   
   return(data.frame(
-    lon = lon, 
-    lat = lat
+    lon = ((ra / pi * 180 - gmst + 180) %% 360) - 180, 
+    lat = declination / pi * 180
   ))
 }
 
+
+celestialConstant <- \(time, ...) {
+  
+  # by Gemini!
+  
+  time <- time |>
+    as.POSIXlt(tz = 'UTC')
+  
+  # https://www.omnicalculator.com/everyday-life/sidereal-time
+  
+  D <- as.numeric(time) / (60*60*24) + jd_1970010100 - jd_2000010112
+  
+  T_cen <- D / (1e2 * c_Julian_yr) # the fraction of the century elapsed
+  
+  # Greenwich Mean Sidereal Time (GMST): IAU 1982 standard
+  gmst <- c_gmst2000 + 
+    c_siderealRotationDay * D + 
+    .000387933 * T_cen^2 - 
+    T_cen^3 / 3871e4
+  # `gmst` should be identical to `gst_degrees` in [subLunarPoint()]
+  
+  # Mean Longitude of the Ascending Node (Omega)
+  # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
+  omega <- c_omega2000 - 
+    c_omegaRegression * T_cen + 
+    .0020708 * T_cen^2 + 
+    T_cen^3 / 45e4
+  
+  return(list(
+    gmst = gmst %% 360,
+    obliquity = c_obliquity2000 - c_precessionSecular * T_cen, # at `time`
+    omega = omega %% 360
+  ))
+  
+}
 
 

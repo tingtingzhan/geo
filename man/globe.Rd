@@ -19,7 +19,7 @@ add_twilight(
 
 add_sunmoon(map = add_TropicPolar(), time = Sys.time(), ...)
 
-add_TropicPolar(map = add_meridian())
+add_TropicPolar(map = add_meridian(), time = Sys.time(), ...)
 
 add_meridian(map = globe())
 

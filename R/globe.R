@@ -131,11 +131,15 @@ add_sunmoon <- \(
 #' @importFrom plotly add_paths toRGB
 #' @export
 add_TropicPolar <- \(
-  map = add_meridian()
+  map = add_meridian(),
+  time = Sys.time(), 
+  ...
 ) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L) # not great circle!!
   path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
+  
+  obliquity <- celestialConstant(time)$obliquity
   
   map |>
     add_paths(
@@ -147,11 +151,11 @@ add_TropicPolar <- \(
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
-      x = lon, y = 23.43928, 
+      x = lon, y = obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
-      x = lon, y = -23.43928, 
+      x = lon, y = - obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
