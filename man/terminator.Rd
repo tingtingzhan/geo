@@ -24,6 +24,7 @@ twilightPolygon(
   type = c("civil", "nautical", "astronomical"),
   sza = NULL,
   n = 1001L,
+  mc.cores = detectCores(),
   ...
 )
 
@@ -45,6 +46,8 @@ LunarOrbitalPolygon(time = Sys.time(), n = 4L, ...)
 \item{type}{\link[base]{character} scalar}
 
 \item{sza}{\link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)}
+
+\item{mc.cores}{\link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is \code{1L} on Windows, and \link[parallel]{detectCores} on Unix-like system.}
 }
 \value{
 The function \code{\link[=subSolarPoint]{subSolarPoint()}} returns a \link[base]{data.frame}.
