@@ -329,6 +329,9 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
     })
   
   z$color <- 'darkorange'
+  z$time <- time |>
+    as.POSIXlt(tz = 'UTC') |>
+    format(usetz = TRUE)
   return(z)
   
 }
@@ -370,6 +373,9 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   #z$label[z$u == 0]   <- "\u260a Ascending Node"
   #z$label[z$u == 180] <- "\u260b Descending Node"
   
+  z$time <- time |>
+    as.POSIXlt(tz = 'UTC') |>
+    format(usetz = TRUE)
   z$color <- 'cornflowerblue'
   
   return(z)

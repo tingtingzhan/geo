@@ -60,7 +60,7 @@ hoverlabel_ <- \(x) {
 #' @seealso 
 #' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
-#' @importFrom plotly add_text add_polygons
+#' @importFrom plotly add_text add_paths add_polygons
 #' @export
 add_sunmoon <- \(
   map = add_TropicPolar(),
@@ -98,13 +98,13 @@ add_sunmoon <- \(
       hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
-    add_paths(
+    add_paths( # ecliptic
       data = eclipticPolygon(),
       x = ~ lon, y = ~ lat,
       line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # lunar orbit
       data = LunarOrbitalPolygon(),
       x = ~ lon, y = ~ lat,
       line = ~ list(color = color, dash = 'dot', width = .5),
@@ -142,23 +142,23 @@ add_TropicPolar <- \(
   obliquity <- celestialDegree(time)$obliquity
   
   map |>
-    add_paths(
+    add_paths( # Arctic Circle
       x = lon, y = 90 - obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # Antarctic Circle
       x = lon, y = -90 + obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # Northern Tropic / Tropic of Cancer
       x = lon, y = obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # Southern Tropic / Tropic of Capricorn
       x = lon, y = - obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # Equator
       x = lon, y = 0, 
       line = path_line, hoverinfo = 'none'
     )
@@ -181,11 +181,11 @@ add_meridian <- \(
   path_line <- list(color = toRGB('gray85'), width = .5, dash = 'dot')
   
   map |>
-    add_paths(
+    add_paths( # Greenwich meridian
       x = 0, y = lat, 
       line = path_line, hoverinfo = 'none'
     ) |>
-    add_paths(
+    add_paths( # antimeridian
       x = 180, y = lat, 
       line = path_line, hoverinfo = 'none'
     )
@@ -199,7 +199,7 @@ add_meridian <- \(
 #' @details
 #' The function [globe()] is the default earth, that adds `land`, `ocean`, `lakes`, `rivers`, `countries`, longitude/latitude axes, and USA facing the user, on top of [globe_minimal()].
 #' 
-#' @importFrom plotly plot_geo add_paths layout
+#' @importFrom plotly plot_geo layout
 #' @export
 globe <- \(
   map = globe_minimal()

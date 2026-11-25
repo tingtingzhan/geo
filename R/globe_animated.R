@@ -34,6 +34,14 @@ add_twilight_animated <- \(
     lapply(FUN = terminatorPolygon) |>
     do.call(what = 'rbind.data.frame', args = _)
   
+  ecliptic <- time |>
+    lapply(FUN = eclipticPolygon) |>
+    do.call(what = 'rbind.data.frame', args = _)
+  
+  lunarOrbit <- time |>
+    lapply(FUN = LunarOrbitalPolygon) |>
+    do.call(what = 'rbind.data.frame', args = _)
+  
   twilight <- if (length(time) <= 6L) {
     time |>
       lapply(FUN = twilightPolygons, type = type, sza = sza) |>
@@ -62,6 +70,18 @@ add_twilight_animated <- \(
       name = 'Moon', # why not working?
       hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
+    ) |>
+    add_paths( # ecliptic
+      data = ecliptic,
+      x = ~ lon, y = ~ lat, frame = ~ time,
+      line = ~ list(color = color, dash = 'dot', width = .5),
+      hoverinfo = 'none'
+    ) |>
+    add_paths( # lunar orbit
+      data = lunarOrbit,
+      x = ~ lon, y = ~ lat, frame = ~ time,
+      line = ~ list(color = color, dash = 'dot', width = .5),
+      hoverinfo = 'none'
     ) |>
     add_polygons(
       data = terminator,
