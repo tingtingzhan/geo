@@ -345,23 +345,25 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   u_deg <- seq.int(from = 0, to = 360, length.out = n)
   u_rad <- u_deg / 180 * pi
   
-  # Lunar orbit in ecliptic coordinates
-  moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u_rad))
-  # print(moon_beta) # debugging only
-  
   z <- celestialDegree(time) |>
     with(expr = {
+      
+      moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u_rad))
+      # print(moon_beta) # debugging only
+      
       moon_lambda <- omega / 180 * pi + 
         atan2(
           cos(i_moon / 180 * pi) * sin(u_rad), 
           cos(u_rad)
         )
       # print(moon_lambda) # debugging only
+      
       ecliptic2geo(
         lambda = moon_lambda, 
         beta = moon_beta, 
         eps = obliquity / 180 * pi, 
         gmst = gmst)
+      
     })
   
   z$u <- u_deg
@@ -446,7 +448,7 @@ ecliptic2geo <- \(
 }
 
 
-celestialDegree <- \(time, ...) {
+celestialDegree <- \(time = Sys.time(), ...) {
   
   time <- time |>
     as.POSIXlt(tz = 'UTC')
@@ -465,17 +467,26 @@ celestialDegree <- \(time, ...) {
     .000387933 * T_cen^2 - 
     T_cen^3 / 3871e4
   
+  L <- c_L2000 + 
+    36000.76983 * T_cen +
+    .0003032 * T_cen^2
+  
   # Mean Longitude of the Ascending Node (Omega)
+  # 月球平升交点黄经
   # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
   omega <- c_omega2000 - 
     c_omegaRegression * T_cen + 
     .0020708 * T_cen^2 + 
     T_cen^3 / 45e4
   
+  i_moon <- i_moon_mean + 
+    .145 * cos(2*(L - omega))
+  
   return(list( # all in degree (not radius)
     gmst = gmst %% 360,
     obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
-    omega = omega %% 360
+    omega = omega %% 360,
+    i_moon = i_moon
   ))
   
 }
