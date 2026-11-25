@@ -24,12 +24,13 @@ c_L2000 = 280.46646
 # 360.98564736629 (in degrees per solar day) is the Earth's sidereal rotation rate relative to the mean vernal equinox, defined in the IAU 1982 standard (and Jean Meeus' Astronomical Algorithms, Chapter 12).
 c_siderealRotationDay = 360.98564736629
 
-# 125.04452° is the longitude of the ascending node of the Moon's mean orbit (Ω) at the J2000.0 epoch (January 1, 2000, at 12:00 TT)
-c_omega2000 = 125.04452
+
+# longitude of the ascending node of the Moon's mean orbit (Ω) at the J2000.0 epoch (January 1, 2000, at 12:00 TT)
+c_omega2000 = 125.0445479 # 1998 ed.2; instead of 125.04452 (1991 ed.1)
 
 
-# 1934.136261 (in degrees per Julian century) is the rate of regression of the Moon’s ascending node (Ω) along the ecliptic.
-c_omegaRegression = 1934.136261
+# rate of regression of the Moon’s ascending node (Ω) along the ecliptic (in degrees per Julian century).
+c_omegaRegression = -1934.1362891 # 1998 ed.2; instead of 1934.136261 (1991 ed.1)
 
 
 # https://en.wikipedia.org/wiki/Julian_year_(astronomy)

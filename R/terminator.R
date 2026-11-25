@@ -445,14 +445,14 @@ celestialDegree <- \(time = Sys.time(), ...) {
   # https://www.omnicalculator.com/everyday-life/sidereal-time
   # Greenwich Mean Sidereal Time (GMST): IAU 1982 standard
   
-  D <- as.numeric(time) / (60*60*24) + 
+  Day <- as.numeric(time) / (60*60*24) + 
     jd_1970010100 - 
     jd_2000010112
   
-  T_cen <- D / (1e2 * c_Julian_yr) # the fraction of the century elapsed
+  T_cen <- Day / (1e2 * c_Julian_yr) # the fraction of the century elapsed
   
   gmst <- c_gmst2000 + 
-    c_siderealRotationDay * D + 
+    c_siderealRotationDay * Day + 
     .000387933 * T_cen^2 - 
     T_cen^3 / 3871e4
   
@@ -465,8 +465,21 @@ celestialDegree <- \(time = Sys.time(), ...) {
   # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
   omega <- c_omega2000 - 
     c_omegaRegression * T_cen + 
-    .0020708 * T_cen^2 + 
-    T_cen^3 / 45e4
+    0.0020754 * T_cen^2 + # instead of .0020708 (1991 ed.1)
+    T_cen^3 / 467441 + # instead of 45e4 (1991 ed.1)
+    (- T_cen^4 / 60616000)
+  
+  D  <- ((297.8501921 + 445267.1114034 * T_cen - 0.0018819 * T_cen^2) %% 360) * pi / 180
+  M  <- ((357.5291092 + 35999.0502909 * T_cen - 0.0001536 * T_cen^2) %% 360) * pi / 180
+  Mp <- ((134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) %% 360) * pi / 180
+  F  <- ((93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) %% 360) * pi / 180
+  
+  omega_true <- omega - 
+    1.4979 * sin(2 * (D - F)) - 
+    0.1500 * sin(M) - 
+    0.1226 * sin(2 * D) + 
+    0.1176 * sin(2 * F) - 
+    0.0801 * sin(2 * (Mp - F))
   
   i_moon <- i_moon_mean + 
     .145 * cos(2*(L - omega))
@@ -475,6 +488,7 @@ celestialDegree <- \(time = Sys.time(), ...) {
     gmst = gmst %% 360,
     obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
     omega = omega %% 360,
+    omega_true = omega_true %% 360,
     L = L,
     i_moon = i_moon
   ))
@@ -570,6 +584,39 @@ LunarEquator_lon <- \(time = Sys.time()) {
     text = c('Ascending', 'Descending')
   ))
 
+}
+
+
+
+
+# intersection of the ecliptic and the lunar orbit
+LunarNodes <- \(time = Sys.time()) {
+  
+  tmp <- celestialDegree(time)
+  
+  z <- tmp |>
+    with(expr = {
+      ecliptic2geo(
+        lambda = c(
+          omega_true, # ascending_node
+          (omega_true + 180) %% 360 # descending_node
+        ) / 180 * pi,
+        eps = obliquity / 180 * pi,
+        gmst = gmst
+      )
+    })
+  
+  return(data.frame(
+    time = time |>
+      as.POSIXlt(tz = 'UTC') |>
+      format(usetz = TRUE),
+    z,
+    color = 'darkolivegreen',
+    incl = tmp$i_moon |>
+      sprintf(fmt = '\u9ec4\u767d\u4ea4\u89d2 %.3f\u00b0'),
+    text = c('Ascending', 'Descending')
+  ))
+  
 }
 
 

@@ -40,6 +40,57 @@ fluidPage(
           ')'
         ),
         tags$li(
+          'The line separating day from night (the ', 
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Terminator_(solar)', 
+            'terminator'
+          ),
+          ', ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/zh-hans/晨昏圈', 
+            '晨昏线'
+          ),
+          ')'
+        ),
+        tags$li(
+          'The three zones of ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Twilight', 
+            'twilight'
+          ),
+          ' (',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://zh.wikipedia.org/wiki/曙暮光', 
+            '曙暮光'
+          ),
+          '): ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Twilight#Civil_twilight',
+            'civil'
+          ),
+          ', ', 
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Twilight#Nautical_twilight',
+            'nautical'
+          ),
+          ', and ',
+          tags$a(
+            .noWS = c('before', 'after'),
+            href = 'https://en.wikipedia.org/wiki/Twilight#Astronomical_twilight',
+            'astronomical'
+          ),
+          '.'
+        )
+      ),
+      h4('It Also Shows'),
+      tags$ul(
+        tags$li(
           'Where the Sun is directly overhead (the ',
           tags$a(
             .noWS = c('before', 'after'),
@@ -106,52 +157,13 @@ fluidPage(
           ') and the inclination of the lunar orbit to the equator (白赤交角)'
         ),
         tags$li(
-          'The line separating day from night (the ', 
+          'The two points at which the lunar orbit intersects the ecliptic (', 
           tags$a(
             .noWS = c('before', 'after'),
-            href = 'https://en.wikipedia.org/wiki/Terminator_(solar)', 
-            'terminator'
+            href = 'https://en.wikipedia.org/wiki/Lunar_node',
+            'lunar nodes'
           ),
-          ', ',
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://zh.wikipedia.org/zh-hans/晨昏圈', 
-            '晨昏线'
-          ),
-          ')'
-        ),
-        tags$li(
-          'The three zones of ',
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://en.wikipedia.org/wiki/Twilight', 
-            'twilight'
-          ),
-          ' (',
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://zh.wikipedia.org/wiki/曙暮光', 
-            '曙暮光'
-          ),
-          '): ',
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://en.wikipedia.org/wiki/Twilight#Civil_twilight',
-            'civil'
-          ),
-          ', ', 
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://en.wikipedia.org/wiki/Twilight#Nautical_twilight',
-            'nautical'
-          ),
-          ', and ',
-          tags$a(
-            .noWS = c('before', 'after'),
-            href = 'https://en.wikipedia.org/wiki/Twilight#Astronomical_twilight',
-            'astronomical'
-          ),
-          '.'
+          ') and the lunar orbital inclination (黄白交角)'
         )
       ),
       h4('Privacy'),

@@ -85,7 +85,7 @@ add_sunmoon <- \(
     #  hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
     #  hoverlabel = ~ hoverlabel_(color) # \CRANpkg{plotly} messes up!!!
     #) |>
-    add_text(
+    add_text( # Sub-Solor Point
     #add_markers( # nah..
       data = subsolar,
       x = ~ lon, y = ~ lat, text = ~ text,
@@ -95,7 +95,7 @@ add_sunmoon <- \(
       hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
-    add_text(
+    add_text( # Sub-Lunar Point
       data = sublunar,
       x = ~ lon, y = ~ lat, text = ~ text,
       name = ~ label,
@@ -103,12 +103,18 @@ add_sunmoon <- \(
       hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_paths( # ecliptic
-      data = eclipticPolygon(),
+      data = eclipticPolygon(time = time),
       x = ~ lon, y = ~ lat,
       line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
-    add_markers(
+    add_paths( # lunar orbit
+      data = LunarOrbitalPolygon(time = time),
+      x = ~ lon, y = ~ lat,
+      line = ~ list(color = color, dash = 'dot', width = .5),
+      hoverinfo = 'none'
+    ) |>
+    add_markers( # ecliptic/lunar vs. Equator
       data = equator_incl,
       x = ~ lon, y = 0, text = ~ text,
       customdata = ~ incl,
@@ -116,11 +122,13 @@ add_sunmoon <- \(
       hovertemplate = '%{text}\nLon: %{lon:.3f}\u00b0\n%{customdata}<extra></extra>',
       hoverlabel = ~ hoverlabel_(color)
     ) |>
-    add_paths( # lunar orbit
-      data = LunarOrbitalPolygon(),
-      x = ~ lon, y = ~ lat,
-      line = ~ list(color = color, dash = 'dot', width = .5),
-      hoverinfo = 'none'
+    add_markers( # ecliptic vs. lunar
+      data = LunarNodes(time = time),
+      x = ~ lon, y = ~ lat, text = ~ text,
+      customdata = ~ incl,
+      marker = ~ list(color = color),
+      hovertemplate = '%{text}\n(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)\n%{customdata}<extra></extra>',
+      hoverlabel = ~ hoverlabel_(color)
     ) |>
     add_polygons(
       data = terminatorPolygon(time = time),
