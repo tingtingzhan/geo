@@ -219,25 +219,36 @@ twilightPolygon <- \(
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
   
+  # (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(ha)) - cos(sza) # GOLD!!!
+  # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle} has analytical solution!!
+  # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
+  
   # constants!
-  sin_sslat <- sin(sslat)
-  cos_sslat <- cos(sslat)
-  cos_sza <- cos(sza)
+  cos_sza <- cos(sza) # compute intensive
   
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
+  R <- sqrt(sin(sslat)^2 + cos(sslat)^2 * cos(ha)^2)
+  cos_sza_R <- cos_sza / R
+  alpha <- atan2(
+    y = sin(sslat), 
+    x = cos(sslat) * cos(ha)
+  ) # atan(-cos(ha) / tan(sslat)) is incorrect!!
+  par <- rbind(cos_sza_R, alpha) |>
+    apply(MARGIN = 2L, FUN = identity, simplify = FALSE)
   
-  unr_fn <- \(i) {
-    uniroot.all( # look inside!
-      f = \(x, cos_ha) {
-        (sin(x)*sin_sslat + cos(x)*cos_sslat*cos_ha) - cos_sza
-        # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle}
-        # does have analytical solution!!
-        # but tzh have problem writing the analytical solution in R!!!!
+  sza2phi <- \(i) {
+    cos_sza_R <- i[1L]
+    if (abs(cos_sza_R) > 1) return(numeric()) # do NOT move this outside!!
+    alpha <- i[2L]
+    phi_minus_alpha <- uniroot.all( # look inside!
+      f = \(x) {
+        cos(x) - cos_sza_R
       }, 
-      cos_ha = i,
-      lower = -pi/2, upper = pi/2
+      lower = -pi/2 - alpha, upper = pi/2 - alpha
+      # tzh guesses: due to `lower` and `upper`, a pure analytical solution is tricky to write..
     ) |>
       sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
+    return(phi_minus_alpha + alpha)
   }
   
   if (Sys.getenv('POSITRON') == '1') {
@@ -245,20 +256,18 @@ twilightPolygon <- \(
     # multi-core: POSITRON
     #cl <- makeCluster(mc.cores, type = 'PSOCK')
     #z <- lon |>
-    #  parLapply(cl = cl, fun = unr_fn)
+    #  parLapply(cl = cl, fun = sza2phi)
     #stopCluster(cl)
     # end of multi-core
     
     # not using multi-core is actually faster
-    z <- ha |>
-      cos() |>
-      lapply(FUN = unr_fn)
+    z <- par |>
+      lapply(FUN = sza2phi)
     
   } else {
     # does improve speed in RStudio!
-    z <- ha |>
-      cos() |>
-      mclapply(FUN = unr_fn, mc.cores = mc.cores)
+    z <- par |>
+      mclapply(FUN = sza2phi, mc.cores = mc.cores)
   }
   
   nz <- lengths(z)
@@ -309,7 +318,6 @@ twilightPolygon <- \(
   return(ret)
   
 }
-
 
 
 
