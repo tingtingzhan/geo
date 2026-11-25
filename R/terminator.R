@@ -121,21 +121,18 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   time <- time |>
     as.POSIXct(tz = 'UTC')
   
-  lunar_data <- moonAngle(t = time, longitude = 0, latitude = 0)
-  # (lon = 0, lat = 0): unprimed Greenwich baseline coords
+  mA <- moonAngle(t = time, longitude = 0, latitude = 0)
+  # Important!!
+  # mA$illuminatedFraction: does not tell wane vs. wax!!
   
-  sublunar_lat <- lunar_data$declination
-  
-  # Greenwich Sidereal Time (GST)
-  gst_hours <- siderealTime(time) # time in decimal hours (0 to 24)
-  gst_degrees <- gst_hours / 24 * 360 # hours to degrees
-  
-  sublunar_lon <- lunar_data$rightAscension - gst_degrees
-  sublunar_lon <- ((sublunar_lon + 180) %% 360) - 180
+  sublunar_lon <- celestialDegree(time) |> 
+    with(expr = {
+      ((mA$rightAscension - gmst + 180) %% 360) - 180
+    })
   
   return(data.frame(
     lon = sublunar_lon,
-    lat = sublunar_lat,
+    lat = mA$declination,
     time = time |>
       format(usetz = TRUE),
     text = moonEmoji(time = time),
@@ -155,6 +152,7 @@ subLunarPoint <- \(time = Sys.time(), ...) {
 #' @importFrom lunar lunar.phase
 #' @export
 moonEmoji <- \(time = Sys.time(), ...) {
+  
   time |>
     as.Date() |>
     lunar.phase(...) |> # next: find the hour `shift`
@@ -321,7 +319,7 @@ twilightPolygon <- \(
 #' @export
 eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
-  z <- celestialConstant(time) |>
+  z <- celestialDegree(time) |>
     with(expr = {
       ecliptic2geo(
         lambda = seq.int(from = 0, to = 2*pi, length.out = n),
@@ -347,14 +345,16 @@ LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
   
   # Lunar orbit in ecliptic coordinates
   moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u_rad))
+  # print(moon_beta) # debugging only
   
-  z <- celestialConstant(time) |>
+  z <- celestialDegree(time) |>
     with(expr = {
       moon_lambda <- omega / 180 * pi + 
         atan2(
           cos(i_moon / 180 * pi) * sin(u_rad), 
           cos(u_rad)
         )
+      # print(moon_lambda) # debugging only
       ecliptic2geo(
         lambda = moon_lambda, 
         beta = moon_beta, 
@@ -422,7 +422,7 @@ ecliptic2geo <- \(
   lambda, # radius
   beta = 0, # radius
   eps, # radius
-  gmst
+  gmst # degree
 ) {
   
   # Equatorial Declination (Latitude)
@@ -441,7 +441,7 @@ ecliptic2geo <- \(
 }
 
 
-celestialConstant <- \(time, ...) {
+celestialDegree <- \(time, ...) {
   
   # by Gemini!
   
@@ -459,7 +459,6 @@ celestialConstant <- \(time, ...) {
     c_siderealRotationDay * D + 
     .000387933 * T_cen^2 - 
     T_cen^3 / 3871e4
-  # `gmst` should be identical to `gst_degrees` in [subLunarPoint()]
   
   # Mean Longitude of the Ascending Node (Omega)
   # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
@@ -468,7 +467,7 @@ celestialConstant <- \(time, ...) {
     .0020708 * T_cen^2 + 
     T_cen^3 / 45e4
   
-  return(list(
+  return(list( # all in degree (not radius)
     gmst = gmst %% 360,
     obliquity = c_obliquity2000 - c_precessionSecular * T_cen, # at `time`
     omega = omega %% 360

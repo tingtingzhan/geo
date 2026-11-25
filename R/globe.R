@@ -101,13 +101,13 @@ add_sunmoon <- \(
     add_paths(
       data = eclipticPolygon(),
       x = ~ lon, y = ~ lat,
-      line = ~ list(color = color, dash = 'dot', width = .4),
+      line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
     add_paths(
       data = LunarOrbitalPolygon(),
       x = ~ lon, y = ~ lat,
-      line = ~ list(color = color, dash = 'dot', width = .4),
+      line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
     add_polygons(
@@ -137,17 +137,17 @@ add_TropicPolar <- \(
 ) {
   
   lon <- seq(from = -180, to = 180, length.out = 501L) # not great circle!!
-  path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
+  path_line <- list(color = toRGB('gray85'), width = .5, dash = 'dot')
   
-  obliquity <- celestialConstant(time)$obliquity
+  obliquity <- celestialDegree(time)$obliquity
   
   map |>
     add_paths(
-      x = lon, y = 66.56, 
+      x = lon, y = 90 - obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
-      x = lon, y = -66.56, 
+      x = lon, y = -90 + obliquity, 
       line = path_line, hoverinfo = 'none'
     ) |>
     add_paths(
@@ -178,7 +178,7 @@ add_meridian <- \(
 ) {
   
   lat <- seq(from = -90, to = 90, length.out = 3L)
-  path_line <- list(color = toRGB('gray85'), width = .4, dash = 'dot')
+  path_line <- list(color = toRGB('gray85'), width = .5, dash = 'dot')
   
   map |>
     add_paths(
