@@ -63,6 +63,11 @@ wrap180 <- \(x) {
   ((x + 180) %% 360) - 180
 }
 
+wrap_pi <- \(x) {
+  x[] <- ((x + pi) %% (2*pi)) - pi
+  return(x)
+}
+
 
 # Ecliptic (lambda, beta) -> Geographic (lon, lat)
 ecliptic2geo <- \(

@@ -235,22 +235,19 @@ twilightPolygon <- \(
   z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
   id <- (abs(cos_sza_R) <= 1)
   
-  rot_m <- tcrossprod(
-    c(-1, 1),
-    c(-2, 0, 2) * pi
-  ) # rotation tool
-  
-  z[id] <- (alpha[id] + tcrossprod(
+  phi <- (alpha[id] + tcrossprod(
     acos(cos_sza_R[id]),
     c(-1, 1)
   )) |>
+    wrap_pi()
+  phi[phi < -pi/2] <- NA_real_
+  phi[phi > pi/2] <- NA_real_
+  z[id] <- phi |>
     apply(MARGIN = 1L, FUN = \(i) {
-      m <- i + rot_m
-      # return:
-      m[(m >= -pi/2) & (m <= pi/2)] |>
+      (i[!is.na(i)]) |> # faster than stats::na.omit
         sort.int()
     }, simplify = FALSE)
-
+  
   nz <- lengths(z)
   
   lat <- z |>
