@@ -170,7 +170,7 @@ fluidPage(
       h4('Privacy'),
       'This app asks for permission to access your location.',
       br(),
-      'If you agree, your coordinates will appear on the globe. Your location is not stored or shared.',
+      'If you agree, your coordinates are used only in your browser to mark your position on the globe. They are never sent to the server or stored.',
       br(),
       'If you decline, you can still explore everything else.'#,
       # br(),
