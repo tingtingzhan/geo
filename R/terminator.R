@@ -173,8 +173,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @param type \link[base]{character} scalar
 #' 
-#' @param mc.cores \link[base]{integer} scalar, see the function \link[parallel]{mclapply}. Default value is `1L` on Windows, and \link[parallel]{detectCores} on Unix-like system.
-#' 
 #' @details
 #' The function [twilightPolygon()] finds the latitude and longitude of the borders of
 #' \describe{
@@ -190,16 +188,12 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' \url{https://en.wikipedia.org/wiki/Twilight}
 #' 
 #' @export
-#' @importFrom rootSolve uniroot.all
-#' @importFrom parallel mcmapply detectCores 
-# @importFrom parallel makeCluster stopCluster parLapply
 #' @export
 twilightPolygon <- \(
   time = Sys.time(), 
   type = c('civil', 'nautical', 'astronomical'),
   sza = NULL,
   n = 1001L, # twilight is **not** great circle!!
-  mc.cores = detectCores(),
   ...
 ) {
   
@@ -241,38 +235,22 @@ twilightPolygon <- \(
   z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
   id <- (abs(cos_sza_R) <= 1)
   
-  sza2phi <- \(cos_sza_R, alpha) {
-    phi_minus_alpha <- uniroot.all(
-      f = \(x) {
-        cos(x) - cos_sza_R # correct
-        #abs(x) - acos(cos_sza_R) # wrong!!
-      }, 
-      lower = -pi/2 - alpha, upper = pi/2 - alpha
-    ) |>
-      sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
-    return(phi_minus_alpha + alpha)
-  }
+  sza2phi <- \(sza_R, alpha) {
+    sza_R <- tcrossprod(
+      c(-1, 1),
+      sza_R + c(-2, 0, 2) * pi
+    ) |> # hahaha!!
+      sort.int()
+    z <- sza_R + alpha
+    return(z[(z >= -pi/2) & (z <= pi/2)])
+  } # not really need to do multi-core
   
-  if (Sys.getenv('POSITRON') == '1') {
-    
-    # multi-core: POSITRON
-    #cl <- makeCluster(mc.cores, type = 'PSOCK')
-    #z[id] <- [X] |>
-    #  parLapply(cl = cl, fun = sza2phi)
-    #stopCluster(cl)
-    # end of multi-core
-    
-    # not using multi-core is actually faster
-    z[id] <- mapply(FUN = sza2phi, cos_sza_R = cos_sza_R[id], alpha = alpha[id], SIMPLIFY = FALSE)
-    
-  } else {
-    # does improve speed in RStudio!
-    z[id] <- mcmapply(
-      FUN = sza2phi, 
-      cos_sza_R = cos_sza_R[id], alpha = alpha[id],
-      mc.cores = mc.cores
-    )
-  }
+  z[id] <- mapply(
+    FUN = sza2phi, 
+    sza_R = acos(cos_sza_R[id]),
+    alpha = alpha[id],
+    SIMPLIFY = FALSE
+  )
   
   nz <- lengths(z)
   
