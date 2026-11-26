@@ -225,14 +225,19 @@ twilightPolygon <- \(
   
   # constants!
   cos_sza <- cos(sza) # compute intensive
+  # sza \in (pi/2, pi)
+  # therefore, cos_sza < 0
   
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
   R <- sqrt(sin(sslat)^2 + cos(sslat)^2 * cos(ha)^2)
   cos_sza_R <- cos_sza / R
+  # cos_sza_R < 0
   alpha <- atan2(
     y = sin(sslat), 
     x = cos(sslat) * cos(ha)
-  ) # atan(-cos(ha) / tan(sslat)) is incorrect!!
+  ) # atan(tan(sslat)/cos(ha)) is wrong!!
+  # see ?atan2 
+  # for positive arguments `atan2(y, x) == atan(y/x)`
   par <- rbind(cos_sza_R, alpha) |>
     apply(MARGIN = 2L, FUN = identity, simplify = FALSE)
   
@@ -240,7 +245,7 @@ twilightPolygon <- \(
     cos_sza_R <- i[1L]
     if (abs(cos_sza_R) > 1) return(numeric()) # do NOT move this outside!!
     alpha <- i[2L]
-    phi_minus_alpha <- uniroot.all( # look inside!
+    phi_minus_alpha <- uniroot.all(
       f = \(x) {
         cos(x) - cos_sza_R # correct
         #abs(x) - acos(cos_sza_R) # wrong!!
