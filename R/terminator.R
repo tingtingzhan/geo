@@ -242,10 +242,10 @@ twilightPolygon <- \(
     alpha <- i[2L]
     phi_minus_alpha <- uniroot.all( # look inside!
       f = \(x) {
-        cos(x) - cos_sza_R
+        cos(x) - cos_sza_R # correct
+        #abs(x) - acos(cos_sza_R) # wrong!!
       }, 
       lower = -pi/2 - alpha, upper = pi/2 - alpha
-      # tzh guesses: due to `lower` and `upper`, a pure analytical solution is tricky to write..
     ) |>
       sort.int() # needed as of \CRANpkg{rootSolve} 2023-09-21
     return(phi_minus_alpha + alpha)
