@@ -39,7 +39,7 @@ add_twilight_animated <- \(
     do.call(what = 'rbind.data.frame', args = _)
   
   lunarOrbit <- time |>
-    lapply(FUN = LunarOrbitalPolygon) |>
+    lapply(FUN = lunarOrbitPolygon) |>
     do.call(what = 'rbind.data.frame', args = _)
   
   twilight <- if (length(time) <= 6L) {

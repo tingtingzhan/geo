@@ -59,7 +59,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 #' 
 #' @param n \link[base]{integer} scalar.
 #' \itemize{
-#' \item{Number of points in [terminatorPolygon()] and [eclipticPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
+#' \item{Number of points in [terminatorPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
 #' \item{Maximum fineness for [twilightPolygon()], default value is `1001L`.  Twilight zone borders are **not** great circles!}
 #' }
 #' 
@@ -304,83 +304,6 @@ twilightPolygon <- \(
 
 
 
-
-
-
-#' @rdname terminator
-#' @export
-eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
-  
-  z <- celestialDegree(time) |>
-    with(expr = {
-      ecliptic2geo(
-        lambda = seq.int(from = 0, to = 2*pi, length.out = n),
-        eps = obliquity / 180 * pi,
-        gmst = gmst
-      )
-    })
-  
-  z$color <- 'darkorange'
-  z$time <- time |>
-    as.POSIXlt(tz = 'UTC') |>
-    format(usetz = TRUE)
-  return(z)
-  
-}
-
-
-
-#' @rdname terminator
-#' @export
-LunarOrbitalPolygon <- \(time = Sys.time(), n = 4L, ...) {
-  
-  # Argument of latitude u (0° = Ascending Node, 180° = Descending Node)
-  u_deg <- seq.int(from = 0, to = 360, length.out = n)
-  u_rad <- u_deg / 180 * pi
-  
-  z <- celestialDegree(time) |>
-    with(expr = {
-      
-      moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u_rad))
-      # print(moon_beta) # debugging only
-      
-      moon_lambda <- omega / 180 * pi + 
-        atan2(
-          cos(i_moon / 180 * pi) * sin(u_rad), 
-          cos(u_rad)
-        )
-      # print(moon_lambda) # debugging only
-      
-      ecliptic2geo(
-        lambda = moon_lambda, 
-        beta = moon_beta, 
-        eps = obliquity / 180 * pi, 
-        gmst = gmst)
-      
-    })
-  
-  z$u <- u_deg
-  
-  # Label Ascending & Descending Nodes along the lunar path
-  # (not feasible with `n=4L`)
-  #z$label <- ""
-  #z$label[z$u == 0]   <- "\u260a Ascending Node"
-  #z$label[z$u == 180] <- "\u260b Descending Node"
-  
-  z$time <- time |>
-    as.POSIXlt(tz = 'UTC') |>
-    format(usetz = TRUE)
-  z$color <- 'cornflowerblue'
-  
-  return(z)
-  
-}
-
-
-
-
-
-
 twilightPolygons <- \(
   time = Sys.time(),
   type = c('civil', 'nautical', 'astronomical'),
@@ -405,105 +328,74 @@ twilightPolygons <- \(
 
 
 
-hour_angle_seq <- \(sslat, ...) {
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  ifelse(
-    test = sslat > 0,
-    yes = 2*pi, # summer of Northern Hemisphere
-    no = - 2*pi # winter of Northern Hemisphere
-  )  |>
-    seq(from = 0, to = _, ...)
+
+eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
+  
+  z <- celestialDegree(time) |>
+    with(expr = {
+      ecliptic2geo(
+        lambda = seq.int(from = 0, to = 2*pi, length.out = n),
+        eps = obliquity / 180 * pi,
+        gmst = gmst
+      )
+    })
+  
+  z$color <- 'darkorange'
+  z$time <- time |>
+    as.POSIXlt(tz = 'UTC') |>
+    format(usetz = TRUE)
+  return(z)
+  
 }
 
 
 
-wrap180 <- \(x) {
-  ((x + 180) %% 360) - 180
+
+lunarOrbitPolygon <- \(time = Sys.time(), n = 4L, ...) {
+  
+  u <- seq.int(from = 0, to = 2*pi, length.out = n)
+  
+  z <- celestialDegree(time) |>
+    with(expr = {
+      
+      moon_beta <- asin(sin(i_moon / 180 * pi) * sin(u))
+      # print(moon_beta) # debugging only
+      
+      moon_lambda <- omega / 180 * pi + 
+        atan2(
+          cos(i_moon / 180 * pi) * sin(u), 
+          cos(u)
+        )
+      # print(moon_lambda) # debugging only
+      
+      ecliptic2geo(
+        lambda = moon_lambda, 
+        beta = moon_beta, 
+        eps = obliquity / 180 * pi, 
+        gmst = gmst)
+      
+    })
+  
+  z$time <- time |>
+    as.POSIXlt(tz = 'UTC') |>
+    format(usetz = TRUE)
+  z$color <- 'cornflowerblue'
+  
+  return(z)
+  
 }
 
 
-# Ecliptic (lambda, beta) -> Geographic (lon, lat)
-ecliptic2geo <- \(
-  lambda, # radius
-  beta = 0, # radius
-  eps, # radius
-  gmst # degree
-) {
-  
-  # Equatorial Declination (Latitude)
-  declination <- asin(sin(beta) * cos(eps) + cos(beta) * sin(eps) * sin(lambda))
-  
-  # Equatorial Right Ascension
-  ra <- atan2(
-    sin(lambda) * cos(eps) - tan(beta) * sin(eps),
-    cos(lambda)
-  )
-  
-  return(data.frame(
-    lon = (ra / pi * 180 - gmst) |>
-      wrap180(), 
-    lat = declination / pi * 180
-  ))
-}
 
 
-celestialDegree <- \(time = Sys.time(), ...) {
-  
-  time <- time |>
-    as.POSIXlt(tz = 'UTC')
-  
-  # https://www.omnicalculator.com/everyday-life/sidereal-time
-  # Greenwich Mean Sidereal Time (GMST): IAU 1982 standard
-  
-  Day <- as.numeric(time) / (60*60*24) + 
-    jd_1970010100 - 
-    jd_2000010112
-  
-  T_cen <- Day / (1e2 * c_Julian_yr) # the fraction of the century elapsed
-  
-  gmst <- c_gmst2000 + 
-    c_siderealRotationDay * Day + 
-    .000387933 * T_cen^2 - 
-    T_cen^3 / 3871e4
-  
-  L <- c_L2000 + 
-    36000.76983 * T_cen +
-    .0003032 * T_cen^2
-  
-  # Mean Longitude of the Ascending Node (Omega)
-  # 月球平升交点黄经
-  # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
-  omega <- c_omega2000 - 
-    c_omegaRegression * T_cen + 
-    0.0020754 * T_cen^2 + # instead of .0020708 (1991 ed.1)
-    T_cen^3 / 467441 + # instead of 45e4 (1991 ed.1)
-    (- T_cen^4 / 60616000)
-  
-  D  <- ((297.8501921 + 445267.1114034 * T_cen - 0.0018819 * T_cen^2) %% 360) * pi / 180
-  M  <- ((357.5291092 + 35999.0502909 * T_cen - 0.0001536 * T_cen^2) %% 360) * pi / 180
-  Mp <- ((134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) %% 360) * pi / 180
-  F  <- ((93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) %% 360) * pi / 180
-  
-  omega_true <- omega - 
-    1.4979 * sin(2 * (D - F)) - 
-    0.1500 * sin(M) - 
-    0.1226 * sin(2 * D) + 
-    0.1176 * sin(2 * F) - 
-    0.0801 * sin(2 * (Mp - F))
-  
-  i_moon <- i_moon_mean + 
-    .145 * cos(2*(L - omega))
-  
-  return(list( # all in degree (not radius)
-    gmst = gmst %% 360,
-    obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
-    omega = omega %% 360,
-    omega_true = omega_true %% 360,
-    L = L,
-    i_moon = i_moon
-  ))
-  
-}
+
+
+
+
+
+
+
+
 
 
 
@@ -537,7 +429,7 @@ eclipticEquator_lon <- \(time = Sys.time()) {
 
 
 
-LunarEquator_lon <- \(time = Sys.time()) {
+lunarEquator_lon <- \(time = Sys.time()) {
   
   z <- celestialDegree(time) |>
     with(expr = {
@@ -548,10 +440,6 @@ LunarEquator_lon <- \(time = Sys.time()) {
       
       d_psi <- (-17.20 * sin(omega_r) - 1.32 * sin(2 * L)) / 3600
       gast  <- (gmst + d_psi * cos(eps_r)) %% 360
-      
-      #y <- sin(omega_r) * cos(eps_r) - tan(i_r) * sin(eps_r)
-      #x <- cos(omega_r)
-      #ra_moon_asc_deg <- (atan2(y, x) * 180 / pi) %% 360
       
       # 黄道坐标系下的白道法向量 n_ecl
       nx_ecl <-  sin(i_r) * sin(omega_r)
@@ -600,7 +488,7 @@ LunarEquator_lon <- \(time = Sys.time()) {
 
 
 # intersection of the ecliptic and the lunar orbit
-LunarNodes <- \(time = Sys.time()) {
+lunarNodePoint <- \(time = Sys.time()) {
   
   tmp <- celestialDegree(time)
   
