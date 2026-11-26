@@ -244,26 +244,27 @@ twilightPolygon <- \(
   phi[phi > pi/2] <- NA_real_
   z[id] <- phi |>
     apply(MARGIN = 1L, FUN = \(i) {
-      (i[!is.na(i)]) |> # faster than stats::na.omit
-        sort.int()
+      i[!is.na(i)] # faster than ?stats:::na.omit.default
+      #base::sort.int() # is very slow!!
     }, simplify = FALSE)
   
   nz <- lengths(z)
   
-  lat <- z |>
-    unlist(use.names = FALSE) # whatever!!!
-  
   if (all(nz == 1L)) { # hew!!
-    # do nothing!!
+    
+    lat <- z |>
+      unlist(use.names = FALSE)
+    
   } else { # when (sslat < 0)
+    
     id <- (nz > 0L)
     ha <- c(ha[id], rev.default(ha[id]))
     lat <- c(
       z[id] |> 
-        vapply(FUN = `[`, 1L, FUN.VALUE = NA_real_),
+        vapply(FUN = min, FUN.VALUE = NA_real_),
       z[id] |> 
         rev.default() |>
-        vapply(FUN = \(i) i[length(i)], FUN.VALUE = NA_real_)
+        vapply(FUN = max, FUN.VALUE = NA_real_)
     )
     if (sslat > 0) {
       # summer time
@@ -271,6 +272,7 @@ twilightPolygon <- \(
       ha <- rev.default(ha)
       lat <- rev.default(lat)
     }
+    
   }
   
   z <- cbind(
