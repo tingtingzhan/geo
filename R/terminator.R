@@ -213,16 +213,16 @@ twilightPolygon <- \(
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
   
-  # (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(ha)) - cos(sza) # GOLD!!!
-  # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle} has analytical solution!!
-  # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
-  
   # constants!
   cos_sza <- cos(sza) # compute intensive
   # sza \in (pi/2, pi)
   # therefore, cos_sza < 0
   
   ha <- hour_angle_seq(sslat = sslat, length.out = n)
+  
+  # (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(ha)) - cos(sza) # GOLD!!!
+  # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle} has analytical solution!!
+  # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
   R <- sqrt(sin(sslat)^2 + cos(sslat)^2 * cos(ha)^2)
   cos_sza_R <- cos_sza / R
   # cos_sza_R < 0
@@ -235,23 +235,22 @@ twilightPolygon <- \(
   z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
   id <- (abs(cos_sza_R) <= 1)
   
-  sza2phi <- \(sza_R, alpha) {
-    sza_R <- tcrossprod(
-      c(-1, 1),
-      sza_R + c(-2, 0, 2) * pi
-    ) |> # hahaha!!
-      sort.int()
-    z <- sza_R + alpha
-    return(z[(z >= -pi/2) & (z <= pi/2)])
-  } # not really need to do multi-core
+  rot_m <- tcrossprod(
+    c(-1, 1),
+    c(-2, 0, 2) * pi
+  ) # rotation tool
   
-  z[id] <- mapply(
-    FUN = sza2phi, 
-    sza_R = acos(cos_sza_R[id]),
-    alpha = alpha[id],
-    SIMPLIFY = FALSE
-  )
-  
+  z[id] <- (alpha[id] + tcrossprod(
+    acos(cos_sza_R[id]),
+    c(-1, 1)
+  )) |>
+    apply(MARGIN = 1L, FUN = \(i) {
+      m <- i + rot_m
+      # return:
+      m[(m >= -pi/2) & (m <= pi/2)] |>
+        sort.int()
+    }, simplify = FALSE)
+
   nz <- lengths(z)
   
   lat <- z |>
