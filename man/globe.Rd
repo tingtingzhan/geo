@@ -44,7 +44,13 @@ The Earth with various layers.
 \details{
 The function \code{\link[=add_twilight]{add_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=add_sunmoon]{add_sunmoon()}}.
 
-The function \code{\link[=add_sunmoon]{add_sunmoon()}} adds the subsolar point, the sublunar point and the terminator, on top of \code{\link[=add_TropicPolar]{add_TropicPolar()}}.
+The function \code{\link[=add_sunmoon]{add_sunmoon()}} adds, on top of \code{\link[=add_TropicPolar]{add_TropicPolar()}},
+\itemize{
+\item{the subsolar point, the ecliptic plane, and the obliquity of the ecliptic;}
+\item{the sublunar point, the current Moon phase, the lunar orbital plane, and the inclination of the lunar orbit to the equator;}
+\item{the lunar nodes and the lunar orbital inclination;}
+\item{the terminator.}
+}
 
 The function \code{\link[=add_TropicPolar]{add_TropicPolar()}} adds the equatorial, the tropics, and the polar circles, on top of \code{\link[=add_meridian]{add_meridian()}}.
 

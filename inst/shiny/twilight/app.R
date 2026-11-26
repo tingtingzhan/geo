@@ -17,6 +17,7 @@ fluidPage(
     sidebarPanel(
       width = 5,
       h4('This Interactive Globe Shows'),
+      'On each refresh,',
       tags$ul(
         tags$li(
           'Your current ', 
