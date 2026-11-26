@@ -191,7 +191,7 @@ moonEmoji <- \(time = Sys.time(), ...) {
 #' 
 #' @export
 #' @importFrom rootSolve uniroot.all
-#' @importFrom parallel mclapply detectCores 
+#' @importFrom parallel mcmapply detectCores 
 # @importFrom parallel makeCluster stopCluster parLapply
 #' @export
 twilightPolygon <- \(
@@ -237,14 +237,11 @@ twilightPolygon <- \(
     x = cos(sslat) * cos(ha)
   ) # atan(tan(sslat)/cos(ha)) is wrong!!
   # see ?atan2 
-  # for positive arguments `atan2(y, x) == atan(y/x)`
-  par <- rbind(cos_sza_R, alpha) |>
-    apply(MARGIN = 2L, FUN = identity, simplify = FALSE)
   
-  sza2phi <- \(i) {
-    cos_sza_R <- i[1L]
-    if (abs(cos_sza_R) > 1) return(numeric()) # do NOT move this outside!!
-    alpha <- i[2L]
+  z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
+  id <- (abs(cos_sza_R) <= 1)
+  
+  sza2phi <- \(cos_sza_R, alpha) {
     phi_minus_alpha <- uniroot.all(
       f = \(x) {
         cos(x) - cos_sza_R # correct
@@ -260,19 +257,21 @@ twilightPolygon <- \(
     
     # multi-core: POSITRON
     #cl <- makeCluster(mc.cores, type = 'PSOCK')
-    #z <- lon |>
+    #z[id] <- [X] |>
     #  parLapply(cl = cl, fun = sza2phi)
     #stopCluster(cl)
     # end of multi-core
     
     # not using multi-core is actually faster
-    z <- par |>
-      lapply(FUN = sza2phi)
+    z[id] <- mapply(FUN = sza2phi, cos_sza_R = cos_sza_R[id], alpha = alpha[id], SIMPLIFY = FALSE)
     
   } else {
     # does improve speed in RStudio!
-    z <- par |>
-      mclapply(FUN = sza2phi, mc.cores = mc.cores)
+    z[id] <- mcmapply(
+      FUN = sza2phi, 
+      cos_sza_R = cos_sza_R[id], alpha = alpha[id],
+      mc.cores = mc.cores
+    )
   }
   
   nz <- lengths(z)

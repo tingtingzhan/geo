@@ -41,7 +41,7 @@ importFrom(oce,
 )
 importFrom(parallel,
   detectCores,
-  mclapply
+  mcmapply
 )
 importFrom(plotly,
   add_markers,
