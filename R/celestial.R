@@ -33,13 +33,9 @@ celestialDegree <- \(time = Sys.time(), ...) {
     T_cen^3 / 467441 + # instead of 45e4 (1991 ed.1)
     (- T_cen^4 / 60616000)
   
-  #D  <- ((297.8501921 + 445267.1114034 * T_cen - 0.0018819 * T_cen^2) %% 360) * pi / 180
   D  <- (297.8501921 + 445267.1114034 * T_cen - 0.0018819 * T_cen^2) * pi / 180
-  #M  <- ((357.5291092 + 35999.0502909 * T_cen - 0.0001536 * T_cen^2) %% 360) * pi / 180
   M  <- (357.5291092 + 35999.0502909 * T_cen - 0.0001536 * T_cen^2) * pi / 180
-  #Mp <- ((134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) %% 360) * pi / 180
   Mp <- (134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) * pi / 180
-  #F  <- ((93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) %% 360) * pi / 180
   F  <- (93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) * pi / 180
   
   omega <- omega_mean - 
@@ -57,14 +53,14 @@ celestialDegree <- \(time = Sys.time(), ...) {
     0.0080 * cos(2 * (Mp - F))
   
   return(list( # all in degree (not radius)
-    #gmst = gmst %% 360,
     gmst = gmst,
     obliquity = obliquity,
     eps = obliquity / 180 * pi,
-    #omega = omega %% 360,
     omega = omega,
+    omega_r = omega / 180 * pi,
     L = L,
-    i_moon = i_moon
+    i_moon = i_moon,
+    i_moon_r = i_moon / 180 * pi
   ))
   
 }
