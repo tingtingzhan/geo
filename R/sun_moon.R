@@ -165,7 +165,8 @@ eclipticEquator_lon <- \(time = Sys.time()) {
   z <- celestialDegree(time) |>
     with(expr = {
       d_psi <- (-17.20 * sin(omega) - 1.32 * sin(2 * L)) / 3600 # Nutation in longitude (deg)
-      gast <- (gmst + d_psi * cos(eps)) %% 360
+      #gast <- (gmst + d_psi * cos(eps)) %% 360
+      gast <- gmst + d_psi * cos(eps)
       list(
         gast = gast,
         obliquity = obliquity
@@ -199,7 +200,8 @@ lunarEquator_lon <- \(time = Sys.time()) {
       i_r     <- i_moon * pi / 180
       
       d_psi <- (-17.20 * sin(omega_r) - 1.32 * sin(2 * L)) / 3600
-      gast  <- (gmst + d_psi * cos(eps)) %% 360
+      #gast  <- (gmst + d_psi * cos(eps)) %% 360
+      gast  <- gmst + d_psi * cos(eps)
       
       # 黄道坐标系下的白道法向量 n_ecl
       nx_ecl <-  sin(i_r) * sin(omega_r)
@@ -213,12 +215,15 @@ lunarEquator_lon <- \(time = Sys.time()) {
       
       # 赤道面法向量为 (0, 0, 1)
       # 白道在赤道面上的升交点向量 = (0, 0, 1) × (nx, ny, nz) = (-ny, nx, 0)
-      ra_moon_asc_deg <- (atan2(nx, -ny) * 180 / pi) %% 360
+      #ra_moon_asc_deg <- (atan2(nx, -ny) * 180 / pi) %% 360
+      ra_moon_asc_deg <- atan2(nx, -ny) * 180 / pi
       
-      lon <- c(
-        ra_moon_asc_deg - gast, # Lunar Ascending Node on Equator
-        ra_moon_asc_deg - gast + 180  # Lunar Descending Node on Equator
-      ) |>
+      #lon <- c(
+      #  ra_moon_asc_deg - gast, # Lunar Ascending Node on Equator
+      #  ra_moon_asc_deg - gast + 180  # Lunar Descending Node on Equator
+      #) |>
+      #  wrap180()
+      lon <- (ra_moon_asc_deg - gast + c(0, 180)) |>
         wrap180()
       
       # Inclination of the Moon's orbit directly to Earth's equator (ranges ~18.3° to ~28.6°)
@@ -255,10 +260,11 @@ lunarNodePoint <- \(time = Sys.time()) {
   z <- tmp |>
     with(expr = {
       ecliptic2geo(
-        lambda = c(
-          omega, # ascending_node
-          (omega + 180) %% 360 # descending_node
-        ) / 180 * pi,
+        #lambda = c(
+        #  omega, # ascending_node
+        #  (omega + 180) %% 360 # descending_node
+        #) / 180 * pi,
+        lambda = (omega + c(0, 180)) / 180 * pi,
         eps = eps,
         gmst = gmst
       )
