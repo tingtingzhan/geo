@@ -9,13 +9,7 @@
 \alias{globe_minimal}
 \title{The Earth with Various Layers}
 \usage{
-add_twilight(
-  map = add_sunmoon(time = time),
-  time = Sys.time(),
-  type = c("civil", "nautical", "astronomical"),
-  sza = NULL,
-  ...
-)
+add_twilight(map = add_sunmoon(time = time), time = Sys.time(), ...)
 
 add_sunmoon(map = add_TropicPolar(), time = Sys.time(), ...)
 
@@ -30,11 +24,7 @@ globe_minimal()
 \arguments{
 \item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}}
 
-\item{time}{a \link[base]{POSIXct} object, see the function \code{\link[=subSolarPoint]{subSolarPoint()}}, etc.}
-
-\item{type}{\link[base]{character} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
-
-\item{sza}{\link[base]{numeric} \link[base]{vector}, see the function \code{\link[=twilightPolygon]{twilightPolygon()}}}
+\item{time}{a \link[base]{POSIXct} object, default value is the return of \link[base]{Sys.time}}
 
 \item{...}{additional parameters, currently of no use}
 }
@@ -49,7 +39,6 @@ The function \code{\link[=add_sunmoon]{add_sunmoon()}} adds, on top of \code{\li
 \item{the subsolar point, the ecliptic plane, and the obliquity of the ecliptic;}
 \item{the sublunar point, the current Moon phase, the lunar orbital plane, and the inclination of the lunar orbit to the equator;}
 \item{the lunar nodes and the lunar orbital inclination;}
-\item{the terminator.}
 }
 
 The function \code{\link[=add_TropicPolar]{add_TropicPolar()}} adds the equatorial, the tropics, and the polar circles, on top of \code{\link[=add_meridian]{add_meridian()}}.
@@ -66,9 +55,4 @@ The function \code{\link[=globe_minimal]{globe_minimal()}} contains the minimum 
 }
 \references{
 \url{https://plotly.com/r/reference/layout/geo/}
-}
-\seealso{
-\code{\link[=twilightPolygon]{twilightPolygon()}}
-
-\code{\link[=subSolarPoint]{subSolarPoint()}}, \code{\link[=subLunarPoint]{subLunarPoint()}}, \code{\link[=terminatorPolygon]{terminatorPolygon()}}
 }

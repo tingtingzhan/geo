@@ -21,12 +21,7 @@ export(gen_psw)
 export(globe)
 export(globe_minimal)
 export(iata)
-export(moonEmoji)
 export(moving_dist2gc)
-export(subLunarPoint)
-export(subSolarPoint)
-export(terminatorPolygon)
-export(twilightPolygon)
 importFrom(geosphere,
   dist2gc,
   distGeo

@@ -5,8 +5,6 @@
 #' 
 #' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant timepoints in the next 24 hours.
 #' 
-#' @param type,sza see the function [add_twilight()]
-#' 
 #' @param ... additional parameters, currently of no use
 #' 
 #' @note
@@ -20,8 +18,6 @@
 add_twilight_animated <- \(
   map = add_TropicPolar(),
   time = Sys.time() + seq(from = 0, to = 60*60*24, length.out = 6L), 
-  type = c('civil', 'nautical', 'astronomical'),
-  sza,
   ...
 ) {
   
@@ -29,10 +25,6 @@ add_twilight_animated <- \(
   
   subsolar <- subSolarPoint(time = time)
   sublunar <- subLunarPoint(time = time)
-  
-  terminator <- time |>
-    lapply(FUN = terminatorPolygon) |>
-    do.call(what = 'rbind.data.frame', args = _)
   
   ecliptic <- time |>
     lapply(FUN = eclipticPolygon) |>
@@ -44,7 +36,7 @@ add_twilight_animated <- \(
   
   twilight <- if (length(time) <= 6L) {
     time |>
-      lapply(FUN = twilightPolygons, type = type, sza = sza) |>
+      lapply(FUN = twilightPolygons) |>
       do.call(what = 'rbind.data.frame', args = _)
   } # else NULL
   
@@ -81,12 +73,6 @@ add_twilight_animated <- \(
       data = lunarOrbit,
       x = ~ lon, y = ~ lat, frame = ~ time,
       line = ~ list(color = color, dash = 'dot', width = .5),
-      hoverinfo = 'none'
-    ) |>
-    add_polygons(
-      data = terminator,
-      x = ~ lon, y = ~ lat, frame = ~ time,
-      line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'
     ) |>
     add_polygons(

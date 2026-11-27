@@ -1,27 +1,9 @@
 
 
 
-#' @title Subsolar/Sublunar Point, Terminator and Twilight Zones
-#' 
-#' @description
-#' To find the latitude and longitude of the subsolar/sublunar point, the day-night terminator and the various twilight zones at the current date and time.
-#' 
-#' 
-#' @param time a \link[base]{POSIXct} object, default value is the current date and time on user's computer from the function \link[base]{Sys.time}
-#' 
-#' @param ... additional parameters, currently of no use
-#' 
-#' @details
-#' The function [subSolarPoint()] finds the latitude and longitude of the subsolar point. 
-#' 
-#' @returns 
-#' The function [subSolarPoint()] returns a \link[base]{data.frame}.
-#' 
-#' @references
-#' \url{https://en.wikipedia.org/wiki/Subsolar_point}
-#' 
-#' @name terminator
-#' @export
+
+# @references
+# \url{https://en.wikipedia.org/wiki/Subsolar_point}
 subSolarPoint <- \(time = Sys.time(), ...) {
   
   time <- time |>
@@ -54,68 +36,10 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 
 
 
-
-#' @rdname terminator
-#' 
-#' @param n \link[base]{integer} scalar.
-#' \itemize{
-#' \item{Number of points in [terminatorPolygon()], default value is `4L`.  Three points determine a polygon on the globe, while +/-180 longitude overlap.}
-#' \item{Maximum fineness for [twilightPolygon()], default value is `1001L`.  Twilight zone borders are **not** great circles!}
-#' }
-#' 
-#' @details
-#' The function [terminatorPolygon()] finds the latitude and longitude of the points on the day-night terminator.
-#' 
-#' @returns 
-#' The function [terminatorPolygon()] returns a \link[base]{data.frame}.
-#' 
-#' 
-#' @references
-#' \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
-#' 
-#' @export
-terminatorPolygon <- \(time = Sys.time(), n = 4L, ...) {
-  
-  time <- time |>
-    as.POSIXlt(tz = 'UTC')
-  
-  ss <- time |>
-    subSolarPoint()
-  sslon <- ss$lon/180*pi
-  sslat <- ss$lat/180*pi
-  
-  ha <- hour_angle_seq(sslat = sslat, length.out = n)
-  
-  z <- cbind(
-    lon = ((ha + sslon + pi) %% (2*pi)) - pi,
-    lat = atan(-cos(ha) / tan(sslat))
-  )  / pi * 180
-  
-  ret <- rbind(z, z[1L, ]) |> # to close the polygon
-    as.data.frame.matrix()
-  ret$time <- time |>
-    format(usetz = TRUE)
-  ret$fillcolor <- 'rgba(0, 0, 0, .05)'
-  return(ret)
-  
-}
-
-
-
-
-#' @rdname terminator
-#' 
-#' @details
-#' The function [subLunarPoint()] finds the latitude and longitude of the sublunar point. 
-#' 
-#' @returns 
-#' The function [subLunarPoint()] returns a \link[base]{data.frame}.
-#' 
-#' @references
-#' \url{https://www.timeanddate.com/worldclock/sunearth.html}
-#' 
+# @references
+# \url{https://www.timeanddate.com/worldclock/sunearth.html}
+# 
 #' @importFrom oce moonAngle siderealTime
-#' @export
 subLunarPoint <- \(time = Sys.time(), ...) {
   
   time <- time |>
@@ -143,15 +67,10 @@ subLunarPoint <- \(time = Sys.time(), ...) {
 
 }
 
-#' @rdname terminator
-#' 
-#' @details
-#' The function [moonEmoji()] finds the moon phase.
-#' @returns 
-#' The function [moonEmoji()] returns a \link[base]{factor}.
-#' 
+
+
+
 #' @importFrom lunar lunar.phase
-#' @export
 moonEmoji <- \(time = Sys.time(), ...) {
   
   time |>
@@ -167,162 +86,6 @@ moonEmoji <- \(time = Sys.time(), ...) {
 
 
 
-#' @rdname terminator
-#' 
-#' @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)
-#' 
-#' @param type \link[base]{character} scalar
-#' 
-#' @details
-#' The function [twilightPolygon()] finds the latitude and longitude of the borders of
-#' \describe{
-#' \item{\href{https://en.wikipedia.org/wiki/Twilight#Civil_twilight}{Civil twilight}}{when the solar zenith angle (SZA) \eqn{\theta_z \in (\frac{90}{180}\pi, \frac{90+6}{180}\pi)}, *enough natural light remains so that artificial light in towns and cities is not needed to see adequately*}
-#' \item{\href{https://en.wikipedia.org/wiki/Twilight#Nautical_twilight}{Nautical twilight}}{when the solar zenith angle \eqn{\theta_z \in (\frac{90+6}{180}\pi, \frac{90+12}{180}\pi)}, *the human eye finds it difficult, if not impossible, to discern traces of illumination near the sunset or sunrise point of the horizon (first light after nautical dawn but before civil dawn and nightfall after civil dusk but before nautical dusk)*}
-#' \item{\href{https://en.wikipedia.org/wiki/Twilight#Astronomical_twilight}{Astronomical twilight}}{when the solar zenith angle \eqn{\theta_z \in (\frac{90+12}{180}\pi, \frac{90+18}{180}\pi)}, *the faintest stars detectable by the naked eye (those of approximately the sixth magnitude) will become visible in the evening at astronomical dusk, and become invisible at astronomical dawn*}
-#' }
-#' 
-#' @returns
-#' The function [twilightPolygon()] returns a \link[base]{data.frame}.
-#' 
-#' @references
-#' \url{https://en.wikipedia.org/wiki/Twilight}
-#' 
-#' @export
-#' @export
-twilightPolygon <- \(
-  time = Sys.time(), 
-  type = c('civil', 'nautical', 'astronomical'),
-  sza = NULL,
-  n = 1001L, # twilight is **not** great circle!!
-  ...
-) {
-  
-  if (missing(sza) || !length(sza)) {
-    type <- match.arg(type)
-    sza <- (switch(type, civil = 6, nautical = 12, astronomical = 18) + 90) / 180 * pi
-  } else {
-    type <- NULL
-  }
-  
-  if (!is.double(sza) || length(sza) != 1L || is.na(sza)) stop('sza must be double scalar')
-  
-  if ((sza < pi/2) || (sza > pi)) stop('`sza` out of range')
-  
-  ss <- time |>
-    subSolarPoint()
-  sslon <- ss$lon/180*pi
-  sslat <- ss$lat/180*pi
-  
-  # constants!
-  cos_sza <- cos(sza) # compute intensive
-  # sza \in (pi/2, pi)
-  # therefore, cos_sza < 0
-  
-  ha <- hour_angle_seq(sslat = sslat, length.out = n)
-  
-  # (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(ha)) - cos(sza) # GOLD!!!
-  # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle} has analytical solution!!
-  # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
-  R <- sqrt(sin(sslat)^2 + cos(sslat)^2 * cos(ha)^2)
-  cos_sza_R <- cos_sza / R
-  # cos_sza_R < 0
-  alpha <- atan2(
-    y = sin(sslat), 
-    x = cos(sslat) * cos(ha)
-  ) # atan(tan(sslat)/cos(ha)) is wrong!!
-  # see ?atan2 
-  
-  z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
-  id <- (abs(cos_sza_R) <= 1)
-  
-  phi <- (alpha[id] + tcrossprod(
-    acos(cos_sza_R[id]),
-    c(-1, 1)
-  )) |>
-    wrap_pi()
-  phi[phi < -pi/2] <- NA_real_
-  phi[phi > pi/2] <- NA_real_
-  z[id] <- phi |>
-    apply(MARGIN = 1L, FUN = \(i) {
-      i[!is.na(i)] # faster than ?stats:::na.omit.default
-      #base::sort.int() # is very slow!!
-    }, simplify = FALSE)
-  
-  nz <- lengths(z)
-  
-  if (all(nz == 1L)) { # hew!!
-    
-    lat <- z |>
-      unlist(use.names = FALSE)
-    
-  } else { # when (sslat < 0)
-    
-    id <- (nz > 0L)
-    ha <- c(ha[id], rev.default(ha[id]))
-    lat <- c(
-      z[id] |> 
-        vapply(FUN = min, FUN.VALUE = NA_real_),
-      z[id] |> 
-        rev.default() |>
-        vapply(FUN = max, FUN.VALUE = NA_real_)
-    )
-    if (sslat > 0) {
-      # summer time
-      # hah! tzh does not know why!!!
-      ha <- rev.default(ha)
-      lat <- rev.default(lat)
-    }
-    
-  }
-  
-  z <- cbind(
-    lon = ((ha + sslon + pi) %% (2*pi)) - pi,
-    lat = lat
-  ) / pi * 180
-  
-  ret <- rbind(z, z[1L, ]) |> # to close the polygon
-    as.data.frame.matrix()
-  ret$time <- time |>
-    as.POSIXlt(tz = 'UTC') |>
-    format(usetz = TRUE)
-  
-  ret$fillcolor <- if (length(type)) {
-    switch(
-      EXPR = type, 
-      civil = 'rgba(0, 0, 0, .051)',
-      nautical = 'rgba(0, 0, 0, .052)',
-      astronomical = 'rgba(0, 0, 0, .053)'
-    )
-  } else 'rgba(0, 0, 0, .051)'
-  
-  return(ret)
-  
-}
-
-
-
-
-twilightPolygons <- \(
-  time = Sys.time(),
-  type = c('civil', 'nautical', 'astronomical'),
-  sza = NULL,
-  ...
-) {
-  
-  force(time)
-  
-  z <- if (!missing(sza) && length(sza)) {
-    sza |>
-      lapply(FUN = \(i) twilightPolygon(time = time, sza = i, ...)) 
-  } else {
-    type |>
-      lapply(FUN = \(i) twilightPolygon(time = time, type = i, ...))
-  }
-  
-  z |>
-    do.call(what = 'rbind.data.frame', args = _)
-  
-}
 
 
 

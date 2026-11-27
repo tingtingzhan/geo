@@ -7,28 +7,19 @@
 #' 
 #' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}
 #' 
-#' @param time a \link[base]{POSIXct} object, see the function [subSolarPoint()], etc.
-#' 
-#' @param type \link[base]{character} \link[base]{vector}, see the function [twilightPolygon()]
-#' 
-#' @param sza \link[base]{numeric} \link[base]{vector}, see the function [twilightPolygon()]
+#' @param time a \link[base]{POSIXct} object, default value is the return of \link[base]{Sys.time}
 #' 
 #' @param ... additional parameters, currently of no use
 #' 
 #' @details
 #' The function [add_twilight()] adds civil, nautical and astronomical twilight, on top of [add_sunmoon()].
 #' 
-#' @seealso
-#' [twilightPolygon()]
-#' 
 #' @name globe
 #' @importFrom plotly add_polygons
 #' @export
 add_twilight <- \(
   map = add_sunmoon(time = time),
-  time = Sys.time(), 
-  type = c('civil', 'nautical', 'astronomical'),
-  sza = NULL,
+  time = Sys.time(),
   ...
 ) {
   
@@ -36,7 +27,7 @@ add_twilight <- \(
   
   map |>
     add_polygons(
-      data = twilightPolygons(time = time, type = type, sza = sza),
+      data = twilightPolygons(time = time),
       x = ~ lon, y = ~ lat, 
       line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'
@@ -60,11 +51,7 @@ hoverlabel_ <- \(x) {
 #' \item{the subsolar point, the ecliptic plane, and the obliquity of the ecliptic;}
 #' \item{the sublunar point, the current Moon phase, the lunar orbital plane, and the inclination of the lunar orbit to the equator;}
 #' \item{the lunar nodes and the lunar orbital inclination;}
-#' \item{the terminator.}
 #' }
-#' 
-#' @seealso 
-#' [subSolarPoint()], [subLunarPoint()], [terminatorPolygon()]
 #' 
 #' @importFrom plotly add_text add_paths add_polygons
 #' @export
@@ -135,12 +122,6 @@ add_sunmoon <- \(
       marker = ~ list(color = color),
       hovertemplate = '%{text}\n(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)\n%{customdata}<extra></extra>',
       hoverlabel = ~ hoverlabel_(color)
-    ) |>
-    add_polygons(
-      data = terminatorPolygon(time = time),
-      x = ~ lon, y = ~ lat,
-      line = list(width = 0), fillcolor = ~ fillcolor,
-      hoverinfo = 'none'
     ) |>
     layout(
       title = time |>
