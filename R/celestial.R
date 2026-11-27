@@ -12,6 +12,9 @@ celestialDegree <- \(time = Sys.time(), ...) {
   
   T_cen <- Day / (1e2 * c_Julian_yr) # the fraction of the century elapsed
   
+  obliquity <- c_obliquity2000 - 
+    c_precessionSecular * T_cen
+  
   gmst <- c_gmst2000 + 
     c_siderealRotationDay * Day + 
     .000387933 * T_cen^2 - 
@@ -51,7 +54,8 @@ celestialDegree <- \(time = Sys.time(), ...) {
   
   return(list( # all in degree (not radius)
     gmst = gmst %% 360,
-    obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
+    obliquity = obliquity,
+    eps = obliquity / 180 * pi,
     omega = omega %% 360,
     L = L,
     i_moon = i_moon

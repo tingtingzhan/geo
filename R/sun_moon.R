@@ -96,7 +96,7 @@ eclipticPolygon <- \(time = Sys.time(), n = 4L, ...) {
     with(expr = {
       ecliptic2geo(
         lambda = seq.int(from = 0, to = 2*pi, length.out = n),
-        eps = obliquity / 180 * pi,
+        eps = eps,
         gmst = gmst
       )
     })
@@ -132,7 +132,7 @@ lunarOrbitPolygon <- \(time = Sys.time(), n = 4L, ...) {
       ecliptic2geo(
         lambda = moon_lambda, 
         beta = moon_beta, 
-        eps = obliquity / 180 * pi, 
+        eps = eps,
         gmst = gmst)
       
     })
@@ -165,7 +165,7 @@ eclipticEquator_lon <- \(time = Sys.time()) {
   z <- celestialDegree(time) |>
     with(expr = {
       d_psi <- (-17.20 * sin(omega) - 1.32 * sin(2 * L)) / 3600 # Nutation in longitude (deg)
-      gast <- (gmst + d_psi * cos(obliquity / 180 * pi)) %% 360
+      gast <- (gmst + d_psi * cos(eps)) %% 360
       list(
         gast = gast,
         obliquity = obliquity
@@ -196,21 +196,20 @@ lunarEquator_lon <- \(time = Sys.time()) {
     with(expr = {
       
       omega_r <- omega * pi / 180
-      eps_r   <- obliquity * pi / 180
       i_r     <- i_moon * pi / 180
       
       d_psi <- (-17.20 * sin(omega_r) - 1.32 * sin(2 * L)) / 3600
-      gast  <- (gmst + d_psi * cos(eps_r)) %% 360
+      gast  <- (gmst + d_psi * cos(eps)) %% 360
       
       # 黄道坐标系下的白道法向量 n_ecl
       nx_ecl <-  sin(i_r) * sin(omega_r)
       ny_ecl <- -sin(i_r) * cos(omega_r)
       nz_ecl <-  cos(i_r)
       
-      # 绕 X 轴旋转 eps_r 转换到地心赤道坐标系下的白道法向量 n_eq
+      # 绕 X 轴旋转 eps 转换到地心赤道坐标系下的白道法向量 n_eq
       nx <- nx_ecl
-      ny <- ny_ecl * cos(eps_r) - nz_ecl * sin(eps_r)
-      nz <- ny_ecl * sin(eps_r) + nz_ecl * cos(eps_r)
+      ny <- ny_ecl * cos(eps) - nz_ecl * sin(eps)
+      nz <- ny_ecl * sin(eps) + nz_ecl * cos(eps)
       
       # 赤道面法向量为 (0, 0, 1)
       # 白道在赤道面上的升交点向量 = (0, 0, 1) × (nx, ny, nz) = (-ny, nx, 0)
@@ -223,7 +222,7 @@ lunarEquator_lon <- \(time = Sys.time()) {
         wrap180()
       
       # Inclination of the Moon's orbit directly to Earth's equator (ranges ~18.3° to ~28.6°)
-      lunarEquator_incl <- acos(cos(eps_r) * cos(i_r) - sin(eps_r) * sin(i_r) * cos(omega_r)) * 180 / pi
+      lunarEquator_incl <- acos(cos(eps) * cos(i_r) - sin(eps) * sin(i_r) * cos(omega_r)) * 180 / pi
       
       list(
         lon = lon,
@@ -260,7 +259,7 @@ lunarNodePoint <- \(time = Sys.time()) {
           omega, # ascending_node
           (omega + 180) %% 360 # descending_node
         ) / 180 * pi,
-        eps = obliquity / 180 * pi,
+        eps = eps,
         gmst = gmst
       )
     })
