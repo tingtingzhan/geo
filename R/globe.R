@@ -27,7 +27,7 @@ add_twilight <- \(
   
   map |>
     add_polygons(
-      data = twilightPolygons(time = time),
+      data = twilightPolygons(time = time, ...),
       x = ~ lon, y = ~ lat, 
       line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'

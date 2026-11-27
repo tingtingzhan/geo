@@ -86,6 +86,7 @@ solarZenithPolygon <- \(
   
   ret <- rbind(z, z[1L, ]) |> # to close the polygon
     as.data.frame.matrix()
+  
   ret$time <- time |>
     as.POSIXlt(tz = 'UTC') |>
     format(usetz = TRUE)
@@ -134,10 +135,17 @@ hour_angle_seq <- \(sslat, sza, ...) {
 # \url{https://en.wikipedia.org/wiki/Terminator_(solar)}
 twilightPolygons <- \(
   time = Sys.time(),
+  sza = (90 + c(0, 6, 12, 18)) / 180 * pi,
+  fillcolor = (50 - 1 + seq_along(sza)) |>
+    sprintf(fmt = 'rgba(0, 0, 0, .0%d)'),
   ...
 ) {
   
   force(time)
+  
+  if (length(sza) != length(fillcolor)) {
+    stop('`sza` and `fillcolor` must have same length')
+  }
   
   mapply(
     FUN = \(sza, fillcolor) {
@@ -145,9 +153,7 @@ twilightPolygons <- \(
       z$fillcolor <- fillcolor
       return(z)
     }, 
-    sza = (90 + c(0, 6, 12, 18)) / 180 * pi, 
-    fillcolor = (50:53) |>
-      sprintf(fmt = 'rgba(0, 0, 0, .0%d)'), 
+    sza = sza, fillcolor = fillcolor, 
     SIMPLIFY = FALSE
   ) |>
     do.call(what = 'rbind.data.frame', args = _)
