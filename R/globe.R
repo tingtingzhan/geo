@@ -12,7 +12,7 @@
 #' @param ... additional parameters, currently of no use
 #' 
 #' @details
-#' The function [add_twilight()] adds civil, nautical and astronomical twilight, on top of [add_sunmoon()].
+#' The function [add_twilight()] adds the terminator, the civil, nautical and astronomical twilight, on top of [add_sunmoon()].
 #' 
 #' @name globe
 #' @importFrom plotly add_polygons
@@ -36,11 +36,6 @@ add_twilight <- \(
 }
 
 
-hoverlabel_ <- \(x) {
-  list(
-    bgcolor = 'white', font = x, bordercolor = x
-  )
-}
 
 
 
@@ -63,42 +58,32 @@ add_sunmoon <- \(
   
   force(time)
   
-  subsolar <- subSolarPoint(time = time)
-  sublunar <- subLunarPoint(time = time)
-  equator_incl <- rbind.data.frame(
-    eclipticEquator_lon(time = time),
-    lunarEquator_lon(time = time)
-  )
-
   map |>
-    #add_text(
-    #  data = rbind.data.frame(subsolar, sublunar),
-    #  x = ~ lon, y = ~ lat, text = ~ text,
-    #  name = ~ label,
-    #  hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
-    #  hoverlabel = ~ hoverlabel_(color) # \CRANpkg{plotly} messes up!!!
-    #) |>
     add_text( # Sub-Solor Point
-    #add_markers( # nah..
-      data = subsolar,
+      data = #rbind.data.frame(
+        subSolarPoint(time = time),
+        #subLunarPoint(time = time)
+      #), # messes up hover color!
       x = ~ lon, y = ~ lat, text = ~ text,
-      #name = ~ sprintf(fmt = '<b>%s</b>', label),
-      name = ~ label,
-      #marker = ~ list(color = color), # trace-name color, but triggers screen output: "A marker object has been specified, but markers is not in the mode.  Adding markers to the mode..."
-      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
-      hoverlabel = ~ hoverlabel_(color)
+      customdata = ~ label,
+      hovertemplate = '%{customdata}: (%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)<extra></extra>',
+      hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     add_text( # Sub-Lunar Point
-      data = sublunar,
+      data = subLunarPoint(time = time),
       x = ~ lon, y = ~ lat, text = ~ text,
-      name = ~ label,
-      hovertemplate = '(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)',
-      hoverlabel = ~ hoverlabel_(color)
+      customdata = ~ label,
+      hovertemplate = '%{customdata}: (%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)<extra></extra>',
+      hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     add_paths( # ecliptic
-      data = eclipticPolygon(time = time),
+      data = #rbind.data.frame(
+        eclipticPolygon(time = time),
+        #lunarOrbitPolygon(time = time)
+      #), # messes path-line-color!
       x = ~ lon, y = ~ lat,
       line = ~ list(color = color, dash = 'dot', width = .5),
+      line = ~ list(dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
     add_paths( # lunar orbit
@@ -108,12 +93,15 @@ add_sunmoon <- \(
       hoverinfo = 'none'
     ) |>
     add_markers( # ecliptic/lunar vs. Equator
-      data = equator_incl,
+      data = rbind.data.frame(
+        eclipticEquator_lon(time = time),
+        lunarEquator_lon(time = time)
+      ),
       x = ~ lon, y = 0, text = ~ text,
       customdata = ~ incl,
       marker = ~ list(color = color),
       hovertemplate = '%{text}\nLon: %{lon:.3f}\u00b0\n%{customdata}<extra></extra>',
-      hoverlabel = ~ hoverlabel_(color)
+      hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     add_markers( # ecliptic vs. lunar
       data = lunarNodePoint(time = time),
@@ -121,7 +109,7 @@ add_sunmoon <- \(
       customdata = ~ incl,
       marker = ~ list(color = color),
       hovertemplate = '%{text}\n(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)\n%{customdata}<extra></extra>',
-      hoverlabel = ~ hoverlabel_(color)
+      hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     layout(
       title = time |>

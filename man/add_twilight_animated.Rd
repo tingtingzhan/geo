@@ -13,15 +13,12 @@ add_twilight_animated(
 \arguments{
 \item{map}{an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function \code{\link[=add_TropicPolar]{add_TropicPolar()}}}
 
-\item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (\code{6L}) equidistant timepoints in the next 24 hours.}
+\item{time}{a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (\code{6L}) equidistant time points in the next 24 hours.}
 
 \item{...}{additional parameters, currently of no use}
 }
 \description{
 The Earth with Various Layers, Animated
-}
-\note{
-The function \code{\link[=add_twilight_animated]{add_twilight_animated()}} does \strong{not} print twilight polygons, which is compute extensive, for more than six \code{time} points.
 }
 \examples{
 add_twilight_animated()

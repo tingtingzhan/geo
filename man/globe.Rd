@@ -32,7 +32,7 @@ globe_minimal()
 The Earth with various layers.
 }
 \details{
-The function \code{\link[=add_twilight]{add_twilight()}} adds civil, nautical and astronomical twilight, on top of \code{\link[=add_sunmoon]{add_sunmoon()}}.
+The function \code{\link[=add_twilight]{add_twilight()}} adds the terminator, the civil, nautical and astronomical twilight, on top of \code{\link[=add_sunmoon]{add_sunmoon()}}.
 
 The function \code{\link[=add_sunmoon]{add_sunmoon()}} adds, on top of \code{\link[=add_TropicPolar]{add_TropicPolar()}},
 \itemize{
