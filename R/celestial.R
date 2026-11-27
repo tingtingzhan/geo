@@ -94,29 +94,3 @@ ecliptic2geo <- \(
 }
 
 
-
-hour_angle_seq <- \(
-  sslat, 
-  sza,
-  ...
-) {
-  
-  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
-  
-  z <- ifelse(
-    test = sslat > 0,
-    yes = 2*pi, # summer of Northern Hemisphere
-    no = - 2*pi # winter of Northern Hemisphere
-  )  |>
-    seq(
-      from = 0, # from sub-solar point
-      to = _, 
-      ...
-    )
-  
-  if (sza >= pi/2) return(z)
-  
-  return(z + pi) # otherwise, from the opposite side of the globe!!
-  
-}
-

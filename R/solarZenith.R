@@ -1,11 +1,11 @@
 
 
-# @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius, from \eqn{\pi/2} (the sun at horizon) to \eqn{\pi} (local midnight)
+# @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
 
 solarZenithPolygon <- \(
   time = Sys.time(), 
   sza = pi/2, # sun at horizon
-  n = if (abs(sza - pi/2) < .Machine$double.eps) 4L else 1001L, # twilight is **not** great circle!!
+  n = if (abs(sza - pi/2) < .Machine$double.eps) 4L else 1001L, # only the terminator is a great circle!!
   ...
 ) {
   
@@ -46,7 +46,7 @@ solarZenithPolygon <- \(
   phi[phi > pi/2] <- NA_real_
   z[id] <- phi |>
     apply(MARGIN = 1L, FUN = \(i) {
-      i[!is.na(i)] # faster than ?stats:::na.omit.default
+      i[!is.na(i)]
       #base::sort.int() # is very slow!!
     }, simplify = FALSE)
   
@@ -90,20 +90,33 @@ solarZenithPolygon <- \(
     as.POSIXlt(tz = 'UTC') |>
     format(usetz = TRUE)
   
-  #ret$fillcolor <- if (length(type)) {
-  #  switch(
-  #    EXPR = type, 
-  #    civil = 'rgba(0, 0, 0, .051)',
-  #    nautical = 'rgba(0, 0, 0, .052)',
-  #    astronomical = 'rgba(0, 0, 0, .053)'
-  #  )
-  #} else 'rgba(0, 0, 0, .051)'
-  
   return(ret)
   
 }
 
 
+
+
+hour_angle_seq <- \(sslat, sza, ...) {
+  
+  # clockwise / counterclockwise determines which hemisphere is shaded in ?plotly::add_polygons
+  
+  z <- ifelse(
+    test = sslat > 0,
+    yes = 2*pi, # summer of Northern Hemisphere
+    no = - 2*pi # winter of Northern Hemisphere
+  )  |>
+    seq(
+      from = 0, # from sub-solar point
+      to = _, 
+      ...
+    )
+  
+  if (sza >= pi/2) return(z)
+  
+  return(z + pi) # otherwise, from the opposite side of the globe!!
+  
+}
 
 
 
@@ -126,16 +139,17 @@ twilightPolygons <- \(
   
   force(time)
   
-  sza <- ((90 + c(0, 6, 12, 18))/180*pi) 
-  
-  fillcolor <- (50:53) |>
-    sprintf(fmt = 'rgba(0, 0, 0, .0%d)')
-    
-  mapply(FUN = \(sza, fillcolor) {
-    z <- solarZenithPolygon(time = time, sza = sza, ...)
-    z$fillcolor <- fillcolor
-    return(z)
-  }, sza = sza, fillcolor = fillcolor, SIMPLIFY = FALSE) |>
+  mapply(
+    FUN = \(sza, fillcolor) {
+      z <- solarZenithPolygon(time = time, sza = sza, ...)
+      z$fillcolor <- fillcolor
+      return(z)
+    }, 
+    sza = (90 + c(0, 6, 12, 18)) / 180 * pi, 
+    fillcolor = (50:53) |>
+      sprintf(fmt = 'rgba(0, 0, 0, .0%d)'), 
+    SIMPLIFY = FALSE
+  ) |>
     do.call(what = 'rbind.data.frame', args = _)
   
 }

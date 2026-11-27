@@ -6,7 +6,7 @@ winter = "2026-11-26 01:01:01 EST" |>
 
 # only for debugging
 add_solarZenith <- \(
-  map = add_sunmoon(),
+  map = add_sunmoon(time = time),
   time = Sys.time(), 
   ...
 ) {
@@ -17,7 +17,8 @@ add_solarZenith <- \(
     add_polygons(
       data = solarZenithPolygon(time = time, ...),
       x = ~ lon, y = ~ lat,
-      line = list(width = 0), fillcolor = ~ 'rgba(0, 0, 0, .051)',
+      line = list(width = 0), 
+      fillcolor = ~ 'rgba(0, 0, 0, .051)',
       hoverinfo = 'none'
     ) |>
     layout(
