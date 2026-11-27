@@ -19,11 +19,11 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   
   # Greenwich Hour Angle / Subsolar Longitude
   # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
-  solar_lon <- ((12 - hour) * 15) |>
-    wrap180()
+  solar_lon <- (12 - hour) * 15
   
   return(data.frame(
-    lon = solar_lon,
+    lon = solar_lon |>
+      wrap180() ,
     lat = declination,
     time = time |>
       format(usetz = TRUE),
@@ -51,12 +51,12 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   
   sublunar_lon <- celestialDegree(time) |> 
     with(expr = {
-      (mA$rightAscension - gmst) |>
-        wrap180()
+      mA$rightAscension - gmst
     })
   
   return(data.frame(
-    lon = sublunar_lon,
+    lon = sublunar_lon |>
+      wrap180(),
     lat = mA$declination,
     time = time |>
       format(usetz = TRUE),
@@ -162,15 +162,7 @@ lunarOrbitPolygon <- \(time = Sys.time(), n = 4L, ...) {
 
 eclipticEquator_lon <- \(time = Sys.time()) {
   
-  z <- celestialDegree(time) |>
-    with(expr = {
-      d_psi <- (-17.20 * sin(omega) - 1.32 * sin(2 * L)) / 3600 # Nutation in longitude (deg)
-      gast <- gmst + d_psi * cos(eps)
-      list(
-        gast = gast,
-        obliquity = obliquity
-      )
-    })
+  z <- celestialDegree(time)
   
   return(data.frame(
     time = time |>
@@ -191,10 +183,7 @@ lunarEquator_lon <- \(time = Sys.time()) {
   
   z <- celestialDegree(time) |>
     with(expr = {
-      
-      d_psi <- (-17.20 * sin(omega_r) - 1.32 * sin(2 * L)) / 3600
-      gast  <- gmst + d_psi * cos(eps)
-      
+
       # 黄道坐标系下的白道法向量 n_ecl
       nx_ecl <-  sin(i_moon_r) * sin(omega_r)
       ny_ecl <- -sin(i_moon_r) * cos(omega_r)

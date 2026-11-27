@@ -14,15 +14,18 @@ celestialDegree <- \(time = Sys.time(), ...) {
   
   obliquity <- 23.43928 - 
     0.0130102 * T_cen
+  eps <- obliquity / 180 * pi
   
   gmst <- 280.46061837 + 
     360.98564736629 * Day + 
     .000387933 * T_cen^2 - 
     T_cen^3 / 3871e4
   
+  # Sun's Geometric Mean Longitude
   L <- 280.46646 + 
     36000.76983 * T_cen +
     .0003032 * T_cen^2
+  L_r <- L / 180 * pi
   
   # Mean Longitude of the Ascending Node (Omega)
   # 月球平升交点黄经
@@ -44,6 +47,12 @@ celestialDegree <- \(time = Sys.time(), ...) {
     0.1226 * sin(2 * D) + 
     0.1176 * sin(2 * F) - 
     0.0801 * sin(2 * (Mp - F))
+  omega_r <- omega / 180 * pi
+  
+  # 2. Mean longitude of the Moon (Lp)
+  Lp <- 218.3165 + 
+    481267.8813 * T_cen
+  Lp_r <- Lp / 180 * pi
   
   i_moon <- 5.145396 + 
     0.1460 * cos(2 * (D - F)) -
@@ -52,15 +61,25 @@ celestialDegree <- \(time = Sys.time(), ...) {
     0.0110 * cos(2 * D) +
     0.0080 * cos(2 * (Mp - F))
   
-  return(list( # all in degree (not radius)
-    gmst = gmst,
-    obliquity = obliquity,
-    eps = obliquity / 180 * pi,
-    omega = omega,
-    omega_r = omega / 180 * pi,
-    L = L,
-    i_moon = i_moon,
-    i_moon_r = i_moon / 180 * pi
+  # https://en.wikipedia.org/wiki/Astronomical_nutation
+  d_psi <- (
+    -17.20 * sin(omega_r) - 
+      1.32 * sin(2 * L_r) - 
+      0.23 * sin(2 * Lp_r) + 
+      0.21 * sin(2 * omega_r)
+  ) / 3600 # Dividing by 3,600 converts arcseconds into degrees
+  
+  # Greenwich Apparent Sidereal Time
+  gast <- gmst + d_psi * cos(eps)
+  
+  return(list(
+    gmst = gmst, # degree
+    obliquity = obliquity, eps = eps, # degree/radius
+    omega = omega, omega_r = omega_r, # degree/radius
+    L = L, L_r = L_r, # degree/radius
+    d_psi = d_psi, # degree
+    gast = gast, # degree
+    i_moon = i_moon, i_moon_r = i_moon / 180 * pi # degree/radius
   ))
   
 }
