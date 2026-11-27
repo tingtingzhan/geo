@@ -257,8 +257,8 @@ lunarNodePoint <- \(time = Sys.time()) {
     with(expr = {
       ecliptic2geo(
         lambda = c(
-          omega_true, # ascending_node
-          (omega_true + 180) %% 360 # descending_node
+          omega, # ascending_node
+          (omega + 180) %% 360 # descending_node
         ) / 180 * pi,
         eps = obliquity / 180 * pi,
         gmst = gmst

@@ -24,7 +24,7 @@ celestialDegree <- \(time = Sys.time(), ...) {
   # Mean Longitude of the Ascending Node (Omega)
   # 月球平升交点黄经
   # http://www.mat.uc.pt/~efemast/netscape/help/en/est_nut.htm
-  omega <- c_omega2000 - 
+  omega_mean <- c_omega2000 - 
     c_omegaRegression * T_cen + 
     0.0020754 * T_cen^2 + # instead of .0020708 (1991 ed.1)
     T_cen^3 / 467441 + # instead of 45e4 (1991 ed.1)
@@ -35,7 +35,7 @@ celestialDegree <- \(time = Sys.time(), ...) {
   Mp <- ((134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) %% 360) * pi / 180
   F  <- ((93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) %% 360) * pi / 180
   
-  omega_true <- omega - 
+  omega <- omega_mean - 
     1.4979 * sin(2 * (D - F)) - 
     0.1500 * sin(M) - 
     0.1226 * sin(2 * D) + 
@@ -43,13 +43,16 @@ celestialDegree <- \(time = Sys.time(), ...) {
     0.0801 * sin(2 * (Mp - F))
   
   i_moon <- i_moon_mean + 
-    .145 * cos(2*(L - omega))
+    0.1460 * cos(2 * (D - F)) -
+    0.0045 * cos(M) +
+    0.0156 * cos(2 * F) -
+    0.0110 * cos(2 * D) +
+    0.0080 * cos(2 * (Mp - F))
   
   return(list( # all in degree (not radius)
     gmst = gmst %% 360,
     obliquity = c_obliquity2000 - c_precessionSecular * T_cen,
     omega = omega %% 360,
-    omega_true = omega_true %% 360,
     L = L,
     i_moon = i_moon
   ))
@@ -60,7 +63,8 @@ celestialDegree <- \(time = Sys.time(), ...) {
 
 
 wrap180 <- \(x) {
-  ((x + 180) %% 360) - 180
+  x[] <- ((x + 180) %% 360) - 180
+  return(x)
 }
 
 wrap_pi <- \(x) {
