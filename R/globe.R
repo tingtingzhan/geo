@@ -24,11 +24,16 @@ add_twilight <- \(
 ) {
   
   force(time)
+  n <- length(time)
   
   map |>
     add_polygons(
-      data = twilightPolygons(time = time, ...),
+      #data = twilightPolygons(time = time, ...),
+      data = time |>
+        lapply(FUN = twilightPolygons, ...) |>
+        do.call(what = 'rbind.data.frame', args = _),
       x = ~ lon, y = ~ lat, 
+      frame = if (n > 1L) ~ time, # else NULL
       line = list(width = 0), fillcolor = ~ fillcolor,
       hoverinfo = 'none'
     )
@@ -36,6 +41,30 @@ add_twilight <- \(
 }
 
 
+
+# only for testing
+#' @importFrom plotly add_polygons
+add_solarZenith <- \(
+  map = add_TropicPolar(),
+  time, 
+  ...
+) {
+  
+  force(time)
+  n <- length(time)
+  
+  map |>
+    add_polygons(
+      data = time |>
+        lapply(FUN = solarZenithPolygon, ...) |>
+        do.call(what = 'rbind.data.frame', args = _),
+      x = ~ lon, y = ~ lat, 
+      frame = if (n > 1L) ~ time, # else NULL
+      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .051)',
+      hoverinfo = 'none'
+    )
+  
+}
 
 
 
@@ -57,15 +86,14 @@ add_sunmoon <- \(
 ) {
   
   force(time)
+  n <- length(time)
   
   map |>
     add_text( # Sub-Solor Point
-      data = #rbind.data.frame(
-        subSolarPoint(time = time),
-        #subLunarPoint(time = time)
-      #), # messes up hover color!
+      data = subSolarPoint(time = time),
       x = ~ lon, y = ~ lat, text = ~ text,
       customdata = ~ label,
+      frame = if (n > 1L) ~ time, # else NULL
       hovertemplate = '%{customdata}: (%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)<extra></extra>',
       hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
@@ -73,40 +101,58 @@ add_sunmoon <- \(
       data = subLunarPoint(time = time),
       x = ~ lon, y = ~ lat, text = ~ text,
       customdata = ~ label,
+      frame = if (n > 1L) ~ time, # else NULL
       hovertemplate = '%{customdata}: (%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)<extra></extra>',
       hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     add_paths( # ecliptic
-      data = #rbind.data.frame(
-        eclipticPolygon(time = time),
-        #lunarOrbitPolygon(time = time)
-      #), # messes path-line-color!
+      data = time |>
+        lapply(FUN = eclipticPolygon) |>
+        do.call(what = 'rbind.data.frame', args = _),
       x = ~ lon, y = ~ lat,
+      frame = if (n > 1L) ~ time, # else NULL
       line = ~ list(color = color, dash = 'dot', width = .5),
       line = ~ list(dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
     add_paths( # lunar orbit
-      data = lunarOrbitPolygon(time = time),
+      data = time |>
+        lapply(FUN = lunarOrbitPolygon) |>
+        do.call(what = 'rbind.data.frame', args = _),
       x = ~ lon, y = ~ lat,
+      frame = if (n > 1L) ~ time, # else NULL
       line = ~ list(color = color, dash = 'dot', width = .5),
       hoverinfo = 'none'
     ) |>
-    add_markers( # ecliptic/lunar vs. Equator
-      data = rbind.data.frame(
-        eclipticEquator_lon(time = time),
-        lunarEquator_lon(time = time)
-      ),
+    add_markers( # ecliptic vs. Equator
+      data = time |>
+        lapply(FUN = eclipticEquator_lon) |>
+        do.call(what = 'rbind.data.frame', args = _),
       x = ~ lon, y = 0, text = ~ text,
       customdata = ~ incl,
+      frame = if (n > 1L) ~ time, # else NULL
+      marker = ~ list(color = color),
+      hovertemplate = '%{text}\nLon: %{lon:.3f}\u00b0\n%{customdata}<extra></extra>',
+      hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
+    ) |>
+    add_markers( # lunar vs. Equator
+      data = time |>
+        lapply(FUN = lunarEquator_lon) |>
+        do.call(what = 'rbind.data.frame', args = _),
+      x = ~ lon, y = 0, text = ~ text,
+      customdata = ~ incl,
+      frame = if (n > 1L) ~ time, # else NULL
       marker = ~ list(color = color),
       hovertemplate = '%{text}\nLon: %{lon:.3f}\u00b0\n%{customdata}<extra></extra>',
       hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
     ) |>
     add_markers( # ecliptic vs. lunar
-      data = lunarNodePoint(time = time),
+      data = time |>
+        lapply(FUN = lunarNodePoint) |>
+        do.call(what = 'rbind.data.frame', args = _),
       x = ~ lon, y = ~ lat, text = ~ text,
       customdata = ~ incl,
+      frame = if (n > 1L) ~ time, # else NULL
       marker = ~ list(color = color),
       hovertemplate = '%{text}\n(%{lon:.3f}\u00b0, %{lat:.3f}\u00b0)\n%{customdata}<extra></extra>',
       hoverlabel = ~ list(bgcolor = 'white', font = color, bordercolor = color)
