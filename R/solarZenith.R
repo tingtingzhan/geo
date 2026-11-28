@@ -2,6 +2,8 @@
 
 # @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
 
+
+#' @importFrom Rfast colMins colMaxs
 solarZenithPolygon <- \(
   time = Sys.time(), 
   sza = pi/2, # sun at horizon
@@ -59,15 +61,14 @@ solarZenithPolygon <- \(
     ha <- ha[id2]
     ha <- c(ha, rev.default(ha))
     
-    phi. <- phi[, id2, drop = FALSE] |>
-      apply(MARGIN = 2L, FUN = identity, simplify = FALSE)
+    phi. <- phi[, id2, drop = FALSE]
     
     lat <- c(
       phi. |> 
-        vapply(FUN = min, na.rm = TRUE, FUN.VALUE = NA_real_),
+        colMins(value = TRUE), # `na.rm = TRUE` is hard-coded
       phi. |> 
-        rev.default() |>
-        vapply(FUN = max, na.rm = TRUE, FUN.VALUE = NA_real_)
+        colMaxs(value = TRUE) |>
+        rev.default()
     )
     
     if (xor(sslat > 0, sza < pi/2)) {

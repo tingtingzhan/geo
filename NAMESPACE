@@ -22,6 +22,10 @@ export(globe)
 export(globe_minimal)
 export(iata)
 export(moving_dist2gc)
+importFrom(Rfast,
+  colMaxs,
+  colMins
+)
 importFrom(geosphere,
   dist2gc,
   distGeo
