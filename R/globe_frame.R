@@ -1,18 +1,6 @@
 
-#' @title The Earth with Various Layers, Animated
-#' 
-#' @param map an \CRANpkg{htmlwidgets} created by the function \link[plotly]{plot_geo}. Default value is the return of the function [add_TropicPolar()]
-#' 
-#' @param time a \link[base]{POSIXct} scalar or \link[base]{vector}. Default value is six (`6L`) equidistant time points in the next 24 hours.
-#' 
-#' @param ... additional parameters, currently of no use
-#' 
-#' @examples
-#' add_twilight_animated()
-#' 
 #' @importFrom plotly add_text add_polygons
-#' @export
-add_twilight_animated <- \(
+add_twilight_frame <- \(
   map = add_TropicPolar(),
   time = Sys.time() + seq(from = 0, to = 60*60*24, length.out = 6L), 
   ...
@@ -75,3 +63,30 @@ add_twilight_animated <- \(
   
 }
 
+
+
+
+
+#' @importFrom plotly add_polygons
+add_solarZenith_frame <- \(
+  map = add_TropicPolar(),
+  time, 
+  ...
+) {
+  
+  force(time)
+  
+  solarZenith <- time |>
+    lapply(FUN = solarZenithPolygon, ...) |>
+    do.call(what = 'rbind.data.frame', args = _)
+  
+  map |>
+    add_polygons(
+      data = solarZenith,
+      x = ~ lon, y = ~ lat, 
+      frame = ~ time,
+      line = list(width = 0), fillcolor = 'rgba(0, 0, 0, .051)',
+      hoverinfo = 'none'
+    )
+  
+}

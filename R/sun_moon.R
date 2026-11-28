@@ -13,7 +13,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
     with(expr = {
       data.frame(
         lon = sun_lon |>
-          wrap180() ,
+          .wrap(a = 180) ,
         lat = sun_delta,
         time = time |>
           format(usetz = TRUE),
@@ -47,7 +47,7 @@ subLunarPoint <- \(time = Sys.time(), ...) {
   
   return(data.frame(
     lon = sublunar_lon |>
-      wrap180(),
+      .wrap(a = 180),
     lat = mA$declination,
     time = time |>
       format(usetz = TRUE),
@@ -160,7 +160,7 @@ eclipticEquator_lon <- \(time = Sys.time()) {
       as.POSIXlt(tz = 'UTC') |>
       format(usetz = TRUE),
     lon = (- z$gast + c(0, 180)) |>
-      wrap180(), 
+      .wrap(a = 180), 
     color = 'darkorange',
     incl = z$obliquity |>
       sprintf(fmt = '\u9ec4\u8d64\u4ea4\u89d2 %.3f\u00b0'),
@@ -196,7 +196,7 @@ lunarEquator_lon <- \(time = Sys.time()) {
       
       list(
         lon = lon |>
-          wrap180(),
+          .wrap(a = 180),
         lunarEquator_incl = lunarEquator_incl
       )
       

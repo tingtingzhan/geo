@@ -281,7 +281,7 @@ iata_animated_data <- \(x) {
     lon = lon[-id], lat = lat[-id], 
     text = airplane[-id],
     hovertext = hovertext[-id],
-    tm = tm, # 'POSIXlt' in UTC, to be aligned with [add_twilight_animated()]
+    tm = tm, # 'POSIXlt' in UTC, to be aligned with [add_twilight_frame()]
     color = 'royalblue', # to match the color of '\U1f6ec' and '\U1f6eb'
     time = tm |>
       format(usetz = TRUE) # to be aligned with [subSolarPoint()], etc.
@@ -293,7 +293,7 @@ iata_animated_data <- \(x) {
 
 #' @importFrom plotly add_text
 add_iata_animated <- \(
-  map = add_twilight_animated(time = d[['tm']]),
+  map = add_twilight_frame(time = d[['tm']]),
   x, 
   ...
 ) {

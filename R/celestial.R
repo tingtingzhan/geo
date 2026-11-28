@@ -111,17 +111,12 @@ celestialDegree <- \(time = Sys.time(), ...) {
 }
 
 
-
-
-wrap180 <- \(x) {
-  x[] <- ((x + 180) %% 360) - 180
+.wrap <- \(x, a) {
+  # @param a positive \link[base]{double} scalar
+  x[] <- ((x + a) %% (2*a)) - a
   return(x)
 }
 
-wrap_pi <- \(x) {
-  x[] <- ((x + pi) %% (2*pi)) - pi
-  return(x)
-}
 
 
 # Ecliptic (lambda, beta) -> Geographic (lon, lat)
@@ -143,7 +138,7 @@ ecliptic2geo <- \(
   
   return(data.frame(
     lon = (ra / pi * 180 - gmst) |>
-      wrap180(), 
+      .wrap(a = 180), 
     lat = declination / pi * 180
   ))
 }

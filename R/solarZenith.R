@@ -21,36 +21,36 @@ solarZenithPolygon <- \(
   sslon <- ss$lon/180*pi
   sslat <- ss$lat/180*pi
   
-  # constants!
-  cos_sza <- cos(sza)
-  
   ha <- hour_angle_seq(sslat = sslat, sza = sza, length.out = n)
   
   # (sin(x)*sin(sslat) + cos(x)*cos(sslat)*cos(ha)) - cos(sza) # GOLD!!!
   # \url{https://en.wikipedia.org/wiki/Solar_zenith_angle} has analytical solution!!
   # ask Gemini: find analytical solution to \phi in Solar_zenith_angle
   R <- sqrt(sin(sslat)^2 + cos(sslat)^2 * cos(ha)^2)
-  cos_sza_R <- cos_sza / R
+  cos_sza_R <- cos(sza) / R
+  
+  id1 <- (abs(cos_sza_R) <= 1)
+  if (!all(id1)) {
+    ha <- ha[id1]
+    cos_sza_R <- cos_sza_R[id1]
+  }
   
   alpha <- atan2(
     y = sin(sslat), 
     x = cos(sslat) * cos(ha)
   )
   
-  phi <- array(NA_real_, dim = c(2L, n))
-  id1 <- (abs(cos_sza_R) <= 1)
-  
-  phi[,id1] <- (alpha[id1] + tcrossprod(
-    acos(cos_sza_R[id1]),
+  phi <- (alpha + tcrossprod(
+    acos(cos_sza_R),
     c(-1, 1)
   )) |>
     t.default() |> # dont forget!
-    wrap_pi()
+    .wrap(a = pi)
   phi[which(phi < -pi/2)] <- NA_real_
   phi[which(phi > pi/2)] <- NA_real_
   
   n_phi <- (!is.na(phi)) |>
-    .colSums(m = 2L, n = n)
+    .colSums(m = 2L, n = dim(phi)[2L])
   
   if (all(n_phi == 1L)) { # hew!!
     
@@ -60,15 +60,15 @@ solarZenithPolygon <- \(
     
     id2 <- (n_phi > 0L)
     ha <- ha[id2]
+    phi <- phi[, id2, drop = FALSE]
+    
     ha <- c(ha, rev.default(ha))
-    
-    phi. <- phi[, id2, drop = FALSE]
-    
+
     lat <- c(
-      phi. |> 
+      phi |> 
         # Rfast::colMins(value = TRUE), # `na.rm = TRUE` is hard-coded
         colMins(na.rm = TRUE), # matrixStats
-      phi. |> 
+      phi |> 
         # Rfast::colMaxs(value = TRUE) |>
         colMaxs(na.rm = TRUE) |> # matrixStats
         rev.default()
@@ -84,7 +84,7 @@ solarZenithPolygon <- \(
   
   z <- cbind(
     lon = (ha + sslon) |>
-      wrap_pi(),
+      .wrap(a = pi),
     lat = lat
   ) / pi * 180
   

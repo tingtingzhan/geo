@@ -1,21 +1,16 @@
 
 expect_no_error(object = {
-  globe_minimal()
+  htmltools::tagList(
+    globe_minimal(),
+    globe(),
+    add_meridian(),
+    add_TropicPolar()
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
 
 
-expect_no_error(object = {
-  globe()
-})
-
-
-expect_no_error(object = {
-  add_meridian()
-})
-
-expect_no_error(object = {
-  add_TropicPolar()
-})
 
 expect_no_error(object = {
   '2026-04-14 21:30:00' |> # summer
