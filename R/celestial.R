@@ -12,10 +12,6 @@ celestialDegree <- \(time = Sys.time(), ...) {
   
   T_cen <- Day / (1e2 * 365.25) # the fraction of the century elapsed
   
-  obliquity <- 23.43928 - 
-    0.0130102 * T_cen
-  eps <- obliquity / 180 * pi
-  
   gmst <- 280.46061837 + 
     360.98564736629 * Day + 
     .000387933 * T_cen^2 - 
@@ -37,9 +33,20 @@ celestialDegree <- \(time = Sys.time(), ...) {
     (- T_cen^4 / 60616000)
   
   D  <- (297.8501921 + 445267.1114034 * T_cen - 0.0018819 * T_cen^2) * pi / 180
+  # mean anomaly (M)
   M  <- (357.5291092 + 35999.0502909 * T_cen - 0.0001536 * T_cen^2) * pi / 180
   Mp <- (134.9633964 + 477198.8675055 * T_cen + 0.0087414 * T_cen^2) * pi / 180
   F  <- (93.2720950 + 483202.0175233 * T_cen - 0.0036539 * T_cen^2) * pi / 180
+  
+  # Sun's Equation of Center (C) & True Longitude (sun_true_lon)
+  C <- sin(M) * (
+    1.914602 - 
+      0.004817 * T_cen -
+      0.000014 * T_cen^2
+  ) +
+    sin(2 * M) * (0.019993 - 0.000101 * T_cen) +
+    sin(3 * M) * 0.000289
+  sun_true_lon <- L + C
   
   omega <- omega_mean - 
     1.4979 * sin(2 * (D - F)) - 
@@ -49,7 +56,25 @@ celestialDegree <- \(time = Sys.time(), ...) {
     0.0801 * sin(2 * (Mp - F))
   omega_r <- omega / 180 * pi
   
-  # 2. Mean longitude of the Moon (Lp)
+  obliquity <- 23.439291 - # instead of 23.43928
+    0.0130042 * T_cen - # instead of 0.0130102
+    1.64e-7 * T_cen^2 + 
+    5.04e-7 * T_cen^3 +
+    0.00256 * cos(omega_r)
+  eps <- obliquity / 180 * pi
+  
+  # Apparent Longitude (lambda)
+  sun_lambda <- sun_true_lon - 0.00569 - 0.00478 * sin(omega_r)
+  sun_lambda_r <- sun_lambda / 180 * pi
+  # Solar Declination (delta) in degrees
+  sun_delta_r <- asin(sin(eps) * sin(sun_lambda_r))
+  sun_delta <- sun_delta_r / pi * 180
+  # Right Ascension (alpha) in degrees [0, 360)
+  alpha_r <- atan2(cos(eps) * sin(sun_lambda_r), cos(sun_lambda_r))
+  #alpha_deg <- rad2deg(alpha_rad) %% 360
+  sun_lon <- alpha_r / pi * 180 - gmst
+  
+  # Mean longitude of the Moon (Lp)
   Lp <- 218.3165 + 
     481267.8813 * T_cen
   Lp_r <- Lp / 180 * pi
@@ -76,6 +101,7 @@ celestialDegree <- \(time = Sys.time(), ...) {
     gmst = gmst, # degree
     obliquity = obliquity, eps = eps, # degree/radius
     omega = omega, omega_r = omega_r, # degree/radius
+    sun_lon = sun_lon, sun_delta = sun_delta,
     L = L, L_r = L_r, # degree/radius
     d_psi = d_psi, # degree
     gast = gast, # degree

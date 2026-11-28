@@ -9,28 +9,19 @@ subSolarPoint <- \(time = Sys.time(), ...) {
   time <- time |>
     as.POSIXlt(tz = 'UTC')
   
-  doy <- time$yday + 1 # day of year
-  hour <- time$hour + time$min/60 + time$sec/3600 # hour of day
-  
-  # Solar Declination (latitude where sun is directly overhead)
-  # Cooper (1969) doi:10.1016/0038-092X(69)90047-4
-  # same as ?solrad::Declination
-  declination <- 23.45 * sin(2 * pi * (284+doy) / 365.25)
-  
-  # Greenwich Hour Angle / Subsolar Longitude
-  # The sun moves 15 degrees per hour; 12:00 UTC is roughly 0 degrees longitude
-  solar_lon <- (12 - hour) * 15
-  
-  return(data.frame(
-    lon = solar_lon |>
-      wrap180() ,
-    lat = declination,
-    time = time |>
-      format(usetz = TRUE),
-    text = '\u2600\ufe0f', # sun emoji
-    label = 'Sun',
-    color = 'darkorange'
-  ))
+  celestialDegree(time) |>
+    with(expr = {
+      data.frame(
+        lon = sun_lon |>
+          wrap180() ,
+        lat = sun_delta,
+        time = time |>
+          format(usetz = TRUE),
+        text = '\u2600\ufe0f', # sun emoji
+        label = 'Sun',
+        color = 'darkorange'
+      )
+    })
   
 }
 
@@ -39,7 +30,7 @@ subSolarPoint <- \(time = Sys.time(), ...) {
 # @references
 # \url{https://www.timeanddate.com/worldclock/sunearth.html}
 # 
-#' @importFrom oce moonAngle siderealTime
+#' @importFrom oce moonAngle
 subLunarPoint <- \(time = Sys.time(), ...) {
   
   time <- time |>

@@ -32,10 +32,7 @@ importFrom(matrixStats,
   colMaxs,
   colMins
 )
-importFrom(oce,
-  moonAngle,
-  siderealTime
-)
+importFrom(oce,moonAngle)
 importFrom(plotly,
   add_markers,
   add_paths,
