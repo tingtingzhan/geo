@@ -34,42 +34,42 @@ solarZenithPolygon <- \(
     x = cos(sslat) * cos(ha)
   )
   
-  z <- replicate(n = length(ha), expr = numeric(), simplify = FALSE)
-  id <- (abs(cos_sza_R) <= 1)
+  phi <- array(NA_real_, dim = c(2L, n))
+  id1 <- (abs(cos_sza_R) <= 1)
   
-  phi <- (alpha[id] + tcrossprod(
-    acos(cos_sza_R[id]),
+  phi[,id1] <- (alpha[id1] + tcrossprod(
+    acos(cos_sza_R[id1]),
     c(-1, 1)
   )) |>
+    t.default() |> # dont forget!
     wrap_pi()
-  phi[phi < -pi/2] <- NA_real_
-  phi[phi > pi/2] <- NA_real_
-  z[id] <- phi |>
-    apply(MARGIN = 1L, FUN = \(i) {
-      i[!is.na(i)]
-      #base::sort.int() # is very slow!!
-    }, simplify = FALSE)
+  phi[which(phi < -pi/2)] <- NA_real_
+  phi[which(phi > pi/2)] <- NA_real_
   
-  nz <- lengths(z)
+  n_phi <- (!is.na(phi)) |>
+    .colSums(m = 2L, n = n)
   
-  if (all(nz == 1L)) { # hew!!
+  if (all(n_phi == 1L)) { # hew!!
     
-    lat <- z |>
-      unlist(use.names = FALSE)
+    lat <- phi[!is.na(phi)]
     
-  } else { # when (sslat < 0)
+  } else {
     
-    id <- (nz > 0L)
-    ha <- c(ha[id], rev.default(ha[id]))
+    id2 <- (n_phi > 0L)
+    ha <- ha[id2]
+    ha <- c(ha, rev.default(ha))
+    
+    phi. <- phi[, id2, drop = FALSE] |>
+      apply(MARGIN = 2L, FUN = identity, simplify = FALSE)
     
     lat <- c(
-      z[id] |> 
-        vapply(FUN = min, FUN.VALUE = NA_real_),
-      z[id] |> 
+      phi. |> 
+        vapply(FUN = min, na.rm = TRUE, FUN.VALUE = NA_real_),
+      phi. |> 
         rev.default() |>
-        vapply(FUN = max, FUN.VALUE = NA_real_)
+        vapply(FUN = max, na.rm = TRUE, FUN.VALUE = NA_real_)
     )
-
+    
     if (xor(sslat > 0, sza < pi/2)) {
       # hahaha!
       ha <- rev.default(ha)
@@ -94,6 +94,7 @@ solarZenithPolygon <- \(
   return(ret)
   
 }
+
 
 
 

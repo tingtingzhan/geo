@@ -31,40 +31,58 @@ add_solarZenith <- \(
 
 
 
-
-
 expect_no_error(object = { # terminator
-  add_solarZenith(time = winter)
-  add_solarZenith(time = summer)
-  add_solarZenith(time = spring)
+  htmltools::tagList(
+    add_solarZenith(time = winter),
+    add_solarZenith(time = summer),
+    add_solarZenith(time = spring)
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
 
 expect_no_error(object = { # sza > pi/2
   sza1a = (90+10)/180*pi
-  add_solarZenith(time = winter, sza = sza1a)
-  add_solarZenith(time = summer, sza = sza1a)
-  add_solarZenith(time = spring, sza = sza1a)
+  htmltools::tagList(
+    add_solarZenith(time = winter, sza = sza1a),
+    add_solarZenith(time = summer, sza = sza1a),
+    add_solarZenith(time = spring, sza = sza1a)
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
 
 
 expect_no_error(object = { # sza > pi/2
   sza1b = (90+30)/180*pi
-  add_solarZenith(time = winter, sza = sza1b)
-  add_solarZenith(time = summer, sza = sza1b)
-  add_solarZenith(time = spring, sza = sza1b)
+  htmltools::tagList(
+    add_solarZenith(time = winter, sza = sza1b),
+    add_solarZenith(time = summer, sza = sza1b),
+    add_solarZenith(time = spring, sza = sza1b)
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
 
 expect_no_error(object = { # sza < pi/2
   sza2a = (90-10)/180*pi
-  add_solarZenith(time = winter, sza = sza2a)
-  add_solarZenith(time = summer, sza = sza2a)
-  add_solarZenith(time = spring, sza = sza2a)
+  htmltools::tagList(
+    add_solarZenith(time = winter, sza = sza2a),
+    add_solarZenith(time = summer, sza = sza2a),
+    add_solarZenith(time = spring, sza = sza2a)
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
 
 
 expect_no_error(object = { # sza < pi/2
   sza2b = (90-30)/180*pi
-  add_solarZenith(time = winter, sza = sza2b)
-  add_solarZenith(time = summer, sza = sza2b)
-  add_solarZenith(time = spring, sza = sza2b)
+  htmltools::tagList(
+    add_solarZenith(time = winter, sza = sza2b),
+    add_solarZenith(time = summer, sza = sza2b),
+    add_solarZenith(time = spring, sza = sza2b)
+  ) |> 
+    htmltools::browsable() |>
+    print()
 })
