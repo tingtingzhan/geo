@@ -172,7 +172,13 @@ fluidPage(
       br(),
       'If you agree, your coordinates are used only in your browser to mark your position on the globe. They are never sent to the server or stored.',
       br(),
-      'If you decline, you can still explore everything else.'#,
+      'If you decline, you can still explore everything else.',
+      h4('Resources'),
+      tags$a(
+        .noWS = c('before', 'after'),
+        href = 'https://www.timeanddate.com/worldclock/sunearth.html',
+        'Day and Night World Map'
+      )
       # br(),
       # ''
       #h4('Run locally'),
