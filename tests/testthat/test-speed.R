@@ -14,4 +14,6 @@ expect_no_error(object = {
   microbenchmark(f1(x), f2(x, value = TRUE))  
 })
 
+# but \CRANpkg{RcppParallel} kills \CRANpkg{shiny}, dont know why
+
 

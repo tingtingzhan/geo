@@ -22,16 +22,16 @@ export(globe)
 export(globe_minimal)
 export(iata)
 export(moving_dist2gc)
-importFrom(Rfast,
-  colMaxs,
-  colMins
-)
 importFrom(geosphere,
   dist2gc,
   distGeo
 )
 importFrom(htmlwidgets,onRender)
 importFrom(lunar,lunar.phase)
+importFrom(matrixStats,
+  colMaxs,
+  colMins
+)
 importFrom(oce,
   moonAngle,
   siderealTime

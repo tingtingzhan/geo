@@ -3,7 +3,8 @@
 # @param sza \link[base]{double} scalar, the solar zenith angle (SZA) \eqn{\theta_z} in radius
 
 
-#' @importFrom Rfast colMins colMaxs
+# @importFrom Rfast colMins colMaxs # \CRANpkg{RcppParallel} kills \CRANpkg{shiny}
+#' @importFrom matrixStats colMins colMaxs
 solarZenithPolygon <- \(
   time = Sys.time(), 
   sza = pi/2, # sun at horizon
@@ -65,9 +66,11 @@ solarZenithPolygon <- \(
     
     lat <- c(
       phi. |> 
-        colMins(value = TRUE), # `na.rm = TRUE` is hard-coded
+        # Rfast::colMins(value = TRUE), # `na.rm = TRUE` is hard-coded
+        colMins(na.rm = TRUE), # matrixStats
       phi. |> 
-        colMaxs(value = TRUE) |>
+        # Rfast::colMaxs(value = TRUE) |>
+        colMaxs(na.rm = TRUE) |> # matrixStats
         rev.default()
     )
     
