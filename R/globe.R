@@ -28,7 +28,6 @@ add_twilight <- \(
   
   map |>
     add_polygons(
-      #data = twilightPolygons(time = time, ...),
       data = time |>
         lapply(FUN = twilightPolygons, ...) |>
         do.call(what = 'rbind.data.frame', args = _),
